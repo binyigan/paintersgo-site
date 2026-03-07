@@ -9,9 +9,9 @@ theme = "PaperMod"
     description = "超酷的 3D 沉浸式应用体验"
     
     [params.assets]
-        favicon = "/logo.png"
+        favicon = "logo.png"
 
     [params.label]
-        text = "Home"
-        icon = "/logo.png"
+        text = "PaintersGO"
+        icon = "logo.png"
         iconHeight = 35
