@@ -1,7 +1,17 @@
-baseURL = 'https://paintersgo-site.vercel.app/'
-languageCode = 'en-us'
-title = 'PaintersGO 官方网站'
+﻿baseURL = "https://paintersgo-site.vercel.app/"
+languageCode = "zh-cn"
+title = "PaintersGO 官方网站"
 theme = "PaperMod"
-[params.homeInfoParams]
-    Title = "欢迎来到PaintersGO！"
-    Content = "这是一款超酷的 3D 沉浸式应用！在这里你可以体验到前所未有的视觉盛宴。\n\n👇 往下看，了解更多特性并获取最新版安装包！"
+
+[params]
+    env = "production"
+    title = "PaintersGO"
+    description = "超酷的 3D 沉浸式应用体验"
+    
+    [params.assets]
+        favicon = "/logo.png"
+
+    [params.label]
+        text = "Home"
+        icon = "/logo.png"
+        iconHeight = 35
