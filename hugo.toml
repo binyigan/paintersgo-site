@@ -1,0 +1,7 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = 'My New Hugo Site'
+theme = "PaperMod"
+[params.homeInfoParams]
+    Title = "欢迎来到PaintersGO！"
+    Content = "这是一款超酷的 3D 沉浸式应用！在这里你可以体验到前所未有的视觉盛宴。\n\n👇 往下看，了解更多特性并获取最新版安装包！"
