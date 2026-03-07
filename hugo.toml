@@ -1,4 +1,4 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://paintersgo-site.vercel.app/'
 languageCode = 'en-us'
 title = 'PaintersGO 官方网站'
 theme = "PaperMod"
