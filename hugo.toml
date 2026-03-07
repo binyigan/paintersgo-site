@@ -1,6 +1,6 @@
 baseURL = 'https://example.org/'
 languageCode = 'en-us'
-title = 'My New Hugo Site'
+title = 'PaintersGO 官方网站'
 theme = "PaperMod"
 [params.homeInfoParams]
     Title = "欢迎来到PaintersGO！"
