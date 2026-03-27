@@ -1,5 +1,5 @@
 ---
-title: "PaintersGO Home"
+title: "主页"
 draft: false
-description: "PaintersGO combines 3D, video and AR into one clear creative experience."
+description: "PaintersGO 将 3D、视频与 AR 体验整合为一条清晰的创意表达路径。"
 ---
