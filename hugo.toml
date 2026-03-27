@@ -1,20 +1,45 @@
 baseURL = "https://paintersgo.top/"
 languageCode = "zh-cn"
+defaultContentLanguage = "zh-cn"
 title = "PaintersGO 官方网站"
 theme = "PaperMod"
 
 [params]
     env = "production"
     title = "PaintersGO"
-    description = "超酷的 3D 沉浸式应用体验"
+    description = "面向 3D、视频与 AR 沉浸式表达的创意体验平台"
+    disableThemeToggle = true
 
     [params.assets]
         favicon = "logo.png"
+        favicon16x16 = "logo.png"
+        favicon32x32 = "logo.png"
+        apple_touch_icon = "logo.png"
+        safari_pinned_tab = "logo-mark.svg"
 
     [params.label]
         text = "PaintersGO"
         icon = "logo.png"
         iconHeight = 35
 
+[menu]
+    [[menu.main]]
+        identifier = "highlights"
+        name = "核心亮点"
+        url = "/#video-showcase"
+        weight = 10
+
+    [[menu.main]]
+        identifier = "gallery"
+        name = "视觉展示"
+        url = "/#visual-gallery"
+        weight = 20
+
+    [[menu.main]]
+        identifier = "download"
+        name = "立即下载"
+        url = "/#download"
+        weight = 30
+
 [markup.goldmark.renderer]
-  unsafe = true
+    unsafe = true

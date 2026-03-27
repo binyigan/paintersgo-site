@@ -1,6 +1,7 @@
 ---
 title: "主页"
 draft: false
+description: "PaintersGO 将 3D、视频与 AR 体验整合为一条清晰的创意表达路径。"
 ---
 
 <div class="home-showcase">
@@ -111,7 +112,7 @@ draft: false
       </div>
     </section>
 
-    <section class="showcase-section full-span">
+    <section class="showcase-section full-span" id="visual-gallery">
       <span class="section-kicker">Screens</span>
       <h2 class="section-title">截图不再只是罗列，而是围绕“界面、效果、结果”展开</h2>
       <p class="section-intro">
@@ -141,7 +142,7 @@ draft: false
       </div>
     </section>
 
-    <section class="showcase-section full-span">
+    <section class="showcase-section full-span" id="download">
       <span class="section-kicker">Visual Gallery</span>
       <h2 class="section-title">用更多视觉素材把首页收束成一份作品集式陈列</h2>
       <p class="section-intro">

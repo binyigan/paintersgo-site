@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title">
+  <title>PaintersGO</title>
+  <defs>
+    <linearGradient id="pg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff9a3d"/>
+      <stop offset="100%" stop-color="#ff5b2e"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="#fff4ea"/>
+  <circle cx="64" cy="64" r="42" fill="url(#pg-gradient)"/>
+  <path d="M50 40h18c16 0 26 8 26 22 0 15-11 24-28 24H60v18H50V40zm10 10v26h7c11 0 17-4 17-13 0-9-6-13-16-13H60z" fill="#ffffff"/>
+</svg>
