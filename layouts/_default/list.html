@@ -82,10 +82,15 @@
           The most distinctive capability should not get buried. This block gives AR its own spotlight and makes
           the product identity easier to remember.
         </p>
-        <div class="media-card">
+        <div class="media-card media-card-featured">
           <img src="/AR.png" alt="PaintersGO AR feature preview">
           <h3>Digital content placed into real space</h3>
           <p>Bring ideas beyond the screen and into scenes that feel visible, spatial and interactive.</p>
+          <div class="media-tags">
+            <span>AR-first</span>
+            <span>Spatial layer</span>
+            <span>Memory anchor</span>
+          </div>
         </div>
       </section>
 
@@ -96,21 +101,28 @@
           Once the visuals create interest, motion content should answer the next question: how does it actually feel
           to use? These two videos handle that part of the story.
         </p>
-        <div class="video-grid">
-          <article class="media-card">
+        <div class="video-grid video-grid-asymmetric">
+          <article class="media-card media-card-featured">
             <video controls preload="metadata" playsinline>
               <source src="/jieshao1.mp4" type="video/mp4">
             </video>
             <h3>Core flow demo</h3>
             <p>Show the main path from entering the experience to completing key interactions.</p>
           </article>
-          <article class="media-card">
-            <video controls preload="metadata" playsinline>
-              <source src="/jieshao2.mp4" type="video/mp4">
-            </video>
-            <h3>Scenario extension demo</h3>
-            <p>Expand the story with more scenes so visitors can imagine broader use cases.</p>
-          </article>
+          <div class="video-side-stack">
+            <article class="media-card media-card-compact">
+              <video controls preload="metadata" playsinline>
+                <source src="/jieshao2.mp4" type="video/mp4">
+              </video>
+              <h3>Scenario extension demo</h3>
+              <p>Expand the story with more scenes so visitors can imagine broader use cases.</p>
+            </article>
+            <div class="insight-panel">
+              <span class="section-kicker">What It Adds</span>
+              <h3>Motion reduces uncertainty.</h3>
+              <p>Static visuals create desire. Video removes friction by showing pacing, interaction and product feel.</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -121,8 +133,8 @@
           This section keeps the page rich without feeling messy. Each card helps communicate either the interface,
           the visual quality or the final output.
         </p>
-        <div class="media-grid">
-          <article class="media-card">
+        <div class="media-grid media-grid-editorial">
+          <article class="media-card media-card-featured media-card-wide">
             <img src="/o2o1.png" alt="PaintersGO interface preview one">
             <h3>Immersive interface view</h3>
             <p>Help visitors understand what the experience actually looks like during use.</p>
@@ -152,8 +164,8 @@
           Once interest is established, the page can shift from explanation to atmosphere. These images help the site
           feel more like a creative brand space and less like a utility landing page.
         </p>
-        <div class="media-grid">
-          <article class="media-card">
+        <div class="media-grid media-grid-portfolio">
+          <article class="media-card media-card-tall">
             <img src="/pic1.jpg" alt="PaintersGO visual sample one">
             <h3>Atmospheric key visual</h3>
             <p>Add brand tone and make the homepage feel like a showcase rather than only a feature list.</p>
@@ -163,22 +175,25 @@
             <h3>Variation in rhythm</h3>
             <p>Different framing and lighting keep the scrolling experience from feeling repetitive.</p>
           </article>
-          <article class="media-card">
+          <article class="media-card media-card-wide">
             <img src="/pic3.jpg" alt="PaintersGO visual sample three">
             <h3>Creative extension</h3>
             <p>Position PaintersGO as a creative medium, not just a tool with isolated features.</p>
           </article>
-          <article class="media-card">
+          <div class="brand-block">
             <img src="/logo.png" alt="PaintersGO logo">
-            <h3>Brand recognition</h3>
-            <p>Use the logo as a closing visual anchor so the page ends with a clean brand memory.</p>
-          </article>
+            <div>
+              <span class="section-kicker">Brand</span>
+              <h3>PaintersGO</h3>
+              <p>End the page with a stronger brand recall, not just one more generic image card.</p>
+            </div>
+          </div>
         </div>
       </section>
 
       <section class="showcase-section full-span" id="download">
-        <div class="download-strip">
-          <div>
+        <div class="download-strip download-strip-strong">
+          <div class="download-copy">
             <span class="section-kicker">Download</span>
             <h2 class="section-title">Ready to try PaintersGO on your phone?</h2>
             <p>
@@ -191,7 +206,10 @@
               <span>Install and try now</span>
             </div>
           </div>
-          <a class="cta-primary" href="/PaintersGO.apk">Download APK</a>
+          <div class="download-cta-box">
+            <a class="cta-primary" href="/PaintersGO.apk">Download APK</a>
+            <p>Direct Android package for quick testing and preview.</p>
+          </div>
         </div>
       </section>
     </div>
