@@ -148,3 +148,27 @@
   translation: Download APK
 - id: download_cta_hint
   translation: Direct Android package for quick preview and testing.
+- id: story_kicker
+  translation: More Pages
+- id: story_title
+  translation: Prepare fuller story pages for PaintersGO.
+- id: story_intro
+  translation: Beyond presenting the app itself, the site can also grow into a fuller project archive with pages for the origin story, development process and author profile.
+- id: story_card_origin_title
+  translation: Project Origin
+- id: story_card_origin_body
+  translation: Reserved for the initial idea, background and motivation behind PaintersGO.
+- id: story_card_origin_cta
+  translation: Open origin page
+- id: story_card_dev_title
+  translation: Development Process
+- id: story_card_dev_body
+  translation: Reserved for milestones, technical challenges, tools and iteration notes.
+- id: story_card_dev_cta
+  translation: Open development page
+- id: story_card_author_title
+  translation: Author
+- id: story_card_author_body
+  translation: Reserved for background, perspective, role in the project and future contact details.
+- id: story_card_author_cta
+  translation: Open author page

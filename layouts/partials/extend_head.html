@@ -313,12 +313,17 @@
 
   .post-content .feature-grid,
   .post-content .media-grid,
-  .post-content .video-grid {
+  .post-content .video-grid,
+  .post-content .story-grid {
     display: grid;
     gap: 16px;
   }
 
   .post-content .feature-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .post-content .story-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
@@ -354,6 +359,25 @@
     margin: 0;
     color: var(--secondary);
     line-height: 1.75;
+  }
+
+  .post-content .story-card {
+    display: grid;
+    align-content: start;
+    gap: 14px;
+    min-height: 100%;
+  }
+
+  .post-content .story-link {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 10px 14px;
+    border-radius: 999px;
+    background: rgba(255, 122, 24, 0.1);
+    color: #994800;
+    font-weight: 700;
+    text-decoration: none;
   }
 
   .post-content .media-card img,
@@ -559,6 +583,7 @@
     .post-content .feature-grid,
     .post-content .video-grid,
     .post-content .media-grid,
+    .post-content .story-grid,
     .post-content .hero-points,
     .post-content .hero-stats {
       grid-template-columns: 1fr;

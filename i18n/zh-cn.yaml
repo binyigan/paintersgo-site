@@ -148,3 +148,27 @@
   translation: 下载 APK
 - id: download_cta_hint
   translation: 直接获取 Android 安装包，快速完成预览与试用。
+- id: story_kicker
+  translation: 更多内容
+- id: story_title
+  translation: 为 PaintersGO 预留更完整的故事页面。
+- id: story_intro
+  translation: 除了展示应用本身，这里也可以逐步补充项目来源、开发过程和作者介绍，让网站从展示页成长为一套更完整的项目档案。
+- id: story_card_origin_title
+  translation: 项目来源
+- id: story_card_origin_body
+  translation: 预留用于补充 PaintersGO 的灵感来源、背景故事与立项原因。
+- id: story_card_origin_cta
+  translation: 查看来源页
+- id: story_card_dev_title
+  translation: 开发过程
+- id: story_card_dev_body
+  translation: 预留用于记录版本推进、关键难点、技术路线与迭代思路。
+- id: story_card_dev_cta
+  translation: 查看开发页
+- id: story_card_author_title
+  translation: 作者信息
+- id: story_card_author_body
+  translation: 预留用于介绍作者背景、个人理念、项目角色与后续联系方式。
+- id: story_card_author_cta
+  translation: 查看作者页
