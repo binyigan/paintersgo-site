@@ -15,7 +15,7 @@
                     {{- if and (in $processableFormats $img.MediaType.SubType) (eq $prod true)}}
                         {{- if site.Params.label.iconHeight }}
                             {{- $img = $img.Resize (printf "x%d" site.Params.label.iconHeight) }}
-                        {{ else }}
+                        {{- else }}
                             {{- $img = $img.Resize "x30" }}
                         {{- end }}
                     {{- end }}
@@ -33,9 +33,22 @@
             {{- end }}
         </div>
         <ul id="menu">
-            <li><a href="/#video-showcase" title="核心亮点"><span>核心亮点</span></a></li>
-            <li><a href="/#visual-gallery" title="视觉展示"><span>视觉展示</span></a></li>
-            <li><a href="/#download" title="立即下载"><span>立即下载</span></a></li>
+            <li><a href='{{ "" | relLangURL }}#video-showcase' title='{{ i18n "nav_highlights" }}'><span>{{ i18n "nav_highlights" }}</span></a></li>
+            <li><a href='{{ "" | relLangURL }}#visual-gallery' title='{{ i18n "nav_gallery" }}'><span>{{ i18n "nav_gallery" }}</span></a></li>
+            <li><a href='{{ "" | relLangURL }}#download' title='{{ i18n "nav_download" }}'><span>{{ i18n "nav_download" }}</span></a></li>
+            {{- if gt (len .Sites) 1 }}
+            <li>
+                <ul class="lang-switch">
+                    {{- range .Sites }}
+                    <li>
+                        <a href="{{ .Home.RelPermalink }}" title="{{ .Language.LanguageName }}" aria-label="{{ .Language.LanguageName }}">
+                            {{- if eq .Language.Lang "zh-cn" -}}ZH{{- else if eq .Language.Lang "en" -}}EN{{- else -}}{{ .Language.Lang | upper }}{{- end -}}
+                        </a>
+                    </li>
+                    {{- end }}
+                </ul>
+            </li>
+            {{- end }}
         </ul>
     </nav>
 </header>
