@@ -1,0 +1,320 @@
+{{- define "main" }}
+
+{{- if .IsHome }}
+<div class="post-content">
+  <div class="home-showcase">
+    <section class="home-hero">
+      <div class="hero-copy">
+        <span class="hero-badge">PaintersGO Official Experience</span>
+        <h1 class="hero-title">Turn images, video and AR into one immersive creative experience.</h1>
+        <p class="hero-subtitle">
+          PaintersGO is designed for fast visual storytelling on mobile. The homepage now follows a clearer rhythm:
+          see the visual impact first, understand the workflow next, and download the app when interest is highest.
+        </p>
+        <div class="hero-actions">
+          <a class="cta-primary" href="/PaintersGO.apk">Download Android App</a>
+          <a class="cta-secondary" href="#video-showcase">Watch Demo</a>
+        </div>
+        <div class="hero-points">
+          <div class="hero-point">
+            <strong>Visual to Spatial</strong>
+            <span>Connect screenshots, video and 3D presentation in a single product flow.</span>
+          </div>
+          <div class="hero-point">
+            <strong>Show then Explain</strong>
+            <span>Lead with atmosphere and results, then support it with demo content.</span>
+          </div>
+          <div class="hero-point">
+            <strong>Fast to Try</strong>
+            <span>Give visitors a direct path from first impression to installation.</span>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <strong>2</strong>
+            <span>demo videos</span>
+          </div>
+          <div class="hero-stat">
+            <strong>8+</strong>
+            <span>visual assets</span>
+          </div>
+          <div class="hero-stat">
+            <strong>1</strong>
+            <span>clear download path</span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-media">
+        <img src="/background.jpg" alt="PaintersGO hero visual">
+        <div class="floating-note note-top">3D Immersive Visuals</div>
+        <div class="floating-note note-bottom">AR Interaction Ready</div>
+      </div>
+    </section>
+
+    <div class="section-grid">
+      <section class="showcase-section span-7">
+        <span class="section-kicker">Product Value</span>
+        <h2 class="section-title">A homepage that explains value instead of stacking assets.</h2>
+        <p class="section-intro">
+          This layout turns the homepage into a focused product presentation. Each block has one job:
+          introduce the experience, show the product in motion, present the visuals, then convert with download.
+        </p>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <h3>Strong First Screen</h3>
+            <p>The hero area sets the tone quickly and makes the product feel intentional and premium.</p>
+          </article>
+          <article class="feature-card">
+            <h3>Clearer Content Roles</h3>
+            <p>Videos explain workflow, screenshots show results, and the final section captures intent.</p>
+          </article>
+          <article class="feature-card">
+            <h3>Built to Grow</h3>
+            <p>More features, cases or testimonials can be added later without changing the structure.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="showcase-section span-5">
+        <span class="section-kicker">AR Preview</span>
+        <h2 class="section-title">Use AR as the main memory point.</h2>
+        <p class="section-intro">
+          The most distinctive capability should not get buried. This block gives AR its own spotlight and makes
+          the product identity easier to remember.
+        </p>
+        <div class="media-card">
+          <img src="/AR.png" alt="PaintersGO AR feature preview">
+          <h3>Digital content placed into real space</h3>
+          <p>Bring ideas beyond the screen and into scenes that feel visible, spatial and interactive.</p>
+        </div>
+      </section>
+
+      <section class="showcase-section full-span" id="video-showcase">
+        <span class="section-kicker">Motion Demo</span>
+        <h2 class="section-title">Video explains how the product works.</h2>
+        <p class="section-intro">
+          Once the visuals create interest, motion content should answer the next question: how does it actually feel
+          to use? These two videos handle that part of the story.
+        </p>
+        <div class="video-grid">
+          <article class="media-card">
+            <video controls preload="metadata" playsinline>
+              <source src="/jieshao1.mp4" type="video/mp4">
+            </video>
+            <h3>Core flow demo</h3>
+            <p>Show the main path from entering the experience to completing key interactions.</p>
+          </article>
+          <article class="media-card">
+            <video controls preload="metadata" playsinline>
+              <source src="/jieshao2.mp4" type="video/mp4">
+            </video>
+            <h3>Scenario extension demo</h3>
+            <p>Expand the story with more scenes so visitors can imagine broader use cases.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="showcase-section full-span" id="visual-gallery">
+        <span class="section-kicker">Screens</span>
+        <h2 class="section-title">Screenshots organized around interface, effect and result.</h2>
+        <p class="section-intro">
+          This section keeps the page rich without feeling messy. Each card helps communicate either the interface,
+          the visual quality or the final output.
+        </p>
+        <div class="media-grid">
+          <article class="media-card">
+            <img src="/o2o1.png" alt="PaintersGO interface preview one">
+            <h3>Immersive interface view</h3>
+            <p>Help visitors understand what the experience actually looks like during use.</p>
+          </article>
+          <article class="media-card">
+            <img src="/o2o2.png" alt="PaintersGO interface preview two">
+            <h3>Scene transition preview</h3>
+            <p>Extend the sense of flow, rhythm and continuity across multiple screens.</p>
+          </article>
+          <article class="media-card">
+            <img src="/vedio-to-3d.png" alt="PaintersGO video to 3D visual">
+            <h3>From video into 3D</h3>
+            <p>Show how content evolves from flat media into a deeper and more spatial presentation.</p>
+          </article>
+          <article class="media-card">
+            <img src="/video-to-3d1.png" alt="PaintersGO result visualization">
+            <h3>Result visualization</h3>
+            <p>Support the main screenshots with another angle of the final creative result.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="showcase-section full-span">
+        <span class="section-kicker">Visual Gallery</span>
+        <h2 class="section-title">Let the lower half feel like a curated portfolio.</h2>
+        <p class="section-intro">
+          Once interest is established, the page can shift from explanation to atmosphere. These images help the site
+          feel more like a creative brand space and less like a utility landing page.
+        </p>
+        <div class="media-grid">
+          <article class="media-card">
+            <img src="/pic1.jpg" alt="PaintersGO visual sample one">
+            <h3>Atmospheric key visual</h3>
+            <p>Add brand tone and make the homepage feel like a showcase rather than only a feature list.</p>
+          </article>
+          <article class="media-card">
+            <img src="/pic2.jpg" alt="PaintersGO visual sample two">
+            <h3>Variation in rhythm</h3>
+            <p>Different framing and lighting keep the scrolling experience from feeling repetitive.</p>
+          </article>
+          <article class="media-card">
+            <img src="/pic3.jpg" alt="PaintersGO visual sample three">
+            <h3>Creative extension</h3>
+            <p>Position PaintersGO as a creative medium, not just a tool with isolated features.</p>
+          </article>
+          <article class="media-card">
+            <img src="/logo.png" alt="PaintersGO logo">
+            <h3>Brand recognition</h3>
+            <p>Use the logo as a closing visual anchor so the page ends with a clean brand memory.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="showcase-section full-span" id="download">
+        <div class="download-strip">
+          <div>
+            <span class="section-kicker">Download</span>
+            <h2 class="section-title">Ready to try PaintersGO on your phone?</h2>
+            <p>
+              After visitors have seen the hero, watched the videos and browsed the visuals, this becomes the natural
+              next step instead of a sudden interruption.
+            </p>
+            <div class="download-meta">
+              <span>Android APK</span>
+              <span>About 8.4 MB</span>
+              <span>Install and try now</span>
+            </div>
+          </div>
+          <a class="cta-primary" href="/PaintersGO.apk">Download APK</a>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+{{- else }}
+{{- if (and site.Params.profileMode.enabled .IsHome) }}
+{{- partial "index_profile.html" . }}
+{{- else }}
+
+{{- if not .IsHome | and .Title }}
+<header class="page-header">
+  {{- partial "breadcrumbs.html" . }}
+  <h1>
+    {{ .Title }}
+    {{- if and (or (eq .Kind `term`) (eq .Kind `section`)) (.Param "ShowRssButtonInSectionTermList") }}
+    {{- with .OutputFormats.Get "rss" }}
+    <a href="{{ .RelPermalink }}" title="RSS" aria-label="RSS">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" height="23">
+        <path d="M4 11a9 9 0 0 1 9 9" />
+        <path d="M4 4a16 16 0 0 1 16 16" />
+        <circle cx="5" cy="19" r="1" />
+      </svg>
+    </a>
+    {{- end }}
+    {{- end }}
+  </h1>
+  {{- if .Description }}
+  <div class="post-description">
+    {{ .Description | markdownify }}
+  </div>
+  {{- end }}
+</header>
+{{- end }}
+
+{{- if .Content }}
+<div class="post-content">
+  {{- if not (.Param "disableAnchoredHeadings") }}
+  {{- partial "anchored_headings.html" .Content -}}
+  {{- else }}{{ .Content }}{{ end }}
+</div>
+{{- end }}
+
+{{- $pages := union .RegularPages .Sections }}
+
+{{- if .IsHome }}
+{{- $pages = where site.RegularPages "Type" "in" site.Params.mainSections }}
+{{- $pages = where $pages "Params.hiddenInHomeList" "!=" "true"  }}
+{{- end }}
+
+{{- $paginator := .Paginate $pages }}
+
+{{- if and .IsHome site.Params.homeInfoParams (eq $paginator.PageNumber 1) }}
+{{- partial "home_info.html" . }}
+{{- end }}
+
+{{- $term := .Data.Term }}
+{{- range $index, $page := $paginator.Pages }}
+
+{{- $class := "post-entry" }}
+
+{{- $user_preferred := or site.Params.disableSpecial1stPost site.Params.homeInfoParams }}
+{{- if (and $.IsHome (eq $paginator.PageNumber 1) (eq $index 0) (not $user_preferred)) }}
+{{- $class = "first-entry" }}
+{{- else if $term }}
+{{- $class = "post-entry tag-entry" }}
+{{- end }}
+
+<article class="{{ $class }}">
+  {{- $isHidden := (.Param "cover.hiddenInList") | default (.Param "cover.hidden") | default false }}
+  {{- partial "cover.html" (dict "cxt" . "IsSingle" false "isHidden" $isHidden) }}
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">
+      {{- .Title }}
+      {{- if .Draft }}
+      <span class="entry-hint" title="Draft">
+        <svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" fill="currentColor">
+          <path
+            d="M160-410v-60h300v60H160Zm0-165v-60h470v60H160Zm0-165v-60h470v60H160Zm360 580v-123l221-220q9-9 20-13t22-4q12 0 23 4.5t20 13.5l37 37q9 9 13 20t4 22q0 11-4.5 22.5T862.09-380L643-160H520Zm300-263-37-37 37 37ZM580-220h38l121-122-18-19-19-18-122 121v38Zm141-141-19-18 37 37-18-19Z" />
+        </svg>
+      </span>
+      {{- end }}
+    </h2>
+  </header>
+  {{- if (ne (.Param "hideSummary") true) }}
+  <div class="entry-content">
+    <p>{{ .Summary | plainify | htmlUnescape }}{{ if .Truncated }}...{{ end }}</p>
+  </div>
+  {{- end }}
+  {{- if not (.Param "hideMeta") }}
+  <footer class="entry-footer">
+    {{- partial "post_meta.html" . -}}
+  </footer>
+  {{- end }}
+  <a class="entry-link" aria-label="post link to {{ .Title | plainify }}" href="{{ .Permalink }}"></a>
+</article>
+{{- end }}
+
+{{- if gt $paginator.TotalPages 1 }}
+<footer class="page-footer">
+  <nav class="pagination">
+    {{- if $paginator.HasPrev }}
+    <a class="prev" href="{{ $paginator.Prev.URL | absURL }}">
+      芦&nbsp;{{ i18n "prev_page" }}&nbsp;
+      {{- if (.Param "ShowPageNums") }}
+      {{- sub $paginator.PageNumber 1 }}/{{ $paginator.TotalPages }}
+      {{- end }}
+    </a>
+    {{- end }}
+    {{- if $paginator.HasNext }}
+    <a class="next" href="{{ $paginator.Next.URL | absURL }}">
+      {{- i18n "next_page" }}&nbsp;
+      {{- if (.Param "ShowPageNums") }}
+      {{- add 1 $paginator.PageNumber }}/{{ $paginator.TotalPages }}
+      {{- end }}&nbsp;禄
+    </a>
+    {{- end }}
+  </nav>
+</footer>
+{{- end }}
+
+{{- end }}
+{{- end }}
+
+{{- end }}
