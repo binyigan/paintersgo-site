@@ -8,6 +8,20 @@
         <span class="hero-badge">{{ i18n "hero_badge" }}</span>
         <h1 class="world-title">{{ i18n "hero_title" }}</h1>
         <p class="world-subtitle">{{ i18n "hero_subtitle" }}</p>
+        <div class="world-stats">
+          <div class="world-stat">
+            <strong>5</strong>
+            <span>interactive zones</span>
+          </div>
+          <div class="world-stat">
+            <strong>3D</strong>
+            <span>spatial narrative</span>
+          </div>
+          <div class="world-stat">
+            <strong>APK</strong>
+            <span>launch-ready path</span>
+          </div>
+        </div>
         <div class="hero-actions">
           <a class="cta-primary" href="#world-modules">{{ i18n "hero_secondary_cta" }}</a>
           <a class="cta-secondary" href="#download">{{ i18n "hero_primary_cta" }}</a>
@@ -30,13 +44,24 @@
 
       <div class="world-viewport-shell">
         <div class="world-viewport">
+          <div class="world-ambient world-ambient-a"></div>
+          <div class="world-ambient world-ambient-b"></div>
           <canvas class="world-canvas" data-world-canvas aria-label="PaintersGO immersive 3D world"></canvas>
           <div class="world-hud">
-            <button class="world-hotspot is-active hotspot-overview" type="button" data-world-target="overview">01</button>
-            <button class="world-hotspot hotspot-ar" type="button" data-world-target="ar">02</button>
-            <button class="world-hotspot hotspot-motion" type="button" data-world-target="motion">03</button>
-            <button class="world-hotspot hotspot-screens" type="button" data-world-target="screens">04</button>
-            <button class="world-hotspot hotspot-download" type="button" data-world-target="download">05</button>
+            <button class="world-hotspot is-active hotspot-overview" type="button" data-world-target="overview"><span>01</span><em>Core</em></button>
+            <button class="world-hotspot hotspot-ar" type="button" data-world-target="ar"><span>02</span><em>AR</em></button>
+            <button class="world-hotspot hotspot-motion" type="button" data-world-target="motion"><span>03</span><em>Motion</em></button>
+            <button class="world-hotspot hotspot-screens" type="button" data-world-target="screens"><span>04</span><em>Gallery</em></button>
+            <button class="world-hotspot hotspot-download" type="button" data-world-target="download"><span>05</span><em>Launch</em></button>
+          </div>
+          <div class="world-stage-card" data-world-stage-card>
+            <span class="section-kicker" data-world-stage-kicker>{{ i18n "product_kicker" }}</span>
+            <h2 data-world-stage-title>{{ i18n "product_title" }}</h2>
+            <p data-world-stage-body>{{ i18n "product_intro" }}</p>
+            <div class="world-stage-card-actions">
+              <button class="world-stage-jump" type="button" data-world-target="overview">Open Module</button>
+              <a class="world-stage-link" href="#world-modules">Details</a>
+            </div>
           </div>
           <div class="world-status">
             <span>3D World Active</span>
@@ -48,15 +73,53 @@
     </section>
 
     <section class="world-modules" id="world-modules">
-      <div class="world-module-nav">
-        <button class="world-module-chip is-active" type="button" data-world-target="overview">Overview Core</button>
-        <button class="world-module-chip" type="button" data-world-target="ar">AR Pavilion</button>
-        <button class="world-module-chip" type="button" data-world-target="motion">Motion Theater</button>
-        <button class="world-module-chip" type="button" data-world-target="screens">Visual Gallery</button>
-        <button class="world-module-chip" type="button" data-world-target="download">Launch Pad</button>
+      <div class="world-modules-head">
+        <div>
+          <span class="section-kicker">{{ i18n "nav_gallery" }}</span>
+          <h2 class="section-title">Interactive Module Deck</h2>
+          <p class="section-intro">Each zone in the 3D world maps to a focused panel here, so visitors can move between spatial exploration and clear product detail without losing context.</p>
+        </div>
+        <div class="world-modules-pills">
+          <span>Keyboard ready</span>
+          <span>Touch-friendly targets</span>
+          <span>Scene-linked content</span>
+        </div>
       </div>
 
-      <div class="world-module-panels">
+      <div class="world-modules-layout">
+        <div class="world-module-nav" role="tablist" aria-label="World modules">
+          <button class="world-module-chip is-active" type="button" data-world-target="overview">
+            <strong>Overview Core</strong>
+            <span>Brand story, first-screen value, and product framing.</span>
+          </button>
+          <button class="world-module-chip" type="button" data-world-target="ar">
+            <strong>AR Pavilion</strong>
+            <span>Spatial identity, real-world overlay, and memory anchor.</span>
+          </button>
+          <button class="world-module-chip" type="button" data-world-target="motion">
+            <strong>Motion Theater</strong>
+            <span>Demo video flow, usage rhythm, and scenario narrative.</span>
+          </button>
+          <button class="world-module-chip" type="button" data-world-target="screens">
+            <strong>Visual Gallery</strong>
+            <span>Interface proof, transitions, 3D effect, and outcomes.</span>
+          </button>
+          <button class="world-module-chip" type="button" data-world-target="download">
+            <strong>Launch Pad</strong>
+            <span>Conversion step, APK handoff, and try-now action.</span>
+          </button>
+        </div>
+
+        <div class="world-module-drawer" data-world-drawer>
+        <div class="world-module-drawer-backdrop" data-world-close></div>
+        <div class="world-module-panels">
+        <div class="world-drawer-head">
+          <div>
+            <span class="section-kicker" data-world-drawer-kicker>{{ i18n "product_kicker" }}</span>
+            <h2 class="section-title" data-world-drawer-title>{{ i18n "product_title" }}</h2>
+          </div>
+          <button class="world-drawer-close" type="button" aria-label="Close module" data-world-close>Close</button>
+        </div>
         <article class="world-panel is-active" data-world-panel="overview">
           <div class="world-panel-media">
             <img src="/background.jpg" alt="PaintersGO overview scene">
@@ -187,6 +250,8 @@
             </div>
           </div>
         </article>
+        </div>
+        </div>
       </div>
     </section>
 

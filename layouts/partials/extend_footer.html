@@ -7,15 +7,51 @@
     const stage = document.getElementById("showroom-world");
     const controls = Array.from(document.querySelectorAll("[data-world-target]"));
     const panels = Array.from(document.querySelectorAll("[data-world-panel]"));
+    const stageCard = document.querySelector("[data-world-stage-card]");
+    const stageKicker = document.querySelector("[data-world-stage-kicker]");
+    const stageTitle = document.querySelector("[data-world-stage-title]");
+    const stageBody = document.querySelector("[data-world-stage-body]");
+    const drawer = document.querySelector("[data-world-drawer]");
+    const drawerTitle = document.querySelector("[data-world-drawer-title]");
+    const drawerKicker = document.querySelector("[data-world-drawer-kicker]");
+    const closeControls = Array.from(document.querySelectorAll("[data-world-close]"));
     const gl = canvas.getContext("webgl", { antialias: true, alpha: true });
     if (!gl) return;
 
     const targets = {
-      overview: { yaw: -0.35, pitch: 0.18, distance: 12.4, target: [0, 1.3, 0] },
-      ar: { yaw: 0.82, pitch: 0.22, distance: 9.1, target: [4.1, 1.4, -1.4] },
-      motion: { yaw: -1.08, pitch: 0.2, distance: 9.4, target: [-4.2, 1.5, -1.1] },
-      screens: { yaw: 0.22, pitch: 0.14, distance: 9.0, target: [0.6, 1.6, 4.1] },
-      download: { yaw: 0.0, pitch: 0.12, distance: 7.6, target: [0, 1.15, 6.5] }
+      overview: { yaw: -0.48, pitch: 0.23, distance: 13.1, target: [0, 1.45, -0.2] },
+      ar: { yaw: 1.02, pitch: 0.25, distance: 8.3, target: [4.5, 1.75, -1.55] },
+      motion: { yaw: -1.2, pitch: 0.24, distance: 8.7, target: [-4.45, 1.75, -1.2] },
+      screens: { yaw: 0.3, pitch: 0.18, distance: 8.35, target: [0.9, 1.7, 4.6] },
+      download: { yaw: 0.02, pitch: 0.14, distance: 7.1, target: [0, 1.2, 6.8] }
+    };
+
+    const copy = {
+      overview: {
+        kicker: "Product Value",
+        title: "Enter the product core",
+        body: "This zone frames PaintersGO as a spatial product story instead of a flat asset page. Start here, then branch into AR, motion, and results."
+      },
+      ar: {
+        kicker: "AR Pavilion",
+        title: "Focus the immersive differentiator",
+        body: "AR becomes a distinct destination in the world, making the spatial layer feel intentional and memorable instead of buried in a long page."
+      },
+      motion: {
+        kicker: "Motion Theater",
+        title: "Show process with movement",
+        body: "Visitors can orbit into the demo zone, then open the motion panel to understand pacing, interaction flow, and real usage feeling."
+      },
+      screens: {
+        kicker: "Visual Gallery",
+        title: "Turn screenshots into evidence",
+        body: "The gallery zone is positioned as a proof layer: interface, transition, 3D effect, and output all support the product narrative."
+      },
+      download: {
+        kicker: "Launch Pad",
+        title: "End the journey with action",
+        body: "The final zone behaves like a launch platform, so download feels like a natural destination after exploration rather than an abrupt CTA."
+      }
     };
 
     const cloneView = (view) => ({ ...view, target: [...view.target] });
@@ -34,17 +70,48 @@
     let drag = null;
     let lastManualAt = 0;
     let scrollProgress = 0;
+    let drawerOpen = false;
 
-    const setActive = (name, manual = false) => {
+    const setActive = (name, manual = false, options = {}) => {
+      const { openDrawer = false } = options;
       activeTarget = name in targets ? name : "overview";
       desiredView = cloneView(targets[activeTarget]);
       controls.forEach((element) => {
-        element.classList.toggle("is-active", element.dataset.worldTarget === activeTarget);
+        const active = element.dataset.worldTarget === activeTarget;
+        element.classList.toggle("is-active", active);
+        element.setAttribute("aria-pressed", active ? "true" : "false");
       });
       panels.forEach((panel) => {
         panel.classList.toggle("is-active", panel.dataset.worldPanel === activeTarget);
       });
-      if (manual) lastManualAt = performance.now();
+      if (stageKicker && stageTitle && stageBody) {
+        const nextCopy = copy[activeTarget];
+        stageKicker.textContent = nextCopy.kicker;
+        stageTitle.textContent = nextCopy.title;
+        stageBody.textContent = nextCopy.body;
+        if (drawerTitle && drawerKicker) {
+          drawerTitle.textContent = nextCopy.title;
+          drawerKicker.textContent = nextCopy.kicker;
+        }
+      }
+      if (stageCard) {
+        stageCard.dataset.worldStage = activeTarget;
+      }
+      if (openDrawer && drawer) {
+        drawer.classList.add("is-open");
+        drawerOpen = true;
+        document.body.style.overflow = "hidden";
+      }
+      if (manual) {
+        lastManualAt = performance.now();
+      }
+    };
+
+    const closeDrawer = () => {
+      if (!drawer) return;
+      drawer.classList.remove("is-open");
+      drawerOpen = false;
+      document.body.style.overflow = "";
     };
 
     const sceneTrack = ["overview", "ar", "motion", "screens", "download"];
@@ -58,33 +125,33 @@
       scrollProgress = clamp(passed / total, 0, 0.999);
       if (performance.now() - lastManualAt < 2200 || drag) return;
       const next = targetFromScroll(scrollProgress);
-      if (next !== activeTarget) setActive(next, false);
+      if (next !== activeTarget) {
+        setActive(next, false);
+      }
     };
 
     controls.forEach((element) => {
-      element.addEventListener("click", () => setActive(element.dataset.worldTarget, true));
+      element.addEventListener("click", () => setActive(element.dataset.worldTarget, true, { openDrawer: true }));
     });
 
-    const vertexSource = `
-      attribute vec3 position;
-      attribute vec3 color;
-      uniform mat4 uProjection;
-      uniform mat4 uView;
-      uniform mat4 uModel;
-      varying vec3 vColor;
-      void main() {
-        vColor = color;
-        gl_Position = uProjection * uView * uModel * vec4(position, 1.0);
-      }
-    `;
+    closeControls.forEach((element) => {
+      element.addEventListener("click", closeDrawer);
+    });
 
-    const fragmentSource = `
-      precision mediump float;
-      varying vec3 vColor;
-      void main() {
-        gl_FragColor = vec4(vColor, 1.0);
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawerOpen) {
+        closeDrawer();
+        return;
       }
-    `;
+      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+      const index = sceneTrack.indexOf(activeTarget);
+      const nextIndex = event.key === "ArrowRight"
+        ? Math.min(sceneTrack.length - 1, index + 1)
+        : Math.max(0, index - 1);
+      if (nextIndex !== index) {
+        setActive(sceneTrack[nextIndex], true, { openDrawer: drawerOpen });
+      }
+    });
 
     const compileShader = (type, source) => {
       const shader = gl.createShader(type);
@@ -98,23 +165,83 @@
       return shader;
     };
 
-    const program = gl.createProgram();
-    const vertexShader = compileShader(gl.VERTEX_SHADER, vertexSource);
-    const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
-    if (!vertexShader || !fragmentShader) return;
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error(gl.getProgramInfoLog(program));
-      return;
-    }
+    const buildProgram = (vertexSource, fragmentSource) => {
+      const program = gl.createProgram();
+      const vertexShader = compileShader(gl.VERTEX_SHADER, vertexSource);
+      const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
+      if (!vertexShader || !fragmentShader) return null;
+      gl.attachShader(program, vertexShader);
+      gl.attachShader(program, fragmentShader);
+      gl.linkProgram(program);
+      if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        console.error(gl.getProgramInfoLog(program));
+        return null;
+      }
+      return program;
+    };
 
-    const positionLocation = gl.getAttribLocation(program, "position");
-    const colorLocation = gl.getAttribLocation(program, "color");
-    const projectionLocation = gl.getUniformLocation(program, "uProjection");
-    const viewLocation = gl.getUniformLocation(program, "uView");
-    const modelLocation = gl.getUniformLocation(program, "uModel");
+    const colorProgram = buildProgram(
+      `
+        attribute vec3 position;
+        attribute vec3 color;
+        uniform mat4 uProjection;
+        uniform mat4 uView;
+        uniform mat4 uModel;
+        varying vec3 vColor;
+        void main() {
+          vColor = color;
+          gl_Position = uProjection * uView * uModel * vec4(position, 1.0);
+        }
+      `,
+      `
+        precision mediump float;
+        varying vec3 vColor;
+        void main() {
+          gl_FragColor = vec4(vColor, 1.0);
+        }
+      `
+    );
+
+    const textureProgram = buildProgram(
+      `
+        attribute vec3 position;
+        attribute vec2 uv;
+        uniform mat4 uProjection;
+        uniform mat4 uView;
+        uniform mat4 uModel;
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = uProjection * uView * uModel * vec4(position, 1.0);
+        }
+      `,
+      `
+        precision mediump float;
+        varying vec2 vUv;
+        uniform sampler2D uTexture;
+        uniform float uOpacity;
+        void main() {
+          vec4 tex = texture2D(uTexture, vUv);
+          gl_FragColor = vec4(tex.rgb, tex.a * uOpacity);
+        }
+      `
+    );
+
+    if (!colorProgram || !textureProgram) return;
+
+    const positionLocation = gl.getAttribLocation(colorProgram, "position");
+    const colorLocation = gl.getAttribLocation(colorProgram, "color");
+    const projectionLocation = gl.getUniformLocation(colorProgram, "uProjection");
+    const viewLocation = gl.getUniformLocation(colorProgram, "uView");
+    const modelLocation = gl.getUniformLocation(colorProgram, "uModel");
+
+    const texturePositionLocation = gl.getAttribLocation(textureProgram, "position");
+    const textureUvLocation = gl.getAttribLocation(textureProgram, "uv");
+    const textureProjectionLocation = gl.getUniformLocation(textureProgram, "uProjection");
+    const textureViewLocation = gl.getUniformLocation(textureProgram, "uView");
+    const textureModelLocation = gl.getUniformLocation(textureProgram, "uModel");
+    const textureSamplerLocation = gl.getUniformLocation(textureProgram, "uTexture");
+    const textureOpacityLocation = gl.getUniformLocation(textureProgram, "uOpacity");
 
     const multiply = (a, b) => {
       const out = new Float32Array(16);
@@ -199,7 +326,8 @@
 
     const planeData = () => ({
       positions: new Float32Array([-0.5,-0.5,0, 0.5,-0.5,0, 0.5,0.5,0, -0.5,0.5,0]),
-      indices: new Uint16Array([0,1,2,0,2,3])
+      indices: new Uint16Array([0,1,2,0,2,3]),
+      uvs: new Float32Array([0,1, 1,1, 1,0, 0,0])
     });
 
     const gridData = (lines = 18, size = 10) => {
@@ -243,9 +371,63 @@
       return mesh;
     };
 
+    const createTextureMesh = (geometry) => {
+      const mesh = {
+        position: gl.createBuffer(),
+        uv: gl.createBuffer(),
+        index: gl.createBuffer(),
+        mode: gl.TRIANGLES,
+        count: geometry.indices.length
+      };
+      gl.bindBuffer(gl.ARRAY_BUFFER, mesh.position);
+      gl.bufferData(gl.ARRAY_BUFFER, geometry.positions, gl.STATIC_DRAW);
+      gl.bindBuffer(gl.ARRAY_BUFFER, mesh.uv);
+      gl.bufferData(gl.ARRAY_BUFFER, geometry.uvs, gl.STATIC_DRAW);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.index);
+      gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, geometry.indices, gl.STATIC_DRAW);
+      return mesh;
+    };
+
+    const createSolidTexture = (rgba) => {
+      const texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE, new Uint8Array(rgba));
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      return texture;
+    };
+
+    const loadTexture = (url, fallback) => {
+      const texture = createSolidTexture(fallback);
+      const image = new Image();
+      image.decoding = "async";
+      image.crossOrigin = "anonymous";
+      image.onload = () => {
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      };
+      image.src = url;
+      return texture;
+    };
+
     const cube = createMesh(cubeData(), [0.93, 0.54, 0.22], gl.TRIANGLES);
     const plane = createMesh(planeData(), [0.98, 0.84, 0.68], gl.TRIANGLES);
     const grid = createMesh(gridData(), [1.0, 0.6, 0.28], gl.LINES);
+    const texturedPlane = createTextureMesh(planeData());
+    const textures = {
+      overview: loadTexture("/background.jpg", [46, 26, 20, 255]),
+      ar: loadTexture("/AR.png", [64, 30, 20, 255]),
+      motion: loadTexture("/o2o1.png", [38, 28, 24, 255]),
+      screens: loadTexture("/video-to-3d1.png", [30, 24, 30, 255]),
+      download: loadTexture("/logo.png", [28, 18, 16, 255])
+    };
 
     const bindMesh = (mesh) => {
       gl.bindBuffer(gl.ARRAY_BUFFER, mesh.position);
@@ -262,6 +444,26 @@
       gl.uniformMatrix4fv(modelLocation, false, model);
       if (mesh.index) gl.drawElements(mesh.mode, mesh.count, gl.UNSIGNED_SHORT, 0);
       else gl.drawArrays(mesh.mode, 0, mesh.count);
+    };
+
+    const bindTextureMesh = (mesh) => {
+      gl.bindBuffer(gl.ARRAY_BUFFER, mesh.position);
+      gl.vertexAttribPointer(texturePositionLocation, 3, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(texturePositionLocation);
+      gl.bindBuffer(gl.ARRAY_BUFFER, mesh.uv);
+      gl.vertexAttribPointer(textureUvLocation, 2, gl.FLOAT, false, 0, 0);
+      gl.enableVertexAttribArray(textureUvLocation);
+      gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.index);
+    };
+
+    const drawTextureMesh = (mesh, model, texture, opacity) => {
+      bindTextureMesh(mesh);
+      gl.uniformMatrix4fv(textureModelLocation, false, model);
+      gl.uniform1f(textureOpacityLocation, opacity);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, texture);
+      gl.uniform1i(textureSamplerLocation, 0);
+      gl.drawElements(mesh.mode, mesh.count, gl.UNSIGNED_SHORT, 0);
     };
 
     const onPointerDown = (event) => {
@@ -307,7 +509,7 @@
       const guided = idleFor < 2200 || drag ? desiredView : {
         yaw: autoView.yaw,
         pitch: autoView.pitch + scrollProgress * 0.05,
-        distance: autoView.distance - scrollProgress * 0.55,
+        distance: autoView.distance - scrollProgress * 0.58,
         target: [
           autoView.target[0],
           autoView.target[1] + scrollProgress * 0.18,
@@ -321,10 +523,11 @@
       currentView.target = currentView.target.map((value, index) => lerp(value, guided.target[index], 0.06));
 
       const orbit = time * 0.00022;
+      const pulse = 1 + Math.sin(time * 0.0036) * 0.028;
       const eye = [
-        currentView.target[0] + Math.sin(currentView.yaw + orbit * 0.22) * currentView.distance,
-        currentView.target[1] + Math.sin(currentView.pitch) * currentView.distance * 0.72 + 2.4,
-        currentView.target[2] + Math.cos(currentView.yaw + orbit * 0.22) * currentView.distance
+        currentView.target[0] + Math.sin(currentView.yaw + orbit * 0.18) * currentView.distance,
+        currentView.target[1] + Math.sin(currentView.pitch) * currentView.distance * 0.74 + 2.35,
+        currentView.target[2] + Math.cos(currentView.yaw + orbit * 0.18) * currentView.distance
       ];
 
       const projection = perspective(Math.PI / 3.3, canvas.width / canvas.height, 0.1, 140);
@@ -334,7 +537,10 @@
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       gl.enable(gl.DEPTH_TEST);
       gl.enable(gl.CULL_FACE);
-      gl.useProgram(program);
+      gl.enable(gl.BLEND);
+      gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+      gl.useProgram(colorProgram);
       gl.uniformMatrix4fv(projectionLocation, false, projection);
       gl.uniformMatrix4fv(viewLocation, false, view);
 
@@ -345,16 +551,27 @@
       drawMesh(cube, compose(5.2, 1.95, -0.8, 0, 0, 0.18, 3.7, 6.2));
       drawMesh(cube, compose(0, 2.0, 6.8, 0, 0, 6.5, 3.4, 0.18));
 
-      drawMesh(cube, compose(0, 0.4, 0.4, 0, orbit * 1.8, 2.2, 0.65, 2.2));
-      drawMesh(cube, compose(4.05, 0.95, -1.4, 0, -0.55, 1.7, 1.8, 1.4));
-      drawMesh(cube, compose(-4.15, 1.0, -1.2, 0, 0.55, 1.8, 1.8, 1.2));
-      drawMesh(cube, compose(0.8, 0.95, 4.0, 0, Math.PI, 2.5, 1.9, 0.9));
-      drawMesh(cube, compose(0, 0.9, 6.3, 0, 0, 1.9, 1.7, 1.9));
+      drawMesh(cube, compose(0, 0.4, 0.4, 0, orbit * 1.8, activeTarget === "overview" ? 2.2 * pulse : 2.2, 0.65, activeTarget === "overview" ? 2.2 * pulse : 2.2));
+      drawMesh(cube, compose(4.05, 0.95, -1.4, 0, -0.55, activeTarget === "ar" ? 1.7 * pulse : 1.7, 1.8, 1.4));
+      drawMesh(cube, compose(-4.15, 1.0, -1.2, 0, 0.55, activeTarget === "motion" ? 1.8 * pulse : 1.8, 1.8, 1.2));
+      drawMesh(cube, compose(0.8, 0.95, 4.0, 0, Math.PI, activeTarget === "screens" ? 2.5 * pulse : 2.5, 1.9, 0.9));
+      drawMesh(cube, compose(0, 0.9, 6.3, 0, 0, activeTarget === "download" ? 1.9 * pulse : 1.9, 1.7, 1.9));
 
       drawMesh(plane, compose(0, 2.0, -5.05, 0.04, 0, 4.4, 2.4, 1));
       drawMesh(plane, compose(-5.05, 2.0, -0.8, 0.04, Math.PI / 2, 3.5, 2.2, 1));
       drawMesh(plane, compose(5.05, 2.0, -0.8, 0.04, -Math.PI / 2, 3.5, 2.2, 1));
       drawMesh(plane, compose(0.8, 1.85, 6.55, -0.03, Math.PI, 3.9, 2.3, 1));
+
+      gl.useProgram(textureProgram);
+      gl.uniformMatrix4fv(textureProjectionLocation, false, projection);
+      gl.uniformMatrix4fv(textureViewLocation, false, view);
+      gl.disable(gl.CULL_FACE);
+      drawTextureMesh(texturedPlane, compose(0, 2.02, -4.93, 0.04, 0, activeTarget === "overview" ? 4.28 * pulse : 4.28, activeTarget === "overview" ? 2.28 * pulse : 2.28, 1), textures.overview, activeTarget === "overview" ? 1 : 0.88);
+      drawTextureMesh(texturedPlane, compose(-4.93, 2.02, -0.8, 0.04, Math.PI / 2, activeTarget === "motion" ? 3.36 * pulse : 3.36, activeTarget === "motion" ? 2.08 * pulse : 2.08, 1), textures.motion, activeTarget === "motion" ? 1 : 0.88);
+      drawTextureMesh(texturedPlane, compose(4.93, 2.02, -0.8, 0.04, -Math.PI / 2, activeTarget === "ar" ? 3.36 * pulse : 3.36, activeTarget === "ar" ? 2.08 * pulse : 2.08, 1), textures.ar, activeTarget === "ar" ? 1 : 0.88);
+      drawTextureMesh(texturedPlane, compose(0.8, 1.88, 6.43, -0.03, Math.PI, activeTarget === "screens" ? 3.76 * pulse : 3.76, activeTarget === "screens" ? 2.18 * pulse : 2.18, 1), textures.screens, activeTarget === "screens" ? 1 : 0.9);
+      drawTextureMesh(texturedPlane, compose(0, 1.52, 6.72, -0.02, Math.PI, activeTarget === "download" ? 1.72 * pulse : 1.72, activeTarget === "download" ? 1.72 * pulse : 1.72, 1), textures.download, activeTarget === "download" ? 1 : 0.94);
+      gl.enable(gl.CULL_FACE);
 
       requestAnimationFrame(draw);
     };

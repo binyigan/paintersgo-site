@@ -108,6 +108,34 @@
     line-height: 1.85;
   }
 
+  .world-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .world-stat {
+    padding: 14px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 145, 74, 0.14);
+    background: rgba(255, 255, 255, 0.74);
+    box-shadow: 0 12px 28px rgba(57, 29, 11, 0.05);
+  }
+
+  .world-stat strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #a44a08;
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+
+  .world-stat span {
+    color: var(--secondary);
+    font-size: 0.92rem;
+    line-height: 1.55;
+  }
+
   .hero-actions {
     display: flex;
     flex-wrap: wrap;
@@ -205,6 +233,30 @@
     box-shadow: 0 30px 80px rgba(22, 11, 6, 0.3);
   }
 
+  .world-ambient {
+    position: absolute;
+    border-radius: 999px;
+    pointer-events: none;
+    filter: blur(8px);
+    opacity: 0.8;
+  }
+
+  .world-ambient-a {
+    top: -6%;
+    right: 8%;
+    width: 240px;
+    height: 240px;
+    background: radial-gradient(circle, rgba(255, 166, 73, 0.28), transparent 72%);
+  }
+
+  .world-ambient-b {
+    bottom: 10%;
+    left: -4%;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(255, 111, 61, 0.18), transparent 72%);
+  }
+
   .world-canvas {
     display: block;
     width: 100%;
@@ -239,8 +291,11 @@
 
   .world-hotspot {
     position: absolute;
-    width: 52px;
-    height: 52px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 52px;
+    padding: 8px 12px;
     border-radius: 999px;
     border: 1px solid rgba(255, 236, 221, 0.2);
     background: rgba(255, 248, 240, 0.14);
@@ -250,6 +305,25 @@
     box-shadow: 0 12px 28px rgba(7, 4, 2, 0.28);
     pointer-events: auto;
     transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .world-hotspot span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.18);
+  }
+
+  .world-hotspot em {
+    font-style: normal;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.92;
   }
 
   .world-hotspot.is-active,
@@ -271,6 +345,69 @@
     background: rgba(255, 250, 245, 0.12);
   }
 
+  .world-stage-card {
+    position: absolute;
+    right: 22px;
+    bottom: 26px;
+    z-index: 2;
+    width: min(340px, calc(100% - 44px));
+    padding: 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 223, 198, 0.14);
+    background: linear-gradient(180deg, rgba(30, 20, 16, 0.78), rgba(17, 10, 8, 0.82));
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.26);
+    backdrop-filter: blur(18px);
+  }
+
+  .world-stage-card .section-kicker {
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffcb9a;
+  }
+
+  .world-stage-card h2 {
+    margin: 0 0 8px;
+    color: #fff2e7;
+    font-size: 1.4rem;
+    line-height: 1.15;
+  }
+
+  .world-stage-card p {
+    margin: 0;
+    color: rgba(255, 237, 223, 0.82);
+    line-height: 1.65;
+  }
+
+  .world-stage-card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+
+  .world-stage-jump,
+  .world-stage-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+  }
+
+  .world-stage-jump {
+    border: 1px solid rgba(255, 170, 104, 0.28);
+    background: linear-gradient(135deg, rgba(255, 122, 24, 0.92), rgba(255, 85, 48, 0.92));
+    color: #fff;
+  }
+
+  .world-stage-link {
+    border: 1px solid rgba(255, 235, 216, 0.16);
+    background: rgba(255, 255, 255, 0.06);
+    color: #fff3e8;
+  }
+
   .world-modules,
   .world-story-strip {
     padding: 28px;
@@ -281,28 +418,82 @@
     gap: 20px;
   }
 
-  .world-module-nav {
+  .world-modules-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: start;
+  }
+
+  .world-modules-pills {
     display: flex;
     flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .world-modules-pills span {
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255, 122, 24, 0.08);
+    color: #964200;
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+
+  .world-modules-layout {
+    display: grid;
+    grid-template-columns: minmax(240px, 0.34fr) minmax(0, 0.66fr);
+    gap: 18px;
+    align-items: start;
+  }
+
+  .world-module-nav {
+    position: sticky;
+    top: 100px;
+    display: grid;
     gap: 12px;
   }
 
   .world-module-chip {
-    padding: 12px 16px;
-    border-radius: 999px;
+    display: grid;
+    gap: 6px;
+    padding: 16px;
+    border-radius: 22px;
+    text-align: left;
     color: #723913;
     font-weight: 700;
     transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
   }
 
+  .world-module-chip strong {
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .world-module-chip span {
+    color: var(--secondary);
+    font-size: 0.92rem;
+    font-weight: 500;
+    line-height: 1.55;
+  }
+
   .world-module-panels {
     position: relative;
-    min-height: 620px;
+    z-index: 2;
+    width: min(980px, calc(100vw - 72px));
+    max-height: min(86vh, 920px);
+    padding: 24px;
+    border-radius: 28px;
+    border: 1px solid rgba(255, 214, 187, 0.16);
+    background: linear-gradient(180deg, rgba(255, 253, 249, 0.97), rgba(255, 247, 239, 0.95));
+    box-shadow: 0 32px 90px rgba(13, 8, 5, 0.26);
+    overflow: auto;
   }
 
   .world-panel {
     position: absolute;
-    inset: 0;
+    inset: 92px 24px 24px;
     display: grid;
     grid-template-columns: minmax(0, 0.52fr) minmax(0, 0.48fr);
     gap: 22px;
@@ -310,6 +501,56 @@
     transform: translateY(16px);
     pointer-events: none;
     transition: opacity 0.28s ease, transform 0.28s ease;
+  }
+
+  .world-module-drawer {
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    display: grid;
+    place-items: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+  }
+
+  .world-module-drawer.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .world-module-drawer-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 10, 6, 0.42);
+    backdrop-filter: blur(10px);
+  }
+
+  .world-drawer-head {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 16px;
+    padding-right: 68px;
+  }
+
+  .world-drawer-close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 56px;
+    height: 44px;
+    padding: 0 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 145, 74, 0.16);
+    background: rgba(255, 255, 255, 0.92);
+    color: #723913;
+    font-weight: 700;
   }
 
   .world-panel.is-active {
@@ -461,7 +702,9 @@
 
   @media (max-width: 1100px) {
     .world-stage,
-    .world-panel {
+    .world-panel,
+    .world-modules-layout,
+    .world-modules-head {
       grid-template-columns: 1fr;
     }
 
@@ -470,23 +713,9 @@
       min-height: 72vh;
     }
 
-    .world-panel,
-    .world-panel.is-active {
+    .world-module-nav {
       position: relative;
-    }
-
-    .world-module-panels {
-      min-height: 0;
-      display: grid;
-      gap: 18px;
-    }
-
-    .world-panel {
-      display: none;
-    }
-
-    .world-panel.is-active {
-      display: grid;
+      top: auto;
     }
 
     .story-grid {
@@ -504,6 +733,10 @@
 
     .world-title {
       font-size: 2.35rem;
+    }
+
+    .world-stats {
+      grid-template-columns: 1fr;
     }
 
     .world-viewport {
@@ -535,10 +768,39 @@
       bottom: 14px;
     }
 
+    .world-stage-card {
+      right: 14px;
+      left: 14px;
+      bottom: 68px;
+      width: auto;
+      padding: 16px;
+    }
+
+    .world-stage-card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .world-module-panels {
+      width: min(100vw - 24px, 980px);
+      max-height: min(90vh, 920px);
+      padding: 16px;
+      border-radius: 22px;
+    }
+
+    .world-panel {
+      inset: 82px 16px 16px;
+      grid-template-columns: 1fr;
+    }
+
     .world-hotspot {
-      width: 44px;
-      height: 44px;
+      min-height: 44px;
+      padding: 7px 10px;
       font-size: 0.82rem;
+    }
+
+    .world-hotspot em {
+      display: none;
     }
   }
 </style>
