@@ -1,92 +1,69 @@
 {{- if .IsHome }}
 <script>
   (() => {
-    const shell = document.querySelector("[data-scene-shell]");
-    const stage = document.querySelector("[data-scene-stage]");
-    if (!shell || !stage) return;
-
-    const focusables = Array.from(document.querySelectorAll("[data-scene-focus]"));
-    const tabs = Array.from(document.querySelectorAll(".scene-tab"));
-    const setFocus = (name) => {
-      stage.dataset.sceneActive = name;
-      focusables.forEach((element) => {
-        const active = element.dataset.sceneFocus === name;
-        element.classList.toggle("is-active", active);
-        if (element.classList.contains("scene-tab")) {
-          element.setAttribute("aria-pressed", active ? "true" : "false");
-        }
-      });
-    };
-
-    const resetTilt = () => {
-      shell.style.setProperty("--scene-rotate-x", "0deg");
-      shell.style.setProperty("--scene-rotate-y", "0deg");
-      shell.style.setProperty("--scene-shift-x", "0px");
-      shell.style.setProperty("--scene-shift-y", "0px");
-    };
-
-    const updateTilt = (event) => {
-      const rect = shell.getBoundingClientRect();
-      const px = (event.clientX - rect.left) / rect.width;
-      const py = (event.clientY - rect.top) / rect.height;
-      const rotateY = (px - 0.5) * 16;
-      const rotateX = (0.5 - py) * 14;
-      shell.style.setProperty("--scene-rotate-x", rotateX.toFixed(2) + "deg");
-      shell.style.setProperty("--scene-rotate-y", rotateY.toFixed(2) + "deg");
-      shell.style.setProperty("--scene-shift-x", ((px - 0.5) * 26).toFixed(2) + "px");
-      shell.style.setProperty("--scene-shift-y", ((py - 0.5) * 22).toFixed(2) + "px");
-    };
-
-    focusables.forEach((element) => {
-      element.addEventListener("click", () => setFocus(element.dataset.sceneFocus));
-    });
-
-    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      shell.addEventListener("pointermove", updateTilt);
-      shell.addEventListener("pointerleave", resetTilt);
-    }
-
-    const mediaQuery = window.matchMedia("(max-width: 960px)");
-    const syncSmallScreenState = () => {
-      if (mediaQuery.matches && stage.dataset.sceneActive === "main") {
-        setFocus("ar");
-      } else if (!mediaQuery.matches && stage.dataset.sceneActive === "ar" && !tabs.some((tab) => tab.classList.contains("is-active") && tab.dataset.sceneFocus !== "ar")) {
-        setFocus("main");
-      }
-    };
-
-    if (typeof mediaQuery.addEventListener === "function") {
-      mediaQuery.addEventListener("change", syncSmallScreenState);
-    } else if (typeof mediaQuery.addListener === "function") {
-      mediaQuery.addListener(syncSmallScreenState);
-    }
-
-    setFocus("main");
-    syncSmallScreenState();
-  })();
-</script>
-
-<script>
-  (() => {
-    const canvas = document.querySelector("[data-showroom-canvas]");
+    const canvas = document.querySelector("[data-world-canvas]");
     if (!canvas) return;
 
-    const wrap = canvas.closest(".showroom-canvas-wrap");
-    const section = document.getElementById("showroom");
-    const focusables = Array.from(document.querySelectorAll("[data-showroom-focus]"));
-    const notes = Array.from(document.querySelectorAll("[data-showroom-panel]"));
-
-    const setPanel = (name) => {
-      focusables.forEach((element) => {
-        element.classList.toggle("is-active", element.dataset.showroomFocus === name);
-      });
-      notes.forEach((note) => {
-        note.classList.toggle("is-active", note.dataset.showroomPanel === name);
-      });
-    };
-
+    const stage = document.getElementById("showroom-world");
+    const controls = Array.from(document.querySelectorAll("[data-world-target]"));
+    const panels = Array.from(document.querySelectorAll("[data-world-panel]"));
     const gl = canvas.getContext("webgl", { antialias: true, alpha: true });
     if (!gl) return;
+
+    const targets = {
+      overview: { yaw: -0.35, pitch: 0.18, distance: 12.4, target: [0, 1.3, 0] },
+      ar: { yaw: 0.82, pitch: 0.22, distance: 9.1, target: [4.1, 1.4, -1.4] },
+      motion: { yaw: -1.08, pitch: 0.2, distance: 9.4, target: [-4.2, 1.5, -1.1] },
+      screens: { yaw: 0.22, pitch: 0.14, distance: 9.0, target: [0.6, 1.6, 4.1] },
+      download: { yaw: 0.0, pitch: 0.12, distance: 7.6, target: [0, 1.15, 6.5] }
+    };
+
+    const cloneView = (view) => ({ ...view, target: [...view.target] });
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+    const mixTarget = (from, to, amount) => ({
+      yaw: lerp(from.yaw, to.yaw, amount),
+      pitch: lerp(from.pitch, to.pitch, amount),
+      distance: lerp(from.distance, to.distance, amount),
+      target: from.target.map((value, index) => lerp(value, to.target[index], amount))
+    });
+
+    let activeTarget = "overview";
+    let currentView = cloneView(targets.overview);
+    let desiredView = cloneView(targets.overview);
+    let drag = null;
+    let lastManualAt = 0;
+    let scrollProgress = 0;
+
+    const setActive = (name, manual = false) => {
+      activeTarget = name in targets ? name : "overview";
+      desiredView = cloneView(targets[activeTarget]);
+      controls.forEach((element) => {
+        element.classList.toggle("is-active", element.dataset.worldTarget === activeTarget);
+      });
+      panels.forEach((panel) => {
+        panel.classList.toggle("is-active", panel.dataset.worldPanel === activeTarget);
+      });
+      if (manual) lastManualAt = performance.now();
+    };
+
+    const sceneTrack = ["overview", "ar", "motion", "screens", "download"];
+    const targetFromScroll = (progress) => sceneTrack[Math.min(sceneTrack.length - 1, Math.floor(progress * sceneTrack.length))];
+
+    const updateScroll = () => {
+      if (!stage) return;
+      const rect = stage.getBoundingClientRect();
+      const total = window.innerHeight + rect.height;
+      const passed = window.innerHeight - rect.top;
+      scrollProgress = clamp(passed / total, 0, 0.999);
+      if (performance.now() - lastManualAt < 2200 || drag) return;
+      const next = targetFromScroll(scrollProgress);
+      if (next !== activeTarget) setActive(next, false);
+    };
+
+    controls.forEach((element) => {
+      element.addEventListener("click", () => setActive(element.dataset.worldTarget, true));
+    });
 
     const vertexSource = `
       attribute vec3 position;
@@ -121,11 +98,10 @@
       return shader;
     };
 
+    const program = gl.createProgram();
     const vertexShader = compileShader(gl.VERTEX_SHADER, vertexSource);
     const fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentSource);
     if (!vertexShader || !fragmentShader) return;
-
-    const program = gl.createProgram();
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
@@ -170,13 +146,8 @@
       const len = Math.hypot(v[0], v[1], v[2]) || 1;
       return [v[0] / len, v[1] / len, v[2] / len];
     };
-
     const subtract = (a, b) => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
-    const cross = (a, b) => [
-      a[1] * b[2] - a[2] * b[1],
-      a[2] * b[0] - a[0] * b[2],
-      a[0] * b[1] - a[1] * b[0]
-    ];
+    const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
     const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 
     const lookAt = (eye, target, up) => {
@@ -191,107 +162,62 @@
       ]);
     };
 
-    const identity = () => new Float32Array([
-      1, 0, 0, 0,
-      0, 1, 0, 0,
-      0, 0, 1, 0,
-      0, 0, 0, 1
-    ]);
-
     const translation = (x, y, z) => new Float32Array([
       1, 0, 0, 0,
       0, 1, 0, 0,
       0, 0, 1, 0,
       x, y, z, 1
     ]);
-
     const rotationY = (a) => {
       const c = Math.cos(a);
       const s = Math.sin(a);
-      return new Float32Array([
-        c, 0, -s, 0,
-        0, 1, 0, 0,
-        s, 0, c, 0,
-        0, 0, 0, 1
-      ]);
+      return new Float32Array([c, 0, -s, 0, 0, 1, 0, 0, s, 0, c, 0, 0, 0, 0, 1]);
     };
-
     const rotationX = (a) => {
       const c = Math.cos(a);
       const s = Math.sin(a);
-      return new Float32Array([
-        1, 0, 0, 0,
-        0, c, s, 0,
-        0, -s, c, 0,
-        0, 0, 0, 1
-      ]);
+      return new Float32Array([1, 0, 0, 0, 0, c, s, 0, 0, -s, c, 0, 0, 0, 0, 1]);
     };
-
-    const scale = (x, y, z) => new Float32Array([
-      x, 0, 0, 0,
-      0, y, 0, 0,
-      0, 0, z, 0,
-      0, 0, 0, 1
-    ]);
-
-    const composeModel = (tx, ty, tz, rx, ry, sx, sy, sz) =>
+    const scale = (x, y, z) => new Float32Array([x, 0, 0, 0, 0, y, 0, 0, 0, 0, z, 0, 0, 0, 0, 1]);
+    const compose = (tx, ty, tz, rx, ry, sx, sy, sz) =>
       multiply(multiply(multiply(translation(tx, ty, tz), rotationY(ry)), rotationX(rx)), scale(sx, sy, sz));
 
-    const cubeData = () => {
-      const p = [
-        -0.5, -0.5,  0.5,  0.5, -0.5,  0.5,  0.5, 0.5,  0.5, -0.5, 0.5,  0.5,
-        -0.5, -0.5, -0.5, -0.5,  0.5, -0.5,  0.5, 0.5, -0.5,  0.5, -0.5, -0.5,
-        -0.5,  0.5, -0.5, -0.5,  0.5,  0.5,  0.5, 0.5,  0.5,  0.5, 0.5, -0.5,
-        -0.5, -0.5, -0.5,  0.5, -0.5, -0.5,  0.5,-0.5,  0.5, -0.5,-0.5,  0.5,
-         0.5, -0.5, -0.5,  0.5,  0.5, -0.5,  0.5, 0.5,  0.5,  0.5,-0.5,  0.5,
-        -0.5, -0.5, -0.5, -0.5, -0.5,  0.5, -0.5, 0.5,  0.5, -0.5, 0.5, -0.5
-      ];
-      const idx = [
-        0,1,2, 0,2,3, 4,5,6, 4,6,7, 8,9,10, 8,10,11,
-        12,13,14, 12,14,15, 16,17,18, 16,18,19, 20,21,22, 20,22,23
-      ];
-      return { positions: new Float32Array(p), indices: new Uint16Array(idx) };
-    };
-
-    const planeData = () => ({
+    const cubeData = () => ({
       positions: new Float32Array([
-        -0.5, -0.5, 0,
-         0.5, -0.5, 0,
-         0.5,  0.5, 0,
-        -0.5,  0.5, 0
+        -0.5,-0.5, 0.5, 0.5,-0.5, 0.5, 0.5, 0.5, 0.5, -0.5, 0.5, 0.5,
+        -0.5,-0.5,-0.5,-0.5, 0.5,-0.5, 0.5, 0.5,-0.5, 0.5,-0.5,-0.5,
+        -0.5, 0.5,-0.5,-0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5,-0.5,
+        -0.5,-0.5,-0.5, 0.5,-0.5,-0.5, 0.5,-0.5, 0.5,-0.5,-0.5, 0.5,
+         0.5,-0.5,-0.5, 0.5, 0.5,-0.5, 0.5, 0.5, 0.5, 0.5,-0.5, 0.5,
+        -0.5,-0.5,-0.5,-0.5,-0.5, 0.5,-0.5, 0.5, 0.5,-0.5, 0.5,-0.5
       ]),
-      indices: new Uint16Array([0, 1, 2, 0, 2, 3])
+      indices: new Uint16Array([
+        0,1,2,0,2,3,4,5,6,4,6,7,8,9,10,8,10,11,
+        12,13,14,12,14,15,16,17,18,16,18,19,20,21,22,20,22,23
+      ])
     });
 
-    const gridData = (lines = 18, size = 8) => {
+    const planeData = () => ({
+      positions: new Float32Array([-0.5,-0.5,0, 0.5,-0.5,0, 0.5,0.5,0, -0.5,0.5,0]),
+      indices: new Uint16Array([0,1,2,0,2,3])
+    });
+
+    const gridData = (lines = 18, size = 10) => {
       const positions = [];
       const colors = [];
       for (let i = -lines; i <= lines; i += 1) {
         const t = (i / lines) * size;
         positions.push(-size, 0, t, size, 0, t, t, 0, -size, t, 0, size);
         for (let j = 0; j < 4; j += 1) {
-          const strong = i === 0 ? 0.95 : 0.28;
-          colors.push(1.0, 0.62 * strong, 0.28 * strong);
+          const strong = i === 0 ? 0.95 : 0.24;
+          colors.push(1.0, 0.58 * strong, 0.24 * strong);
         }
       }
-      return {
-        positions: new Float32Array(positions),
-        colors: new Float32Array(colors)
-      };
+      return { positions: new Float32Array(positions), colors: new Float32Array(colors) };
     };
 
     const createMesh = (geometry, color, mode) => {
-      const vao = {
-        position: gl.createBuffer(),
-        color: gl.createBuffer(),
-        index: geometry.indices ? gl.createBuffer() : null,
-        mode,
-        count: geometry.indices ? geometry.indices.length : geometry.positions.length / 3
-      };
-      gl.bindBuffer(gl.ARRAY_BUFFER, vao.position);
-      gl.bufferData(gl.ARRAY_BUFFER, geometry.positions, gl.STATIC_DRAW);
-      gl.bindBuffer(gl.ARRAY_BUFFER, vao.color);
-      const colorData = geometry.colors || new Float32Array((geometry.positions.length / 3) * 3).map((_, i) => color[i % 3]);
+      const colorData = geometry.colors || new Float32Array((geometry.positions.length / 3) * 3);
       if (!geometry.colors) {
         for (let i = 0; i < colorData.length; i += 3) {
           colorData[i] = color[0];
@@ -299,110 +225,27 @@
           colorData[i + 2] = color[2];
         }
       }
+      const mesh = {
+        position: gl.createBuffer(),
+        color: gl.createBuffer(),
+        index: geometry.indices ? gl.createBuffer() : null,
+        mode,
+        count: geometry.indices ? geometry.indices.length : geometry.positions.length / 3
+      };
+      gl.bindBuffer(gl.ARRAY_BUFFER, mesh.position);
+      gl.bufferData(gl.ARRAY_BUFFER, geometry.positions, gl.STATIC_DRAW);
+      gl.bindBuffer(gl.ARRAY_BUFFER, mesh.color);
       gl.bufferData(gl.ARRAY_BUFFER, colorData, gl.STATIC_DRAW);
       if (geometry.indices) {
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, vao.index);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, mesh.index);
         gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, geometry.indices, gl.STATIC_DRAW);
       }
-      return vao;
+      return mesh;
     };
 
-    const cube = createMesh(cubeData(), [0.95, 0.62, 0.24], gl.TRIANGLES);
-    const plane = createMesh(planeData(), [0.97, 0.85, 0.68], gl.TRIANGLES);
-    const grid = createMesh(gridData(), [1, 0.6, 0.28], gl.LINES);
-
-    const presets = {
-      overview: { yaw: -0.35, pitch: 0.24, distance: 9.8, target: [0, 1.2, 0] },
-      ar: { yaw: 0.85, pitch: 0.18, distance: 7.6, target: [2.7, 1.8, -1.2] },
-      motion: { yaw: -1.0, pitch: 0.2, distance: 8.0, target: [-2.8, 1.7, -1.4] },
-      results: { yaw: 0.3, pitch: 0.1, distance: 7.4, target: [0, 1.4, 2.4] }
-    };
-
-    let currentFocus = { ...presets.overview };
-    let targetFocus = { ...presets.overview };
-    let drag = null;
-    let autoSpin = 0;
-    let scrollProgress = 0;
-    let lastManualFocusAt = 0;
-    let currentPanel = "overview";
-
-    const cloneFocus = (focus) => ({ ...focus, target: [...focus.target] });
-    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-    const mixFocus = (from, to, amount) => ({
-      yaw: lerp(from.yaw, to.yaw, amount),
-      pitch: lerp(from.pitch, to.pitch, amount),
-      distance: lerp(from.distance, to.distance, amount),
-      target: from.target.map((value, index) => lerp(value, to.target[index], amount))
-    });
-
-    const applyFocus = (name, source = "auto") => {
-      const preset = presets[name] || presets.overview;
-      currentPanel = name;
-      targetFocus = cloneFocus(preset);
-      setPanel(name);
-      if (source === "manual") {
-        lastManualFocusAt = performance.now();
-      }
-    };
-
-    const focusFromProgress = (progress) => {
-      if (progress < 0.25) return "overview";
-      if (progress < 0.5) return "ar";
-      if (progress < 0.75) return "motion";
-      return "results";
-    };
-
-    const updateScrollProgress = () => {
-      if (!section) return;
-      const rect = section.getBoundingClientRect();
-      const total = window.innerHeight + rect.height;
-      const passed = window.innerHeight - rect.top;
-      scrollProgress = clamp(passed / total, 0, 1);
-
-      const idleFor = performance.now() - lastManualFocusAt;
-      if (idleFor < 2600 || drag) return;
-
-      const nextPanel = focusFromProgress(scrollProgress);
-      if (nextPanel !== currentPanel) {
-        applyFocus(nextPanel, "scroll");
-      } else {
-        targetFocus = cloneFocus(presets[nextPanel]);
-      }
-    };
-
-    const onPointerDown = (event) => {
-      drag = { x: event.clientX, y: event.clientY };
-      canvas.classList.add("is-dragging");
-    };
-    const onPointerMove = (event) => {
-      if (!drag) return;
-      const dx = event.clientX - drag.x;
-      const dy = event.clientY - drag.y;
-      drag = { x: event.clientX, y: event.clientY };
-      targetFocus = {
-        ...targetFocus,
-        yaw: targetFocus.yaw - dx * 0.005,
-        pitch: Math.max(-0.05, Math.min(0.65, targetFocus.pitch - dy * 0.0035))
-      };
-      lastManualFocusAt = performance.now();
-    };
-    const onPointerUp = () => {
-      drag = null;
-      canvas.classList.remove("is-dragging");
-    };
-
-    canvas.addEventListener("pointerdown", onPointerDown);
-    window.addEventListener("pointermove", onPointerMove);
-    window.addEventListener("pointerup", onPointerUp);
-    canvas.addEventListener("pointerleave", onPointerUp);
-
-    const resize = () => {
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      const rect = wrap.getBoundingClientRect();
-      canvas.width = Math.max(1, Math.floor(rect.width * ratio));
-      canvas.height = Math.max(1, Math.floor(rect.height * ratio));
-      gl.viewport(0, 0, canvas.width, canvas.height);
-    };
+    const cube = createMesh(cubeData(), [0.93, 0.54, 0.22], gl.TRIANGLES);
+    const plane = createMesh(planeData(), [0.98, 0.84, 0.68], gl.TRIANGLES);
+    const grid = createMesh(gridData(), [1.0, 0.6, 0.28], gl.LINES);
 
     const bindMesh = (mesh) => {
       gl.bindBuffer(gl.ARRAY_BUFFER, mesh.position);
@@ -417,91 +260,110 @@
     const drawMesh = (mesh, model) => {
       bindMesh(mesh);
       gl.uniformMatrix4fv(modelLocation, false, model);
-      if (mesh.index) {
-        gl.drawElements(mesh.mode, mesh.count, gl.UNSIGNED_SHORT, 0);
-      } else {
-        gl.drawArrays(mesh.mode, 0, mesh.count);
-      }
+      if (mesh.index) gl.drawElements(mesh.mode, mesh.count, gl.UNSIGNED_SHORT, 0);
+      else gl.drawArrays(mesh.mode, 0, mesh.count);
     };
 
-    const lerp = (a, b, t) => a + (b - a) * t;
+    const onPointerDown = (event) => {
+      drag = { x: event.clientX, y: event.clientY };
+      canvas.classList.add("is-dragging");
+      lastManualAt = performance.now();
+    };
+    const onPointerMove = (event) => {
+      if (!drag) return;
+      const dx = event.clientX - drag.x;
+      const dy = event.clientY - drag.y;
+      drag = { x: event.clientX, y: event.clientY };
+      desiredView = {
+        ...desiredView,
+        yaw: desiredView.yaw - dx * 0.0045,
+        pitch: clamp(desiredView.pitch - dy * 0.003, -0.04, 0.58)
+      };
+    };
+    const onPointerUp = () => {
+      drag = null;
+      canvas.classList.remove("is-dragging");
+    };
+    canvas.addEventListener("pointerdown", onPointerDown);
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("pointerup", onPointerUp);
+    canvas.addEventListener("pointerleave", onPointerUp);
+
+    const resize = () => {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.max(1, Math.floor(rect.width * ratio));
+      canvas.height = Math.max(1, Math.floor(rect.height * ratio));
+      gl.viewport(0, 0, canvas.width, canvas.height);
+    };
 
     const draw = (time) => {
-      autoSpin = time * 0.00022;
-      const stagedFocus =
-        scrollProgress < 0.33 ? mixFocus(presets.overview, presets.ar, scrollProgress / 0.33) :
-        scrollProgress < 0.66 ? mixFocus(presets.ar, presets.motion, (scrollProgress - 0.33) / 0.33) :
-        mixFocus(presets.motion, presets.results, (scrollProgress - 0.66) / 0.34);
+      const idleFor = performance.now() - lastManualAt;
+      const autoView = scrollProgress < 0.25 ? mixTarget(targets.overview, targets.ar, scrollProgress / 0.25) :
+        scrollProgress < 0.5 ? mixTarget(targets.ar, targets.motion, (scrollProgress - 0.25) / 0.25) :
+        scrollProgress < 0.75 ? mixTarget(targets.motion, targets.screens, (scrollProgress - 0.5) / 0.25) :
+        mixTarget(targets.screens, targets.download, (scrollProgress - 0.75) / 0.25);
 
-      const idleFor = performance.now() - lastManualFocusAt;
-      const guidedFocus = idleFor < 2600 || drag
-        ? targetFocus
-        : {
-            yaw: stagedFocus.yaw,
-            pitch: stagedFocus.pitch + scrollProgress * 0.05,
-            distance: stagedFocus.distance - scrollProgress * 0.45,
-            target: [
-              stagedFocus.target[0],
-              stagedFocus.target[1] + scrollProgress * 0.12,
-              stagedFocus.target[2]
-            ]
-          };
+      const guided = idleFor < 2200 || drag ? desiredView : {
+        yaw: autoView.yaw,
+        pitch: autoView.pitch + scrollProgress * 0.05,
+        distance: autoView.distance - scrollProgress * 0.55,
+        target: [
+          autoView.target[0],
+          autoView.target[1] + scrollProgress * 0.18,
+          autoView.target[2]
+        ]
+      };
 
-      currentFocus.yaw = lerp(currentFocus.yaw, guidedFocus.yaw, 0.06);
-      currentFocus.pitch = lerp(currentFocus.pitch, guidedFocus.pitch, 0.06);
-      currentFocus.distance = lerp(currentFocus.distance, guidedFocus.distance, 0.06);
-      currentFocus.target = currentFocus.target.map((v, i) => lerp(v, guidedFocus.target[i], 0.06));
+      currentView.yaw = lerp(currentView.yaw, guided.yaw, 0.06);
+      currentView.pitch = lerp(currentView.pitch, guided.pitch, 0.06);
+      currentView.distance = lerp(currentView.distance, guided.distance, 0.06);
+      currentView.target = currentView.target.map((value, index) => lerp(value, guided.target[index], 0.06));
 
+      const orbit = time * 0.00022;
       const eye = [
-        currentFocus.target[0] + Math.sin(currentFocus.yaw + autoSpin * 0.2) * currentFocus.distance,
-        currentFocus.target[1] + Math.sin(currentFocus.pitch) * currentFocus.distance * 0.68 + 2.1,
-        currentFocus.target[2] + Math.cos(currentFocus.yaw + autoSpin * 0.2) * currentFocus.distance
+        currentView.target[0] + Math.sin(currentView.yaw + orbit * 0.22) * currentView.distance,
+        currentView.target[1] + Math.sin(currentView.pitch) * currentView.distance * 0.72 + 2.4,
+        currentView.target[2] + Math.cos(currentView.yaw + orbit * 0.22) * currentView.distance
       ];
 
-      const projection = perspective(Math.PI / 3.2, canvas.width / canvas.height, 0.1, 100);
-      const view = lookAt(eye, currentFocus.target, [0, 1, 0]);
+      const projection = perspective(Math.PI / 3.3, canvas.width / canvas.height, 0.1, 140);
+      const view = lookAt(eye, currentView.target, [0, 1, 0]);
 
-      gl.clearColor(0.04, 0.025, 0.02, 0);
+      gl.clearColor(0.03, 0.02, 0.02, 0);
       gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
       gl.enable(gl.DEPTH_TEST);
       gl.enable(gl.CULL_FACE);
-      gl.cullFace(gl.BACK);
       gl.useProgram(program);
       gl.uniformMatrix4fv(projectionLocation, false, projection);
       gl.uniformMatrix4fv(viewLocation, false, view);
 
-      drawMesh(grid, identity());
-      drawMesh(cube, composeModel(0, -0.35, 0, 0, 0, 4.5, 0.18, 4.5));
-      drawMesh(cube, composeModel(0, 1.65, -4.1, 0, 0, 4.8, 3.2, 0.14));
-      drawMesh(cube, composeModel(-4.1, 1.65, 0, 0, 0, 0.14, 3.2, 4.8));
-      drawMesh(cube, composeModel(4.1, 1.65, 0, 0, 0, 0.14, 3.2, 4.8));
+      drawMesh(grid, scale(1, 1, 1));
+      drawMesh(cube, compose(0, -0.42, 0, 0, 0, 9.8, 0.14, 9.8));
+      drawMesh(cube, compose(0, 1.9, -5.2, 0, 0, 7.5, 3.5, 0.18));
+      drawMesh(cube, compose(-5.2, 1.95, -0.8, 0, 0, 0.18, 3.7, 6.2));
+      drawMesh(cube, compose(5.2, 1.95, -0.8, 0, 0, 0.18, 3.7, 6.2));
+      drawMesh(cube, compose(0, 2.0, 6.8, 0, 0, 6.5, 3.4, 0.18));
 
-      drawMesh(cube, composeModel(0, 0.5, 0, 0, autoSpin * 2.2, 1.7, 1, 1.7));
-      drawMesh(cube, composeModel(0, 1.15, 0, 0, -autoSpin * 1.8, 0.85, 0.18, 0.85));
+      drawMesh(cube, compose(0, 0.4, 0.4, 0, orbit * 1.8, 2.2, 0.65, 2.2));
+      drawMesh(cube, compose(4.05, 0.95, -1.4, 0, -0.55, 1.7, 1.8, 1.4));
+      drawMesh(cube, compose(-4.15, 1.0, -1.2, 0, 0.55, 1.8, 1.8, 1.2));
+      drawMesh(cube, compose(0.8, 0.95, 4.0, 0, Math.PI, 2.5, 1.9, 0.9));
+      drawMesh(cube, compose(0, 0.9, 6.3, 0, 0, 1.9, 1.7, 1.9));
 
-      drawMesh(plane, composeModel(0, 1.8, -3.7, 0.06, 0, 2.6, 1.6, 1));
-      drawMesh(plane, composeModel(-3.6, 1.75, -0.6, 0.03, Math.PI / 2, 2.2, 1.35, 1));
-      drawMesh(plane, composeModel(3.2, 1.8, -0.5, 0.04, -Math.PI / 2, 2.1, 1.2, 1));
-      drawMesh(plane, composeModel(0, 1.55, 3.1, -0.04, Math.PI, 2.3, 1.4, 1));
+      drawMesh(plane, compose(0, 2.0, -5.05, 0.04, 0, 4.4, 2.4, 1));
+      drawMesh(plane, compose(-5.05, 2.0, -0.8, 0.04, Math.PI / 2, 3.5, 2.2, 1));
+      drawMesh(plane, compose(5.05, 2.0, -0.8, 0.04, -Math.PI / 2, 3.5, 2.2, 1));
+      drawMesh(plane, compose(0.8, 1.85, 6.55, -0.03, Math.PI, 3.9, 2.3, 1));
 
       requestAnimationFrame(draw);
     };
 
-    const activate = (name) => {
-      applyFocus(name, "manual");
-    };
-
-    applyFocus("overview");
-    currentFocus = cloneFocus(presets.overview);
-
-    focusables.forEach((element) => {
-      element.addEventListener("click", () => activate(element.dataset.showroomFocus));
-    });
-
     resize();
+    updateScroll();
+    setActive("overview", false);
     window.addEventListener("resize", resize);
-    window.addEventListener("scroll", updateScrollProgress, { passive: true });
-    updateScrollProgress();
+    window.addEventListener("scroll", updateScroll, { passive: true });
     requestAnimationFrame(draw);
   })();
 </script>
