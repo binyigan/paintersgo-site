@@ -44,9 +44,69 @@
         </div>
       </div>
       <div class="hero-media">
-        <img src="/background.jpg" alt="PaintersGO hero visual">
-        <div class="floating-note note-top">{{ i18n "hero_note_top" }}</div>
-        <div class="floating-note note-bottom">{{ i18n "hero_note_bottom" }}</div>
+        <div class="scene-shell" data-scene-shell>
+          <div class="scene-stage" data-scene-stage data-scene-active="main">
+            <div class="scene-backdrop"></div>
+            <div class="scene-glow scene-glow-a"></div>
+            <div class="scene-glow scene-glow-b"></div>
+
+            <article class="scene-card scene-card-main" data-scene-panel="main">
+              <img src="/background.jpg" alt="PaintersGO spatial hero preview">
+              <div class="scene-card-copy">
+                <span class="scene-card-kicker">{{ i18n "hero_badge" }}</span>
+                <h3>{{ i18n "hero_title" }}</h3>
+                <p>{{ i18n "hero_subtitle" }}</p>
+              </div>
+            </article>
+
+            <article class="scene-card scene-card-ar" data-scene-panel="ar">
+              <img src="/AR.png" alt="PaintersGO AR scene preview">
+              <div class="scene-card-copy">
+                <span class="scene-card-kicker">{{ i18n "ar_kicker" }}</span>
+                <h3>{{ i18n "ar_title" }}</h3>
+                <p>{{ i18n "ar_card_body" }}</p>
+              </div>
+            </article>
+
+            <article class="scene-card scene-card-video" data-scene-panel="video">
+              <img src="/o2o1.png" alt="PaintersGO motion scene preview">
+              <div class="scene-card-copy">
+                <span class="scene-card-kicker">{{ i18n "motion_kicker" }}</span>
+                <h3>{{ i18n "motion_title" }}</h3>
+                <p>{{ i18n "motion_main_body" }}</p>
+              </div>
+            </article>
+
+            <article class="scene-card scene-card-gallery" data-scene-panel="gallery">
+              <img src="/video-to-3d1.png" alt="PaintersGO gallery scene preview">
+              <div class="scene-card-copy">
+                <span class="scene-card-kicker">{{ i18n "screens_kicker" }}</span>
+                <h3>{{ i18n "screens_title" }}</h3>
+                <p>{{ i18n "screens_card_4_body" }}</p>
+              </div>
+            </article>
+
+            <button class="scene-hotspot hotspot-main" type="button" data-scene-focus="main">
+              <span>{{ i18n "hero_note_top" }}</span>
+            </button>
+            <button class="scene-hotspot hotspot-ar" type="button" data-scene-focus="ar">
+              <span>{{ i18n "ar_tag_1" }}</span>
+            </button>
+            <button class="scene-hotspot hotspot-video" type="button" data-scene-focus="video">
+              <span>{{ i18n "motion_main_title" }}</span>
+            </button>
+            <button class="scene-hotspot hotspot-gallery" type="button" data-scene-focus="gallery">
+              <span>{{ i18n "hero_note_bottom" }}</span>
+            </button>
+          </div>
+
+          <div class="scene-toolbar" aria-label="PaintersGO scene navigator">
+            <button class="scene-tab is-active" type="button" data-scene-focus="main">Overview</button>
+            <button class="scene-tab" type="button" data-scene-focus="ar">AR</button>
+            <button class="scene-tab" type="button" data-scene-focus="video">Motion</button>
+            <button class="scene-tab" type="button" data-scene-focus="gallery">Results</button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -87,6 +147,58 @@
             <span>{{ i18n "ar_tag_1" }}</span>
             <span>{{ i18n "ar_tag_2" }}</span>
             <span>{{ i18n "ar_tag_3" }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="showcase-section full-span showroom-section" id="showroom">
+        <div class="showroom-copy">
+          <span class="section-kicker">{{ i18n "gallery_kicker" }}</span>
+          <h2 class="section-title">PaintersGO 3D Showroom</h2>
+          <p class="section-intro">
+            {{ i18n "product_intro" }}
+          </p>
+          <div class="showroom-notes">
+            <article class="showroom-note is-active" data-showroom-panel="overview">
+              <span class="showroom-note-label">{{ i18n "hero_badge" }}</span>
+              <h3>{{ i18n "hero_title" }}</h3>
+              <p>{{ i18n "hero_subtitle" }}</p>
+            </article>
+            <article class="showroom-note" data-showroom-panel="ar">
+              <span class="showroom-note-label">{{ i18n "ar_kicker" }}</span>
+              <h3>{{ i18n "ar_title" }}</h3>
+              <p>{{ i18n "ar_card_body" }}</p>
+            </article>
+            <article class="showroom-note" data-showroom-panel="motion">
+              <span class="showroom-note-label">{{ i18n "motion_kicker" }}</span>
+              <h3>{{ i18n "motion_title" }}</h3>
+              <p>{{ i18n "motion_main_body" }}</p>
+            </article>
+            <article class="showroom-note" data-showroom-panel="results">
+              <span class="showroom-note-label">{{ i18n "screens_kicker" }}</span>
+              <h3>{{ i18n "screens_title" }}</h3>
+              <p>{{ i18n "screens_card_4_body" }}</p>
+            </article>
+          </div>
+          <div class="showroom-actions">
+            <button class="showroom-chip is-active" type="button" data-showroom-focus="overview">Overview Deck</button>
+            <button class="showroom-chip" type="button" data-showroom-focus="ar">AR Bay</button>
+            <button class="showroom-chip" type="button" data-showroom-focus="motion">Motion Wall</button>
+            <button class="showroom-chip" type="button" data-showroom-focus="results">Result Stage</button>
+          </div>
+          <div class="showroom-meta">
+            <span>Drag to orbit</span>
+            <span>Tap chips to refocus</span>
+            <a href="#download">{{ i18n "download_cta" }}</a>
+          </div>
+        </div>
+        <div class="showroom-canvas-wrap">
+          <canvas class="showroom-canvas" data-showroom-canvas aria-label="PaintersGO 3D showroom"></canvas>
+          <div class="showroom-overlay">
+            <button class="showroom-hotspot hotspot-overview is-active" type="button" data-showroom-focus="overview">01</button>
+            <button class="showroom-hotspot hotspot-ar" type="button" data-showroom-focus="ar">02</button>
+            <button class="showroom-hotspot hotspot-motion" type="button" data-showroom-focus="motion">03</button>
+            <button class="showroom-hotspot hotspot-results" type="button" data-showroom-focus="results">04</button>
           </div>
         </div>
       </section>
