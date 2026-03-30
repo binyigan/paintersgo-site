@@ -212,8 +212,9 @@
     border-radius: 32px;
     border: 1px solid rgba(255, 171, 101, 0.16);
     background:
-      radial-gradient(circle at top, rgba(255, 181, 108, 0.15), transparent 24%),
-      linear-gradient(180deg, #38241a 0%, #140e0b 100%);
+      radial-gradient(circle at 50% 8%, rgba(255, 177, 105, 0.18), transparent 20%),
+      radial-gradient(circle at 50% 62%, rgba(255, 110, 56, 0.08), transparent 30%),
+      linear-gradient(180deg, #2b1b14 0%, #120c09 100%);
     box-shadow: 0 30px 80px rgba(18, 10, 6, 0.28);
   }
 
@@ -257,7 +258,7 @@
     inset: 0;
     display: grid;
     align-content: space-between;
-    padding: 22px;
+    padding: 24px;
     pointer-events: none;
   }
 
@@ -272,9 +273,9 @@
     padding: 22px;
     border-radius: 26px;
     border: 1px solid rgba(255, 221, 195, 0.12);
-    background: linear-gradient(180deg, rgba(31, 20, 15, 0.76), rgba(17, 11, 8, 0.82));
-    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.24);
-    backdrop-filter: blur(18px);
+    background: linear-gradient(180deg, rgba(27, 18, 13, 0.62), rgba(17, 11, 8, 0.74));
+    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(12px);
   }
 
   .stage-copy-card .section-kicker {
@@ -301,21 +302,22 @@
     flex-wrap: wrap;
     gap: 10px;
     align-self: end;
+    max-width: 74%;
   }
 
   .stage-tab {
     padding: 10px 14px;
     border-radius: 999px;
     border: 1px solid rgba(255, 232, 215, 0.14);
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.06);
     color: #fff4ea;
     font-weight: 700;
-    backdrop-filter: blur(14px);
+    backdrop-filter: blur(10px);
   }
 
   .stage-tab.is-active {
-    background: rgba(255, 255, 255, 0.2);
-    border-color: rgba(255, 197, 146, 0.34);
+    background: linear-gradient(135deg, rgba(255, 122, 24, 0.92), rgba(255, 91, 48, 0.92));
+    border-color: rgba(255, 197, 146, 0.42);
   }
 
   .capability-grid {
@@ -545,6 +547,10 @@
       width: auto;
       justify-self: stretch;
       padding: 18px;
+    }
+
+    .stage-tabs {
+      max-width: none;
     }
   }
 </style>
