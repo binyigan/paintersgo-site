@@ -828,8 +828,12 @@ const App = () => {
           </div>
 
           <div className="feature-grid">
-            {t.features.items.map((item) => (
-              <article key={item.id} className="feature-card" data-reveal="feature-card">
+            {t.features.items.map((item, index) => (
+              <article
+                key={item.id}
+                className={`feature-card feature-card-${index + 1}`}
+                data-reveal="feature-card"
+              >
                 <div className="feature-meta">
                   <span className="feature-tag">{item.id}</span>
                   <span className="feature-label">{item.title}</span>
@@ -903,8 +907,12 @@ const App = () => {
           </div>
 
           <div className="showcase-grid">
-            {t.media.cards.map((card) => (
-              <article key={card.title} className="showcase-card" data-reveal="showcase-card">
+            {t.media.cards.map((card, index) => (
+              <article
+                key={card.title}
+                className={`showcase-card showcase-card-${index + 1}`}
+                data-reveal="showcase-card"
+              >
                 <div className="showcase-placeholder">
                   <img src={card.image} alt={card.alt} />
                 </div>
