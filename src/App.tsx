@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BalancedHeadline } from "./components/BalancedHeadline";
 
 type Locale = "zh" | "en";
 
@@ -759,7 +760,14 @@ const App = () => {
         <section className="hero" data-reveal="hero">
           <div className="hero-copy" data-reveal="hero-copy">
             <span className="eyebrow">{t.hero.badge}</span>
-            <h1>{t.hero.title}</h1>
+            <h1>
+              <BalancedHeadline
+                className="balanced-text balanced-text-hero"
+                locale={locale}
+                minWidthRatio={locale === "zh" ? 0.64 : 0.58}
+                text={t.hero.title}
+              />
+            </h1>
             <p className="hero-subtitle">{t.hero.subtitle}</p>
 
             <div className="hero-actions">
@@ -823,7 +831,14 @@ const App = () => {
         <section className="section" id="features" data-reveal="features">
           <div className="section-head">
             <span className="eyebrow">{t.features.kicker}</span>
-            <h2>{t.features.title}</h2>
+            <h2>
+              <BalancedHeadline
+                className="balanced-text balanced-text-section"
+                locale={locale}
+                minWidthRatio={locale === "zh" ? 0.66 : 0.6}
+                text={t.features.title}
+              />
+            </h2>
             <p>{t.features.description}</p>
           </div>
 
@@ -850,7 +865,14 @@ const App = () => {
         <section className="section workflow-section" id="workflow" data-reveal="workflow">
           <div className="section-head">
             <span className="eyebrow">{t.workflow.kicker}</span>
-            <h2>{t.workflow.title}</h2>
+            <h2>
+              <BalancedHeadline
+                className="balanced-text balanced-text-section"
+                locale={locale}
+                minWidthRatio={locale === "zh" ? 0.68 : 0.6}
+                text={t.workflow.title}
+              />
+            </h2>
             <p>{t.workflow.description}</p>
           </div>
 
@@ -868,7 +890,14 @@ const App = () => {
         <section className="section audience-section" id="audience" data-reveal="audience">
           <div className="section-head">
             <span className="eyebrow">{t.audience.kicker}</span>
-            <h2>{t.audience.title}</h2>
+            <h2>
+              <BalancedHeadline
+                className="balanced-text balanced-text-section"
+                locale={locale}
+                minWidthRatio={locale === "zh" ? 0.68 : 0.62}
+                text={t.audience.title}
+              />
+            </h2>
             <p>{t.audience.description}</p>
           </div>
 
@@ -885,7 +914,14 @@ const App = () => {
         <section className="section proof-section" data-reveal="proof">
           <div className="section-head">
             <span className="eyebrow">{t.proof.kicker}</span>
-            <h2>{t.proof.title}</h2>
+            <h2>
+              <BalancedHeadline
+                className="balanced-text balanced-text-section"
+                locale={locale}
+                minWidthRatio={locale === "zh" ? 0.68 : 0.62}
+                text={t.proof.title}
+              />
+            </h2>
             <p>{t.proof.description}</p>
           </div>
 
@@ -902,7 +938,14 @@ const App = () => {
         <section className="section showcase-section" data-reveal="showcase">
           <div className="section-head">
             <span className="eyebrow">{t.media.kicker}</span>
-            <h2>{t.media.title}</h2>
+            <h2>
+              <BalancedHeadline
+                className="balanced-text balanced-text-section"
+                locale={locale}
+                minWidthRatio={locale === "zh" ? 0.68 : 0.62}
+                text={t.media.title}
+              />
+            </h2>
             <p>{t.media.description}</p>
           </div>
 
@@ -926,7 +969,14 @@ const App = () => {
         <section className="section faq-section" id="faq" data-reveal="faq">
           <div className="section-head">
             <span className="eyebrow">{t.faq.kicker}</span>
-            <h2>{t.faq.title}</h2>
+            <h2>
+              <BalancedHeadline
+                className="balanced-text balanced-text-section"
+                locale={locale}
+                minWidthRatio={locale === "zh" ? 0.7 : 0.62}
+                text={t.faq.title}
+              />
+            </h2>
           </div>
 
           <div className="faq-list">
@@ -960,7 +1010,14 @@ const App = () => {
         <section className="cta-section" id="contact" data-reveal="contact">
           <div className="cta-card" data-reveal="cta-card">
             <span className="eyebrow">{t.contact.kicker}</span>
-            <h2>{t.contact.title}</h2>
+            <h2>
+              <BalancedHeadline
+                className="balanced-text balanced-text-section"
+                locale={locale}
+                minWidthRatio={locale === "zh" ? 0.7 : 0.62}
+                text={t.contact.title}
+              />
+            </h2>
             <p>{t.contact.body}</p>
 
             <div className="contact-grid">

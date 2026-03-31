@@ -320,6 +320,24 @@ button {
   font-size: clamp(2rem, 3.4vw, 3.5rem);
 }
 
+.balanced-text {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.balanced-line {
+  display: block;
+}
+
+.balanced-text-hero {
+  text-wrap: balance;
+}
+
+.balanced-text-section {
+  text-wrap: balance;
+}
+
 .hero-subtitle,
 .section-head p,
 .feature-card p,
@@ -1111,6 +1129,12 @@ button {
   .hero h1 {
     font-size: clamp(2.05rem, 11vw, 3.15rem);
     line-height: 0.94;
+  }
+
+  .balanced-text,
+  .balanced-text-hero,
+  .balanced-text-section {
+    width: 100%;
   }
 
   .hero-subtitle,
