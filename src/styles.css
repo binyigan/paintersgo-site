@@ -984,6 +984,35 @@ button {
 }
 
 @media (max-width: 920px) {
+  .topbar {
+    gap: 12px;
+    padding: 12px 14px;
+  }
+
+  .brand {
+    gap: 10px;
+  }
+
+  .brand-text {
+    font-size: 1rem;
+  }
+
+  .nav {
+    gap: 14px;
+    font-size: 0.92rem;
+  }
+
+  .locale-toggle {
+    gap: 4px;
+    padding: 4px;
+  }
+
+  .locale-toggle button {
+    min-width: 52px;
+    min-height: 38px;
+    padding: 8px 12px;
+  }
+
   .capability-strip,
   .feature-grid,
   .showcase-grid,
@@ -1021,7 +1050,7 @@ button {
   }
 }
 
-@media (max-width: 780px) {
+@media (max-width: 680px) {
   .site-shell {
     width: min(100% - 20px, 1240px);
     padding-top: 12px;
