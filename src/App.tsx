@@ -772,7 +772,12 @@ const App = () => {
 
             <div className="hero-actions">
               <a className="button button-primary" href="/PaintersGO.apk">
-                {t.hero.primaryCta}
+                <BalancedHeadline
+                  className="balanced-text balanced-text-button"
+                  locale={locale}
+                  minWidthRatio={0.78}
+                  text={t.hero.primaryCta}
+                />
               </a>
               <a
                 className="button button-secondary"
@@ -782,7 +787,12 @@ const App = () => {
                   scrollToSection("#features");
                 }}
               >
-                {t.hero.secondaryCta}
+                <BalancedHeadline
+                  className="balanced-text balanced-text-button"
+                  locale={locale}
+                  minWidthRatio={0.78}
+                  text={t.hero.secondaryCta}
+                />
               </a>
             </div>
 
@@ -824,7 +834,14 @@ const App = () => {
 
         <section className="capability-strip" data-reveal="capabilities">
           {t.introStrip.map((item) => (
-            <span key={item}>{item}</span>
+            <span key={item}>
+              <BalancedHeadline
+                className="balanced-text balanced-text-pill"
+                locale={locale}
+                minWidthRatio={0.82}
+                text={item}
+              />
+            </span>
           ))}
         </section>
 
@@ -851,7 +868,14 @@ const App = () => {
               >
                 <div className="feature-meta">
                   <span className="feature-tag">{item.id}</span>
-                  <span className="feature-label">{item.title}</span>
+                  <span className="feature-label">
+                    <BalancedHeadline
+                      className="balanced-text balanced-text-card"
+                      locale={locale}
+                      minWidthRatio={0.8}
+                      text={item.title}
+                    />
+                  </span>
                 </div>
                 <p>{item.description}</p>
                 <div className="media-slot media-slot-image">
@@ -880,7 +904,14 @@ const App = () => {
             {t.workflow.steps.map((step, index) => (
               <article key={step.title} className="workflow-card" data-reveal="workflow-card">
                 <span className="step-index">0{index + 1}</span>
-                <h3>{step.title}</h3>
+                <h3>
+                  <BalancedHeadline
+                    className="balanced-text balanced-text-card"
+                    locale={locale}
+                    minWidthRatio={0.8}
+                    text={step.title}
+                  />
+                </h3>
                 <p>{step.body}</p>
               </article>
             ))}
@@ -904,7 +935,14 @@ const App = () => {
           <div className="audience-grid">
             {t.audience.personas.map((item) => (
               <article key={item.title} className="audience-card" data-reveal="audience-card">
-                <h3>{item.title}</h3>
+                <h3>
+                  <BalancedHeadline
+                    className="balanced-text balanced-text-card"
+                    locale={locale}
+                    minWidthRatio={0.8}
+                    text={item.title}
+                  />
+                </h3>
                 <p>{item.body}</p>
               </article>
             ))}
@@ -928,7 +966,14 @@ const App = () => {
           <div className="proof-grid">
             {t.proof.cards.map((card) => (
               <article key={card.title} className="proof-card" data-reveal="proof-card">
-                <h3>{card.title}</h3>
+                <h3>
+                  <BalancedHeadline
+                    className="balanced-text balanced-text-card"
+                    locale={locale}
+                    minWidthRatio={0.8}
+                    text={card.title}
+                  />
+                </h3>
                 <p>{card.body}</p>
               </article>
             ))}
@@ -959,7 +1004,14 @@ const App = () => {
                 <div className="showcase-placeholder">
                   <img src={card.image} alt={card.alt} />
                 </div>
-                <h3>{card.title}</h3>
+                <h3>
+                  <BalancedHeadline
+                    className="balanced-text balanced-text-card"
+                    locale={locale}
+                    minWidthRatio={0.8}
+                    text={card.title}
+                  />
+                </h3>
                 <p>{card.body}</p>
               </article>
             ))}
@@ -994,7 +1046,14 @@ const App = () => {
                     setFaqOpenIndex((current) => (current === index ? -1 : index))
                   }
                 >
-                  <h3>{item.q}</h3>
+                  <h3>
+                    <BalancedHeadline
+                      className="balanced-text balanced-text-card"
+                      locale={locale}
+                      minWidthRatio={0.82}
+                      text={item.q}
+                    />
+                  </h3>
                   <span className="faq-icon" aria-hidden="true">
                     {faqOpenIndex === index ? "-" : "+"}
                   </span>
@@ -1031,7 +1090,12 @@ const App = () => {
 
             <div className="hero-actions">
               <a className="button button-primary" href="/PaintersGO.apk">
-                {t.contact.primary}
+                <BalancedHeadline
+                  className="balanced-text balanced-text-button"
+                  locale={locale}
+                  minWidthRatio={0.78}
+                  text={t.contact.primary}
+                />
               </a>
               <a
                 className="button button-secondary"
@@ -1041,7 +1105,12 @@ const App = () => {
                   scrollToSection("#faq");
                 }}
               >
-                {t.contact.secondary}
+                <BalancedHeadline
+                  className="balanced-text balanced-text-button"
+                  locale={locale}
+                  minWidthRatio={0.78}
+                  text={t.contact.secondary}
+                />
               </a>
             </div>
           </div>

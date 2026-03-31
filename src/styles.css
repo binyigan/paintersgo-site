@@ -338,6 +338,22 @@ button {
   text-wrap: balance;
 }
 
+.balanced-text-card {
+  width: 100%;
+  text-wrap: balance;
+}
+
+.balanced-text-button {
+  width: 100%;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.balanced-text-pill {
+  width: 100%;
+  text-wrap: balance;
+}
+
 .hero-subtitle,
 .section-head p,
 .feature-card p,
@@ -668,6 +684,8 @@ button {
   font-weight: 700;
   text-align: right;
   font-size: 1.12rem;
+  width: min(100%, 18ch);
+  margin-left: auto;
 }
 
 .media-slot {
@@ -840,6 +858,7 @@ button {
 
 .faq-trigger h3 {
   margin: 0;
+  flex: 1;
 }
 
 .faq-icon {
@@ -1228,6 +1247,8 @@ button {
   .feature-label {
     text-align: left;
     font-size: 1rem;
+    width: 100%;
+    margin-left: 0;
   }
 
   .media-slot {
