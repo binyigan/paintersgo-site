@@ -779,7 +779,8 @@ button {
 .showcase-placeholder img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
   border-radius: 18px;
   transition: transform 220ms ease;
 }
@@ -891,11 +892,39 @@ button {
   transform: translateY(0);
 }
 
+@media (max-width: 1320px) {
+  .site-shell {
+    width: min(100% - 28px, 1240px);
+  }
+
+  .hero {
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+    gap: 20px;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.4rem, 4.6vw, 4.6rem);
+  }
+
+  .hero-copy,
+  .hero-stage,
+  .section,
+  .cta-card {
+    border-radius: 30px;
+  }
+
+  .capability-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .workflow-grid,
+  .audience-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 1180px) {
   .hero,
-  .capability-strip,
-  .workflow-grid,
-  .audience-grid,
   .proof-grid,
   .faq-list,
   .contact-grid {
@@ -904,6 +933,11 @@ button {
 
   .feature-grid,
   .showcase-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .workflow-grid,
+  .audience-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -918,15 +952,21 @@ button {
     grid-column: auto;
   }
 
-  .hero-stage {
-    min-height: 640px;
+  .hero {
+    grid-template-columns: 1fr;
   }
 
-  .hero-copy,
-  .hero-stage,
-  .section,
-  .cta-card {
-    border-radius: 30px;
+  .hero-copy {
+    order: 1;
+  }
+
+  .hero-stage {
+    order: 2;
+    min-height: 560px;
+  }
+
+  .capability-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .primary-panel,
@@ -940,6 +980,44 @@ button {
 
   .primary-panel {
     min-height: 320px;
+  }
+}
+
+@media (max-width: 920px) {
+  .capability-strip,
+  .feature-grid,
+  .showcase-grid,
+  .workflow-grid,
+  .audience-grid,
+  .proof-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-copy,
+  .section,
+  .cta-card {
+    padding: 24px;
+  }
+
+  .hero-stage {
+    min-height: 500px;
+  }
+
+  .primary-panel,
+  .side-panel.top,
+  .side-panel.bottom {
+    margin: 16px;
+  }
+
+  .feature-card-1,
+  .feature-card-2,
+  .feature-card-3,
+  .feature-card-4,
+  .feature-card-5,
+  .showcase-card-1,
+  .showcase-card-2,
+  .showcase-card-3 {
+    grid-column: auto;
   }
 }
 
@@ -1000,11 +1078,6 @@ button {
   .hero-subtitle,
   .section-head p {
     max-width: none;
-  }
-
-  .feature-grid,
-  .showcase-grid {
-    grid-template-columns: 1fr;
   }
 
   .hero-stats {
