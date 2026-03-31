@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 type Locale = "zh" | "en";
 
@@ -6,15 +6,16 @@ type Feature = {
   id: string;
   title: string;
   description: string;
-  mediaLabel: string;
+  image: string;
+  alt: string;
 };
 
-type Persona = {
+type WorkflowStep = {
   title: string;
   body: string;
 };
 
-type WorkflowStep = {
+type Persona = {
   title: string;
   body: string;
 };
@@ -24,12 +25,30 @@ type ProofCard = {
   body: string;
 };
 
+type MediaCard = {
+  title: string;
+  body: string;
+  image: string;
+  alt: string;
+};
+
 type FaqItem = {
   q: string;
   a: string;
 };
 
+type ContactCard = {
+  label: string;
+  value: string;
+};
+
+type MetaCopy = {
+  title: string;
+  description: string;
+};
+
 type SiteCopy = {
+  meta: MetaCopy;
   nav: {
     features: string;
     workflow: string;
@@ -44,9 +63,8 @@ type SiteCopy = {
     primaryCta: string;
     secondaryCta: string;
     stats: Array<{ value: string; label: string }>;
-    note: string;
   };
-  introStrip: Array<string>;
+  introStrip: string[];
   features: {
     kicker: string;
     title: string;
@@ -75,7 +93,7 @@ type SiteCopy = {
     kicker: string;
     title: string;
     description: string;
-    slots: Array<{ title: string; body: string }>;
+    cards: MediaCard[];
   };
   faq: {
     kicker: string;
@@ -83,11 +101,12 @@ type SiteCopy = {
     items: FaqItem[];
   };
   contact: {
+    kicker: string;
     title: string;
     body: string;
     primary: string;
     secondary: string;
-    cards: Array<{ label: string; value: string }>;
+    cards: ContactCard[];
   };
   footer: {
     product: string;
@@ -95,8 +114,15 @@ type SiteCopy = {
   };
 };
 
+const siteBaseUrl = "https://paintersgo.top";
+
 const copy: Record<Locale, SiteCopy> = {
   zh: {
+    meta: {
+      title: "PaintersGO | AI 3D 创作、上色协作与制造链路",
+      description:
+        "PaintersGO 降低 3D 内容创作门槛，连接 AI 生成 3D、移动端上色编辑、多人协作、云修复与 O2O 打印制造。"
+    },
     nav: {
       features: "核心能力",
       workflow: "创作链路",
@@ -105,19 +131,17 @@ const copy: Record<Locale, SiteCopy> = {
       contact: "下载与联系"
     },
     hero: {
-      badge: "PaintersGO 官方展示页提案",
-      title: "降低 3D 内容创作门槛，打通从虚拟资产到实物制造的全链路",
+      badge: "AI 3D 创作到实体制造的移动入口",
+      title: "让 3D 创作更容易开始，也更容易走向现实",
       subtitle:
-        "PaintersGO 将 AI 生成 3D 模型、移动端 3D 上色编辑、多人协作、云修复与 O2O 制造/打印整合到一套连续体验里，让更多人能真正把 3D 创作做起来、做下去、做成实物。",
-      primaryCta: "下载 Android 版本",
-      secondaryCta: "查看功能展示",
+        "PaintersGO 把 AI 生成 3D 模型、移动端上色编辑、多人协作、云修复和 O2O 制造/打印串成一条更完整的产品链路，让更多人可以把想法变成可展示、可分享、可制造的三维成果。",
+      primaryCta: "下载 Android APK",
+      secondaryCta: "查看核心能力",
       stats: [
-        { value: "AI", label: "从文本或图像快速生成可操作的 3D 起点" },
-        { value: "Edit", label: "在手机端直接查看、上色与调整模型" },
-        { value: "Make", label: "继续走向修复、打印与实体交付" }
-      ],
-      note:
-        "这一版先建立正式官网的表达骨架。截图、录屏、品牌图和案例素材后续可以逐块替换进来，不需要再推翻布局。"
+        { value: "AI", label: "从文本或图像快速进入 3D 创作起点" },
+        { value: "Mobile", label: "直接在手机端查看、涂装与处理模型" },
+        { value: "Make", label: "继续连接修复、打印与实体交付场景" }
+      ]
     },
     introStrip: [
       "AI 生成 3D 模型",
@@ -128,92 +152,97 @@ const copy: Record<Locale, SiteCopy> = {
     ],
     features: {
       kicker: "核心能力",
-      title: "首页先把五个关键价值讲透",
+      title: "先把产品最重要的五件事讲清楚",
       description:
-        "这版不再把 PaintersGO 讲成模糊的“沉浸式技术展示”。它应该是一款真正帮助用户跨过门槛、完成创作并走向实物输出的产品。",
+        "PaintersGO 不是单一功能的演示页，而是一款面向真实创作与输出流程的产品。官网应该先帮助访问者看懂它真正能解决什么问题。",
       items: [
         {
           id: "01",
           title: "AI 生成 3D 模型",
           description:
-            "从文字或图像出发，快速生成可继续编辑的 3D 模型，把创意变成三维资产的起点成本降下来。",
-          mediaLabel: "预留素材位：文生 3D / 图生 3D 的界面截图、录屏或对比图"
+            "从文字描述或输入图像快速生成 3D 内容，降低从灵感到三维资产的起步门槛。",
+          image: "/vedio-to-3d.png",
+          alt: "PaintersGO AI generated 3D feature preview"
         },
         {
           id: "02",
           title: "3D 上色编辑",
           description:
-            "在移动端完成模型查看、涂装、材质切换与细节表达，突出 PaintersGO 的即时性和触屏创作体验。",
-          mediaLabel: "预留素材位：编辑器界面、笔刷、材质与操作演示"
+            "在移动端直接查看、上色、调整材质与细节，让 3D 表达不再受制于传统桌面工作流。",
+          image: "/pic1.jpg",
+          alt: "PaintersGO 3D painting editor preview"
         },
         {
           id: "03",
           title: "多人协作",
           description:
-            "支持邀请朋友、团队成员或社区创作者一起处理同一个模型，让创作从单人流程扩展为共创流程。",
-          mediaLabel: "预留素材位：协作房间、实时同步、加入房间流程"
+            "围绕同一个模型协同创作，让团队、朋友或社区创作者共同推进结果，而不是停留在单人处理流程。",
+          image: "/pic2.jpg",
+          alt: "PaintersGO collaboration concept"
         },
         {
           id: "04",
           title: "云修复",
           description:
-            "将复杂模型交给云端流程做打印前处理与结构修复，减少模型在走向制造时的阻力和失败概率。",
-          mediaLabel: "预留素材位：修复前后对比、打印准备状态说明"
+            "针对复杂模型加入云端修复环节，帮助作品更顺利地进入打印与制造前准备。",
+          image: "/pic3.jpg",
+          alt: "PaintersGO cloud repair concept"
         },
         {
           id: "05",
           title: "O2O 制造 / 打印",
           description:
-            "把数字模型继续延伸到线下制造和打印场景，让 PaintersGO 成为连接创作与实体交付的入口。",
-          mediaLabel: "预留素材位：打印服务、制造链路、成品交付照片"
+            "把数字模型继续推进到线下制造与打印场景，让虚拟资产更接近实体交付。",
+          image: "/o2o1.png",
+          alt: "PaintersGO O2O manufacturing preview"
         }
       ]
     },
     workflow: {
       kicker: "创作链路",
-      title: "从灵感到实物，不再是割裂的几段流程",
+      title: "从想法到实物，不再被拆成割裂的几段流程",
       description:
-        "PaintersGO 最重要的产品价值，不只是某一个 AI 功能，而是把原本分散的工具和步骤串成一条更容易理解、更容易开始的路径。",
+        "PaintersGO 的差异不只在某个 AI 能力，而是在于它把原本分散的步骤串起来，让创作、协作和制造之间的过渡更自然。",
       steps: [
         {
           title: "生成",
-          body: "输入提示词、导入图片，或打开已有模型，快速得到可以继续处理的 3D 起点。"
+          body: "输入提示词、导入图片，或打开已有模型，快速得到一个可以继续处理的 3D 起点。"
         },
         {
           title: "编辑",
-          body: "在手机端直接完成查看、上色、材质预览和局部细节调整。"
+          body: "在手机端完成查看、上色、材质预览和局部细节微调，让表达更直接。"
         },
         {
           title: "协作",
-          body: "把同一个模型交给更多人共同完善，让创意、结构和风格一起推进。"
+          body: "让更多人围绕同一个模型共同完善结构、色彩和最终呈现。"
         },
         {
           title: "修复与制造",
-          body: "经过云修复流程后，进一步对接打印或制造服务，向实体成品迈进。"
+          body: "经过云修复后再走向打印或制造服务，让数字成果真正接近实体输出。"
         }
       ]
     },
     audience: {
       kicker: "适用人群",
-      title: "不只面向专业 3D 从业者",
+      title: "不只面向传统 3D 从业者",
       description:
-        "PaintersGO 的官网应该让不同类型的访问者都能找到自己的位置，而不是默认每个人都已经熟悉复杂 3D 工具链。",
+        "PaintersGO 更适合被表达成一款降低创作门槛的产品，而不是一个默认用户都熟悉 3D 工具链的专业站点。",
       personas: [
         {
           title: "AI 创作者",
-          body: "更快把想法转成三维内容，用更低的启动成本尝试创作。"
+          body: "更快把概念、想法和视觉方向转换成可继续推进的 3D 内容。"
         },
         {
           title: "3D 打印玩家",
-          body: "把数字模型继续推进到可修复、可打印、可落地的实物流程。"
+          body: "把数字模型继续推进到可修复、可打印、可落地的输出流程。"
         },
         {
           title: "设计师与内容创作者",
-          body: "在移动端更直接地展示、上色和表达模型视觉效果。"
+          body: "在移动端更直观地展示模型视觉效果与上色结果。"
         },
         {
           title: "团队与社区合作者",
-          body: "围绕同一个模型协同创作，让灵感、反馈和结果同步推进。"
+          body: "围绕同一个模型同步创作、同步反馈、同步推进结果。"
         }
       ]
     },
@@ -221,99 +250,109 @@ const copy: Record<Locale, SiteCopy> = {
       kicker: "为什么是它",
       title: "PaintersGO 应该被看见的产品差异",
       description:
-        "真实素材还没补齐之前，官网也需要先把差异讲出来。这里用的是可替换的内容框架，后续可以逐条替换成更具体的证据。",
+        "即使真实案例还在陆续补充，官网也应该先把差异讲清楚，让访问者知道这不是单点能力拼接出来的产品。",
       cards: [
         {
-          title: "不是单点功能，而是完整路径",
-          body: "从生成、编辑到制造的表达更完整，更适合官网作为产品主叙事。"
+          title: "完整链路，而不是单点功能",
+          body: "从生成、编辑到制造的叙事更完整，更适合官网作为产品主表达。"
         },
         {
-          title: "不是桌面优先，而是移动端优先",
-          body: "PaintersGO 的重要特点在于让 3D 创作和处理更接近手机场景。"
+          title: "移动端优先，而不是桌面端迁移",
+          body: "PaintersGO 的重要特点在于把 3D 处理体验主动拉近到手机端。"
         },
         {
-          title: "不是孤立创作，而是支持协作",
-          body: "多人协作会成为产品很强的区分点，也更适合展示未来潜力。"
+          title: "支持协作，而不是只强调个人操作",
+          body: "多人协作不仅是功能点，也是 PaintersGO 长期产品潜力的重要组成。"
         }
       ]
     },
     media: {
-      kicker: "展示区域",
-      title: "先留出对的网站位，再逐步补上真实素材",
+      kicker: "效果展示",
+      title: "用真实画面帮助访问者建立直觉",
       description:
-        "现在我们优先做对信息架构和页面质感。后续你只需要把内容替换进这些区域，就能很快接近正式官网。",
-      slots: [
+        "下面这些区域已经接入当前仓库里的真实素材。后续你可以继续替换成更高质量的产品截图、录屏和成品图。",
+      cards: [
         {
-          title: "产品主视觉位",
-          body: "适合放 logo 海报、应用合成图、3D 模型主渲染图或品牌 KV。"
+          title: "移动端 3D 体验",
+          body: "展示应用界面、模型编辑状态和产品整体气质。",
+          image: "/AR.png",
+          alt: "PaintersGO mobile 3D experience"
         },
         {
-          title: "功能演示位",
-          body: "适合放录屏、GIF 或连续截图，突出“生成 - 编辑 - 协作”的动态过程。"
+          title: "制造与打印方向",
+          body: "展示从数字模型走向线下制造服务的产品想象力。",
+          image: "/o2o2.png",
+          alt: "PaintersGO manufacturing and printing"
         },
         {
-          title: "成果展示位",
-          body: "适合放打印成品、前后对比、用户案例或真实使用场景。"
+          title: "三维内容成果展示",
+          body: "展示模型结果、视觉表现和产品输出氛围。",
+          image: "/video-to-3d1.png",
+          alt: "PaintersGO 3D output showcase"
         }
       ]
     },
     faq: {
       kicker: "常见问题",
-      title: "先回答访问者最容易关心的几个点",
+      title: "先回答访问者最容易关心的几个问题",
       items: [
         {
           q: "PaintersGO 是做什么的？",
-          a: "它是一款把 AI 3D 生成、移动端上色编辑、多人协作、云修复和实体制造链路连接起来的产品。"
+          a: "它是一款连接 AI 3D 生成、移动端上色编辑、多人协作、云修复和实体制造链路的产品。"
         },
         {
           q: "它更像创作工具还是制造入口？",
-          a: "两者都有，但官网表达重点应该先强调它如何降低 3D 创作门槛，再引出制造能力。"
+          a: "两者都有，但核心价值首先在于降低 3D 创作门槛，再进一步连接修复、打印和制造场景。"
         },
         {
-          q: "这版页面为什么先用占位素材？",
-          a: "因为当前最紧急的是先把结构和方向做对，之后再替换真实截图和案例会更高效。"
+          q: "现在可以直接下载体验吗？",
+          a: "可以，当前官网已提供 Android APK 下载入口，后续会继续补充更多案例、素材和转化入口。"
         }
       ]
     },
     contact: {
-      title: "先让官网具备展示能力，再逐步补齐真实转化入口",
+      kicker: "下载与联系",
+      title: "从这里开始体验 PaintersGO",
       body:
-        "下一步你可以继续给我 logo、截图、动图、下载链接、联系渠道和实际案例。我会在这套结构上继续做成更接近正式上线版本。",
-      primary: "继续完善官网",
-      secondary: "准备下一批素材",
+        "你可以先下载 Android APK 体验产品，再根据后续更新逐步看到更多真实案例、功能演示与制造场景内容。",
+      primary: "下载 APK",
+      secondary: "查看常见问题",
       cards: [
-        { label: "当前优先", value: "官网重做 / 结构重排 / 双语首页" },
-        { label: "后续补充", value: "Logo / 截图 / Demo / 下载链接 / 联系方式" },
-        { label: "落地形态", value: "React 官网，后续可接真实素材与部署流程" }
+        { label: "平台", value: "Android APK 当前可用" },
+        { label: "网站语言", value: "支持中文与英文访问版本" },
+        { label: "当前重点", value: "AI 生成、移动编辑、协作、修复与制造链路" }
       ]
     },
     footer: {
       product: "PaintersGO",
-      rights: "中英双语官网首版草案，后续可继续替换真实素材与转化信息。"
+      rights: "PaintersGO 官方网站，持续更新产品演示、案例素材与下载入口。"
     }
   },
   en: {
+    meta: {
+      title: "PaintersGO | AI 3D creation, painting, collaboration and making",
+      description:
+        "PaintersGO lowers the barrier to 3D creation by connecting AI generation, mobile painting, collaboration, cloud repair, and O2O manufacturing."
+    },
     nav: {
       features: "Features",
       workflow: "Workflow",
       audience: "Audience",
       faq: "FAQ",
-      contact: "Contact"
+      contact: "Download"
     },
     hero: {
-      badge: "PaintersGO Official Website Draft",
-      title: "Lower the barrier to 3D creation, from virtual assets to physical making",
+      badge: "A mobile entry point from AI 3D creation to physical making",
+      title: "Make 3D creation easier to start and easier to bring into the real world",
       subtitle:
-        "PaintersGO combines AI 3D generation, mobile-first painting and editing, multiplayer collaboration, cloud repair, and O2O manufacturing into one connected creative pipeline.",
-      primaryCta: "Download for Android",
-      secondaryCta: "Explore Product Flow",
+        "PaintersGO connects AI 3D generation, mobile painting and editing, multiplayer collaboration, cloud repair, and O2O manufacturing into one product flow, helping more people turn ideas into usable, shareable, and manufacturable 3D results.",
+      primaryCta: "Download Android APK",
+      secondaryCta: "Explore Core Features",
       stats: [
-        { value: "AI", label: "Generate workable 3D starting points from prompts or images" },
-        { value: "Edit", label: "Inspect, paint, and adjust models directly on mobile" },
-        { value: "Make", label: "Continue into repair, printing, and physical delivery" }
-      ],
-      note:
-        "This version focuses on the official website structure first. Real screenshots, recordings, branding assets, and case studies can be dropped into the existing slots later."
+        { value: "AI", label: "Start 3D creation quickly from text or image input" },
+        { value: "Mobile", label: "Inspect, paint, and refine models directly on phone" },
+        { value: "Make", label: "Extend digital assets into repair, print, and delivery flow" }
+      ]
     },
     introStrip: [
       "AI 3D Generation",
@@ -324,56 +363,61 @@ const copy: Record<Locale, SiteCopy> = {
     ],
     features: {
       kicker: "Core Capabilities",
-      title: "Lead with the five product values that matter most",
+      title: "Start with the five product values that matter most",
       description:
-        "This homepage should not frame PaintersGO as vague immersive tech. It should position it as a product that helps more people start creating 3D content, refine it, and move it toward physical output.",
+        "PaintersGO should not be presented as vague immersive tech. It should be understood as a product that helps people create 3D content more easily and move it closer to real-world output.",
       items: [
         {
           id: "01",
           title: "AI 3D Generation",
           description:
-            "Start from text or images and generate editable 3D content faster, reducing the startup cost from idea to usable asset.",
-          mediaLabel: "Reserved slot: text-to-3D / image-to-3D screenshots, recordings, or comparison visuals"
+            "Generate 3D content from text or images and reduce the startup cost from idea to workable asset.",
+          image: "/vedio-to-3d.png",
+          alt: "PaintersGO AI 3D generation preview"
         },
         {
           id: "02",
           title: "3D Painting & Editing",
           description:
-            "Paint, inspect, and tune models directly on mobile, showing the immediacy of touch-based 3D creation.",
-          mediaLabel: "Reserved slot: editor UI, brush controls, materials, and interaction demos"
+            "Inspect, paint, switch materials, and refine details directly on mobile with a more immediate workflow.",
+          image: "/pic1.jpg",
+          alt: "PaintersGO mobile painting and editing"
         },
         {
           id: "03",
           title: "Multiplayer Collaboration",
           description:
-            "Invite teammates, friends, or creators into the same model workflow and turn solo creation into co-creation.",
-          mediaLabel: "Reserved slot: collaboration rooms, sync states, join flow, shared editing"
+            "Invite teammates, friends, or community creators into the same model workflow and co-create instead of working alone.",
+          image: "/pic2.jpg",
+          alt: "PaintersGO collaboration flow"
         },
         {
           id: "04",
           title: "Cloud Repair",
           description:
-            "Push complex models through a cloud repair step before fabrication and reduce friction on the road to printing.",
-          mediaLabel: "Reserved slot: before/after repair comparison and print-ready cues"
+            "Prepare complex assets through cloud repair so they can move more smoothly toward print or production readiness.",
+          image: "/pic3.jpg",
+          alt: "PaintersGO cloud repair preview"
         },
         {
           id: "05",
           title: "O2O Manufacturing / Printing",
           description:
-            "Extend digital assets into offline production and turn PaintersGO into an entry point for real-world making.",
-          mediaLabel: "Reserved slot: printing service flow, manufacturing scenes, final outputs"
+            "Carry digital models into offline production and make PaintersGO an entry point to physical output.",
+          image: "/o2o1.png",
+          alt: "PaintersGO O2O manufacturing and printing"
         }
       ]
     },
     workflow: {
       kicker: "Workflow",
-      title: "From idea to object, without breaking the story into disconnected tools",
+      title: "From idea to object, without splitting the story into disconnected tools",
       description:
-        "The strongest product narrative is not a single AI feature. It is the fact that PaintersGO connects scattered steps into one easier path to start and finish.",
+        "The value of PaintersGO is not just one AI feature. It is the way the product connects scattered steps into a more natural creation-to-making path.",
       steps: [
         {
           title: "Generate",
-          body: "Use prompts, images, or existing models to create a fast and editable 3D starting point."
+          body: "Use prompts, images, or existing models to create a 3D starting point that can be pushed forward."
         },
         {
           title: "Edit",
@@ -381,11 +425,11 @@ const copy: Record<Locale, SiteCopy> = {
         },
         {
           title: "Collaborate",
-          body: "Bring more people into the same model so ideas, structure, and style can evolve together."
+          body: "Let more people contribute to the same model so ideas, structure, and style can evolve together."
         },
         {
           title: "Repair & Make",
-          body: "Prepare the asset through cloud repair, then connect it to printing or manufacturing services."
+          body: "Move through cloud repair and continue toward printing or manufacturing services."
         }
       ]
     },
@@ -393,23 +437,23 @@ const copy: Record<Locale, SiteCopy> = {
       kicker: "Audience",
       title: "Not only for traditional 3D professionals",
       description:
-        "The website should help multiple visitor types recognize themselves in the product, instead of assuming everyone already speaks the language of complex 3D pipelines.",
+        "PaintersGO works better as a product that lowers creation barriers, instead of a site that assumes every visitor already understands complex 3D pipelines.",
       personas: [
         {
           title: "AI Creators",
-          body: "Turn ideas into 3D content faster and explore making with less startup friction."
+          body: "Turn concepts and visual ideas into 3D content faster with less startup friction."
         },
         {
           title: "3D Printing Hobbyists",
-          body: "Push digital models toward repair, print readiness, and real-world output."
+          body: "Push digital assets toward repair, print readiness, and real-world output."
         },
         {
           title: "Designers & Content Creators",
-          body: "Show, paint, and present model visuals more directly in a mobile workflow."
+          body: "Present model visuals and color treatments more directly in a mobile workflow."
         },
         {
           title: "Teams & Communities",
-          body: "Collaborate around the same model and move ideas forward together."
+          body: "Collaborate around the same model and move shared ideas forward together."
         }
       ]
     },
@@ -417,39 +461,45 @@ const copy: Record<Locale, SiteCopy> = {
       kicker: "Why It Matters",
       title: "The product differences the homepage should make visible",
       description:
-        "Even before real assets are added, the website should already communicate why PaintersGO is different. These placeholders can later become stronger proof blocks.",
+        "Even before more case studies arrive, the site should already communicate why PaintersGO is not just another isolated feature page.",
       cards: [
         {
-          title: "Not a single feature, but a full path",
-          body: "The narrative connects generation, editing, and making instead of isolating one capability."
+          title: "A connected path, not isolated features",
+          body: "The product story links generation, editing, repair, and making into one clearer journey."
         },
         {
-          title: "Not desktop-first, but mobile-first",
-          body: "PaintersGO stands out by making parts of 3D creation feel more native to the phone."
+          title: "Mobile-first instead of desktop-first",
+          body: "PaintersGO matters because it brings parts of 3D workflow closer to the phone."
         },
         {
-          title: "Not just solo work, but collaboration",
-          body: "Multiplayer collaboration is both a product differentiator and a strong future-facing story."
+          title: "Built for collaboration, not only solo work",
+          body: "Multiplayer collaboration is both a product differentiator and a future-facing capability."
         }
       ]
     },
     media: {
-      kicker: "Media Slots",
-      title: "Build the right website zones first, then swap in real assets",
+      kicker: "Visual Showcase",
+      title: "Use real visuals to build product intuition faster",
       description:
-        "For now, we prioritize information architecture and visual quality. Later, your real product media can be dropped into these sections without rewriting the layout.",
-      slots: [
+        "These sections already use assets from the current repository. Later they can be replaced with stronger product screenshots, recordings, and result photos.",
+      cards: [
         {
-          title: "Hero Visual Slot",
-          body: "Best for logo key visuals, app compositions, flagship model renders, or campaign art."
+          title: "Mobile 3D Experience",
+          body: "Show the app interface, model editing states, and the product's visual atmosphere.",
+          image: "/AR.png",
+          alt: "PaintersGO mobile 3D experience"
         },
         {
-          title: "Feature Demo Slot",
-          body: "Best for recordings, GIFs, and screenshots that show generation, editing, and collaboration in motion."
+          title: "Manufacturing Direction",
+          body: "Show how digital assets can continue into offline production and printing flow.",
+          image: "/o2o2.png",
+          alt: "PaintersGO manufacturing direction"
         },
         {
-          title: "Results Slot",
-          body: "Best for printed outputs, before/after comparisons, use cases, or real-world photos."
+          title: "3D Result Showcase",
+          body: "Show output quality, visual presentation, and the kind of 3D results users can expect.",
+          image: "/video-to-3d1.png",
+          alt: "PaintersGO 3D results"
         }
       ]
     },
@@ -459,48 +509,74 @@ const copy: Record<Locale, SiteCopy> = {
       items: [
         {
           q: "What is PaintersGO?",
-          a: "It is a product that connects AI 3D generation, mobile painting and editing, collaboration, cloud repair, and physical production flow."
+          a: "It is a product that connects AI 3D generation, mobile painting and editing, multiplayer collaboration, cloud repair, and physical manufacturing flow."
         },
         {
-          q: "Is it mainly a creation tool or a manufacturing gateway?",
-          a: "Both matter, but the homepage should first explain how PaintersGO lowers the barrier to 3D creation before expanding into making."
+          q: "Is it mainly a creative tool or a manufacturing gateway?",
+          a: "Both matter, but its first value is lowering the barrier to 3D creation before extending into repair, printing, and making."
         },
         {
-          q: "Why are some sections still placeholders?",
-          a: "Because the urgent step is getting the structure and direction right first. Real screenshots and case studies can be added on top of a stable layout."
+          q: "Can I download it now?",
+          a: "Yes. The current website provides an Android APK download while more case studies and feature materials continue to be added."
         }
       ]
     },
     contact: {
-      title: "Make the website presentation-ready first, then layer in real conversion paths",
+      kicker: "Download & Access",
+      title: "Start exploring PaintersGO here",
       body:
-        "Next, you can give me the logo, screenshots, video clips, download links, contact channels, and real proof points. I can keep refining this structure toward a production homepage.",
-      primary: "Keep Building the Website",
-      secondary: "Prepare the Next Asset Batch",
+        "You can download the current Android APK now and follow future updates as more real cases, demonstrations, and production content are added.",
+      primary: "Download APK",
+      secondary: "View FAQ",
       cards: [
-        { label: "Current Focus", value: "Website rebuild / structure reset / bilingual homepage" },
-        { label: "Next Assets", value: "Logo / Screenshots / Demo clips / Download links / Contact paths" },
-        { label: "Implementation", value: "React website, ready for later deployment and content replacement" }
+        { label: "Platform", value: "Android APK currently available" },
+        { label: "Languages", value: "Chinese and English access supported" },
+        { label: "Current Focus", value: "AI generation, mobile editing, collaboration, repair, and making flow" }
       ]
     },
     footer: {
       product: "PaintersGO",
-      rights: "First bilingual website draft, ready for later real assets and conversion details."
+      rights: "Official PaintersGO website with evolving demos, assets, and download access."
     }
   }
 };
 
+const setMetaContent = (selector: string, value: string) => {
+  const node = document.querySelector(selector);
+  if (node) {
+    node.setAttribute("content", value);
+  }
+};
+
 const App = () => {
-  const [locale, setLocale] = useState<Locale>("zh");
+  const initialLocale: Locale =
+    typeof window !== "undefined" && window.location.pathname.startsWith("/en")
+      ? "en"
+      : "zh";
+
+  const [locale, setLocale] = useState<Locale>(initialLocale);
   const t = copy[locale];
 
-  const stageLabels = useMemo(
-    () =>
-      locale === "zh"
-        ? { left: "AI 生成", top: "多人协作", bottom: "制造 / 打印" }
-        : { left: "AI Generation", top: "Co-create", bottom: "Make / Print" },
-    [locale]
-  );
+  useEffect(() => {
+    const pathname = locale === "en" ? "/en/" : "/";
+    window.history.replaceState({}, "", pathname);
+    document.documentElement.lang = locale === "en" ? "en" : "zh-CN";
+    document.title = t.meta.title;
+    setMetaContent('meta[name="description"]', t.meta.description);
+    setMetaContent('meta[property="og:title"]', t.meta.title);
+    setMetaContent('meta[property="og:description"]', t.meta.description);
+    setMetaContent('meta[name="twitter:title"]', t.meta.title);
+    setMetaContent('meta[name="twitter:description"]', t.meta.description);
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) {
+      canonical.setAttribute("href", `${siteBaseUrl}${pathname}`);
+    }
+  }, [locale, t.meta.description, t.meta.title]);
+
+  const stageLabels =
+    locale === "zh"
+      ? { left: "AI 生成", top: "多人协作", bottom: "制造 / 打印" }
+      : { left: "AI Generation", top: "Co-create", bottom: "Make / Print" };
 
   return (
     <div className="site-shell">
@@ -554,43 +630,29 @@ const App = () => {
                 </article>
               ))}
             </div>
-
-            <p className="hero-note">{t.hero.note}</p>
           </div>
 
-          <div className="hero-stage" aria-label="PaintersGO website hero concept">
-            <div className="stage-glow stage-glow-a" />
-            <div className="stage-glow stage-glow-b" />
+          <div className="hero-stage" aria-label="PaintersGO visual overview">
+            <img className="hero-stage-image" src="/background.jpg" alt="PaintersGO visual background" />
 
             <div className="stage-panel primary-panel">
               <span className="panel-label">{stageLabels.left}</span>
               <div className="panel-screen">
-                <div className="screen-chip">Text / Image</div>
-                <div className="screen-model" />
-                <div className="screen-lines">
-                  <span />
-                  <span />
-                  <span />
-                </div>
+                <img src="/vedio-to-3d.png" alt="PaintersGO AI generation preview" />
               </div>
             </div>
 
             <div className="stage-panel side-panel top">
               <span className="panel-label">{stageLabels.top}</span>
-              <div className="mini-grid">
-                <span />
-                <span />
-                <span />
-                <span />
+              <div className="mini-preview">
+                <img src="/pic2.jpg" alt="PaintersGO collaboration preview" />
               </div>
             </div>
 
             <div className="stage-panel side-panel bottom">
               <span className="panel-label">{stageLabels.bottom}</span>
-              <div className="timeline">
-                <span />
-                <span />
-                <span />
+              <div className="mini-preview">
+                <img src="/o2o1.png" alt="PaintersGO manufacturing preview" />
               </div>
             </div>
           </div>
@@ -617,7 +679,9 @@ const App = () => {
                   <span className="feature-label">{item.title}</span>
                 </div>
                 <p>{item.description}</p>
-                <div className="media-slot">{item.mediaLabel}</div>
+                <div className="media-slot media-slot-image">
+                  <img src={item.image} alt={item.alt} />
+                </div>
               </article>
             ))}
           </div>
@@ -683,11 +747,13 @@ const App = () => {
           </div>
 
           <div className="showcase-grid">
-            {t.media.slots.map((slot) => (
-              <article key={slot.title} className="showcase-card">
-                <div className="showcase-placeholder" />
-                <h3>{slot.title}</h3>
-                <p>{slot.body}</p>
+            {t.media.cards.map((card) => (
+              <article key={card.title} className="showcase-card">
+                <div className="showcase-placeholder">
+                  <img src={card.image} alt={card.alt} />
+                </div>
+                <h3>{card.title}</h3>
+                <p>{card.body}</p>
               </article>
             ))}
           </div>
@@ -711,7 +777,7 @@ const App = () => {
 
         <section className="cta-section" id="contact">
           <div className="cta-card">
-            <span className="eyebrow">Next Step</span>
+            <span className="eyebrow">{t.contact.kicker}</span>
             <h2>{t.contact.title}</h2>
             <p>{t.contact.body}</p>
 
@@ -728,7 +794,7 @@ const App = () => {
               <a className="button button-primary" href="/PaintersGO.apk">
                 {t.contact.primary}
               </a>
-              <a className="button button-secondary" href="#features">
+              <a className="button button-secondary" href="#faq">
                 {t.contact.secondary}
               </a>
             </div>
