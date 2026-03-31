@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { layoutWithLines, prepareWithSegments, setLocale, walkLineRanges } from "@chenglou/pretext";
 
-type BalancedHeadlineProps = {
+export type BalancedTextProps = {
   text: string;
   locale?: string;
   className?: string;
@@ -24,12 +24,12 @@ const countLines = (
   return count;
 };
 
-export function BalancedHeadline({
+export function BalancedText({
   text,
   locale,
   className,
   minWidthRatio = 0.58
-}: BalancedHeadlineProps) {
+}: BalancedTextProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const [balanced, setBalanced] = useState<BalancedState | null>(null);
 
@@ -138,3 +138,5 @@ export function BalancedHeadline({
     </span>
   );
 }
+
+export const BalancedHeadline = BalancedText;
