@@ -115,31 +115,32 @@ type SiteCopy = {
 };
 
 const siteBaseUrl = "https://paintersgo.top";
+const sectionIds = ["home", "features", "workflow", "audience", "faq", "contact"] as const;
 
 const copy: Record<Locale, SiteCopy> = {
   zh: {
     meta: {
       title: "PaintersGO | AI 3D 创作、上色协作与制造链路",
       description:
-        "PaintersGO 降低 3D 内容创作门槛，连接 AI 生成 3D、移动端上色编辑、多人协作、云修复与 O2O 打印制造。"
+        "PaintersGO 降低 3D 内容创作门槛，连接 AI 生成 3D、移动端上色编辑、多人协作、云修复与 O2O 制造打印。"
     },
     nav: {
       features: "核心能力",
       workflow: "创作链路",
       audience: "适用人群",
       faq: "常见问题",
-      contact: "下载与联系"
+      contact: "下载入口"
     },
     hero: {
-      badge: "AI 3D 创作到实体制造的移动入口",
+      badge: "从 AI 生成到实体制造的移动端入口",
       title: "让 3D 创作更容易开始，也更容易走向现实",
       subtitle:
-        "PaintersGO 把 AI 生成 3D 模型、移动端上色编辑、多人协作、云修复和 O2O 制造/打印串成一条更完整的产品链路，让更多人可以把想法变成可展示、可分享、可制造的三维成果。",
+        "PaintersGO 把 AI 生成 3D 模型、移动端上色编辑、多人协作、云修复与 O2O 制造打印串成一条更完整的产品链路，让更多人把想法变成可展示、可分享、可制造的三维成果。",
       primaryCta: "下载 Android APK",
       secondaryCta: "查看核心能力",
       stats: [
-        { value: "AI", label: "从文本或图像快速进入 3D 创作起点" },
-        { value: "Mobile", label: "直接在手机端查看、涂装与处理模型" },
+        { value: "AI", label: "从文字或图像快速进入 3D 创作起点" },
+        { value: "Mobile", label: "直接在手机端查看、上色与处理模型" },
         { value: "Make", label: "继续连接修复、打印与实体交付场景" }
       ]
     },
@@ -154,13 +155,13 @@ const copy: Record<Locale, SiteCopy> = {
       kicker: "核心能力",
       title: "先把产品最重要的五件事讲清楚",
       description:
-        "PaintersGO 不是单一功能的演示页，而是一款面向真实创作与输出流程的产品。官网应该先帮助访问者看懂它真正能解决什么问题。",
+        "PaintersGO 不是泛泛的沉浸式概念页，而是一个帮助用户真正完成 3D 创作与输出流程的产品。",
       items: [
         {
           id: "01",
           title: "AI 生成 3D 模型",
           description:
-            "从文字描述或输入图像快速生成 3D 内容，降低从灵感到三维资产的起步门槛。",
+            "从文字描述或图片输入快速生成 3D 内容，降低从想法到三维资产的启动门槛。",
           image: "/vedio-to-3d.png",
           alt: "PaintersGO AI generated 3D feature preview"
         },
@@ -168,7 +169,7 @@ const copy: Record<Locale, SiteCopy> = {
           id: "02",
           title: "3D 上色编辑",
           description:
-            "在移动端直接查看、上色、调整材质与细节，让 3D 表达不再受制于传统桌面工作流。",
+            "在移动端直接查看、上色、切换材质并微调细节，让 3D 表达不再强依赖桌面端。",
           image: "/pic1.jpg",
           alt: "PaintersGO 3D painting editor preview"
         },
@@ -176,7 +177,7 @@ const copy: Record<Locale, SiteCopy> = {
           id: "03",
           title: "多人协作",
           description:
-            "围绕同一个模型协同创作，让团队、朋友或社区创作者共同推进结果，而不是停留在单人处理流程。",
+            "围绕同一模型共同创作，让团队、朋友或社区创作者一起推进结构、颜色与结果。",
           image: "/pic2.jpg",
           alt: "PaintersGO collaboration concept"
         },
@@ -184,7 +185,7 @@ const copy: Record<Locale, SiteCopy> = {
           id: "04",
           title: "云修复",
           description:
-            "针对复杂模型加入云端修复环节，帮助作品更顺利地进入打印与制造前准备。",
+            "为复杂模型加入云端修复环节，让作品更顺畅地进入打印与制造前准备。",
           image: "/pic3.jpg",
           alt: "PaintersGO cloud repair concept"
         },
@@ -192,7 +193,7 @@ const copy: Record<Locale, SiteCopy> = {
           id: "05",
           title: "O2O 制造 / 打印",
           description:
-            "把数字模型继续推进到线下制造与打印场景，让虚拟资产更接近实体交付。",
+            "把数字模型继续推向线下制造与打印场景，让虚拟资产更接近实体交付。",
           image: "/o2o1.png",
           alt: "PaintersGO O2O manufacturing preview"
         }
@@ -202,11 +203,11 @@ const copy: Record<Locale, SiteCopy> = {
       kicker: "创作链路",
       title: "从想法到实物，不再被拆成割裂的几段流程",
       description:
-        "PaintersGO 的差异不只在某个 AI 能力，而是在于它把原本分散的步骤串起来，让创作、协作和制造之间的过渡更自然。",
+        "PaintersGO 的价值不只在某个 AI 能力，而在于它把原本分散的步骤串起来，让创作、协作和制造之间的过渡更自然。",
       steps: [
         {
           title: "生成",
-          body: "输入提示词、导入图片，或打开已有模型，快速得到一个可以继续处理的 3D 起点。"
+          body: "输入提示词、导入图片，或打开已有模型，快速得到可继续推进的 3D 起点。"
         },
         {
           title: "编辑",
@@ -214,11 +215,11 @@ const copy: Record<Locale, SiteCopy> = {
         },
         {
           title: "协作",
-          body: "让更多人围绕同一个模型共同完善结构、色彩和最终呈现。"
+          body: "让更多人围绕同一模型共同完善结构、色彩和最终呈现。"
         },
         {
           title: "修复与制造",
-          body: "经过云修复后再走向打印或制造服务，让数字成果真正接近实体输出。"
+          body: "经过云修复后继续走向打印或制造服务，让数字成果真正接近实体输出。"
         }
       ]
     },
@@ -226,7 +227,7 @@ const copy: Record<Locale, SiteCopy> = {
       kicker: "适用人群",
       title: "不只面向传统 3D 从业者",
       description:
-        "PaintersGO 更适合被表达成一款降低创作门槛的产品，而不是一个默认用户都熟悉 3D 工具链的专业站点。",
+        "PaintersGO 更像一个降低创作门槛的产品，而不是默认每位访客都熟悉复杂 3D 工具链的专业站点。",
       personas: [
         {
           title: "AI 创作者",
@@ -234,43 +235,43 @@ const copy: Record<Locale, SiteCopy> = {
         },
         {
           title: "3D 打印玩家",
-          body: "把数字模型继续推进到可修复、可打印、可落地的输出流程。"
+          body: "把数字模型推进到可修复、可打印、可落地的输出流程。"
         },
         {
           title: "设计师与内容创作者",
           body: "在移动端更直观地展示模型视觉效果与上色结果。"
         },
         {
-          title: "团队与社区合作者",
-          body: "围绕同一个模型同步创作、同步反馈、同步推进结果。"
+          title: "团队与社区协作者",
+          body: "围绕同一模型同步创作、同步反馈、同步推进结果。"
         }
       ]
     },
     proof: {
-      kicker: "为什么是它",
+      kicker: "为什么重要",
       title: "PaintersGO 应该被看见的产品差异",
       description:
-        "即使真实案例还在陆续补充，官网也应该先把差异讲清楚，让访问者知道这不是单点能力拼接出来的产品。",
+        "即使真实案例还在持续补充，官网也应该先把差异讲清楚，让访客理解它不是几个零散能力的拼接。",
       cards: [
         {
           title: "完整链路，而不是单点功能",
-          body: "从生成、编辑到制造的叙事更完整，更适合官网作为产品主表达。"
+          body: "从生成、编辑到制造的叙事更完整，更适合作为产品官网的核心表达。"
         },
         {
           title: "移动端优先，而不是桌面端迁移",
-          body: "PaintersGO 的重要特点在于把 3D 处理体验主动拉近到手机端。"
+          body: "PaintersGO 的一个重要特点，是把 3D 处理体验主动拉近到手机端。"
         },
         {
-          title: "支持协作，而不是只强调个人操作",
-          body: "多人协作不仅是功能点，也是 PaintersGO 长期产品潜力的重要组成。"
+          title: "支持协作，而不只是强调个人操作",
+          body: "多人协作不仅是功能点，也是产品长期潜力的重要组成。"
         }
       ]
     },
     media: {
       kicker: "效果展示",
-      title: "用真实画面帮助访问者建立直觉",
+      title: "用真实画面帮助访客更快建立直觉",
       description:
-        "下面这些区域已经接入当前仓库里的真实素材。后续你可以继续替换成更高质量的产品截图、录屏和成品图。",
+        "这些区域已经接入当前仓库里的真实素材，后续可以逐步替换成更高质量的截图、录屏和成品照片。",
       cards: [
         {
           title: "移动端 3D 体验",
@@ -294,7 +295,7 @@ const copy: Record<Locale, SiteCopy> = {
     },
     faq: {
       kicker: "常见问题",
-      title: "先回答访问者最容易关心的几个问题",
+      title: "先回答访客最容易关心的几个问题",
       items: [
         {
           q: "PaintersGO 是做什么的？",
@@ -306,7 +307,7 @@ const copy: Record<Locale, SiteCopy> = {
         },
         {
           q: "现在可以直接下载体验吗？",
-          a: "可以，当前官网已提供 Android APK 下载入口，后续会继续补充更多案例、素材和转化入口。"
+          a: "可以，当前官网已经提供 Android APK 下载入口，后续会继续补充更多案例、素材和转化入口。"
         }
       ]
     },
@@ -314,7 +315,7 @@ const copy: Record<Locale, SiteCopy> = {
       kicker: "下载与联系",
       title: "从这里开始体验 PaintersGO",
       body:
-        "你可以先下载 Android APK 体验产品，再根据后续更新逐步看到更多真实案例、功能演示与制造场景内容。",
+        "你可以先下载 Android APK 体验产品，后续再逐步看到更多真实案例、功能演示与制造场景内容。",
       primary: "下载 APK",
       secondary: "查看常见问题",
       cards: [
@@ -365,7 +366,7 @@ const copy: Record<Locale, SiteCopy> = {
       kicker: "Core Capabilities",
       title: "Start with the five product values that matter most",
       description:
-        "PaintersGO should not be presented as vague immersive tech. It should be understood as a product that helps people create 3D content more easily and move it closer to real-world output.",
+        "PaintersGO should be understood as a product that helps people create 3D content more easily and move it closer to real-world output.",
       items: [
         {
           id: "01",
@@ -548,6 +549,8 @@ const setMetaContent = (selector: string, value: string) => {
   }
 };
 
+const getAnchorTarget = (href: string) => href.replace("#", "");
+
 const App = () => {
   const initialLocale: Locale =
     typeof window !== "undefined" && window.location.pathname.startsWith("/en")
@@ -555,11 +558,17 @@ const App = () => {
       : "zh";
 
   const [locale, setLocale] = useState<Locale>(initialLocale);
+  const [activeSection, setActiveSection] =
+    useState<(typeof sectionIds)[number]>("home");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [faqOpenIndex, setFaqOpenIndex] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
   const t = copy[locale];
 
   useEffect(() => {
     const pathname = locale === "en" ? "/en/" : "/";
-    window.history.replaceState({}, "", pathname);
+    const hash = window.location.hash;
+    window.history.replaceState({}, "", `${pathname}${hash}`);
     document.documentElement.lang = locale === "en" ? "en" : "zh-CN";
     document.title = t.meta.title;
     setMetaContent('meta[name="description"]', t.meta.description);
@@ -573,6 +582,103 @@ const App = () => {
     }
   }, [locale, t.meta.description, t.meta.title]);
 
+  useEffect(() => {
+    setFaqOpenIndex(0);
+    setMenuOpen(false);
+  }, [locale]);
+
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > 18);
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const sections = sectionIds
+      .map((id) => document.getElementById(id))
+      .filter((node): node is HTMLElement => Boolean(node));
+
+    if (sections.length === 0) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const current = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (current?.target.id) {
+          setActiveSection(current.target.id as (typeof sectionIds)[number]);
+        }
+      },
+      {
+        rootMargin: "-20% 0px -55% 0px",
+        threshold: [0.2, 0.35, 0.55]
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const nodes = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal]"));
+
+    if (nodes.length === 0) {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        rootMargin: "0px 0px -12% 0px",
+        threshold: 0.18
+      }
+    );
+
+    nodes.forEach((node, index) => {
+      node.style.setProperty("--reveal-delay", `${Math.min(index * 45, 220)}ms`);
+      observer.observe(node);
+    });
+
+    return () => observer.disconnect();
+  }, [locale]);
+
+  const scrollToSection = (href: string) => {
+    const id = getAnchorTarget(href);
+    const target = document.getElementById(id);
+
+    if (!target) {
+      return;
+    }
+
+    const top = target.getBoundingClientRect().top + window.scrollY - 110;
+    window.history.replaceState({}, "", `${window.location.pathname}#${id}`);
+    window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
+    setActiveSection(id as (typeof sectionIds)[number]);
+    setMenuOpen(false);
+  };
+
+  const navItems = [
+    { href: "#features", label: t.nav.features },
+    { href: "#workflow", label: t.nav.workflow },
+    { href: "#audience", label: t.nav.audience },
+    { href: "#faq", label: t.nav.faq },
+    { href: "#contact", label: t.nav.contact }
+  ];
+
   const stageLabels =
     locale === "zh"
       ? { left: "AI 生成", top: "多人协作", bottom: "制造 / 打印" }
@@ -580,35 +686,78 @@ const App = () => {
 
   return (
     <div className="site-shell">
-      <header className="topbar">
-        <a className="brand" href="#home">
+      <header className={`topbar${scrolled ? " is-scrolled" : ""}`}>
+        <a
+          className="brand"
+          href="#home"
+          onClick={(event) => {
+            event.preventDefault();
+            scrollToSection("#home");
+          }}
+        >
           <span className="brand-mark">
             <img src="/logo.png" alt="PaintersGO logo" />
           </span>
           <span className="brand-text">PaintersGO</span>
         </a>
 
-        <nav className="nav">
-          <a href="#features">{t.nav.features}</a>
-          <a href="#workflow">{t.nav.workflow}</a>
-          <a href="#audience">{t.nav.audience}</a>
-          <a href="#faq">{t.nav.faq}</a>
-          <a href="#contact">{t.nav.contact}</a>
+        <button
+          className={`menu-toggle${menuOpen ? " is-open" : ""}`}
+          type="button"
+          aria-expanded={menuOpen}
+          aria-controls="site-nav"
+          aria-label={locale === "zh" ? "打开导航菜单" : "Open navigation menu"}
+          onClick={() => setMenuOpen((current) => !current)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
+        <nav className={`nav${menuOpen ? " is-open" : ""}`} id="site-nav">
+          {navItems.map((item) => {
+            const target = getAnchorTarget(item.href);
+
+            return (
+              <a
+                key={item.href}
+                href={item.href}
+                className={activeSection === target ? "is-active" : ""}
+                aria-current={activeSection === target ? "page" : undefined}
+                onClick={(event) => {
+                  event.preventDefault();
+                  scrollToSection(item.href);
+                }}
+              >
+                {item.label}
+              </a>
+            );
+          })}
         </nav>
 
-        <button
-          className="locale-toggle"
-          type="button"
-          onClick={() => setLocale((current) => (current === "zh" ? "en" : "zh"))}
-          aria-label="Toggle language"
-        >
-          {locale === "zh" ? "EN" : "中文"}
-        </button>
+        <div className="locale-toggle" role="group" aria-label="Language switcher">
+          <button
+            className={locale === "zh" ? "is-active" : ""}
+            type="button"
+            onClick={() => setLocale("zh")}
+            aria-pressed={locale === "zh"}
+          >
+            中文
+          </button>
+          <button
+            className={locale === "en" ? "is-active" : ""}
+            type="button"
+            onClick={() => setLocale("en")}
+            aria-pressed={locale === "en"}
+          >
+            EN
+          </button>
+        </div>
       </header>
 
       <main id="home">
-        <section className="hero">
-          <div className="hero-copy">
+        <section className="hero" data-reveal="hero">
+          <div className="hero-copy" data-reveal="hero-copy">
             <span className="eyebrow">{t.hero.badge}</span>
             <h1>{t.hero.title}</h1>
             <p className="hero-subtitle">{t.hero.subtitle}</p>
@@ -617,14 +766,21 @@ const App = () => {
               <a className="button button-primary" href="/PaintersGO.apk">
                 {t.hero.primaryCta}
               </a>
-              <a className="button button-secondary" href="#features">
+              <a
+                className="button button-secondary"
+                href="#features"
+                onClick={(event) => {
+                  event.preventDefault();
+                  scrollToSection("#features");
+                }}
+              >
                 {t.hero.secondaryCta}
               </a>
             </div>
 
             <div className="hero-stats">
               {t.hero.stats.map((item) => (
-                <article key={item.label} className="stat-card">
+                <article key={item.label} className="stat-card" data-reveal="stat-card">
                   <strong>{item.value}</strong>
                   <span>{item.label}</span>
                 </article>
@@ -632,7 +788,7 @@ const App = () => {
             </div>
           </div>
 
-          <div className="hero-stage" aria-label="PaintersGO visual overview">
+          <div className="hero-stage" aria-label="PaintersGO visual overview" data-reveal="hero-stage">
             <img className="hero-stage-image" src="/background.jpg" alt="PaintersGO visual background" />
 
             <div className="stage-panel primary-panel">
@@ -658,13 +814,13 @@ const App = () => {
           </div>
         </section>
 
-        <section className="capability-strip">
+        <section className="capability-strip" data-reveal="capabilities">
           {t.introStrip.map((item) => (
             <span key={item}>{item}</span>
           ))}
         </section>
 
-        <section className="section" id="features">
+        <section className="section" id="features" data-reveal="features">
           <div className="section-head">
             <span className="eyebrow">{t.features.kicker}</span>
             <h2>{t.features.title}</h2>
@@ -673,7 +829,7 @@ const App = () => {
 
           <div className="feature-grid">
             {t.features.items.map((item) => (
-              <article key={item.id} className="feature-card">
+              <article key={item.id} className="feature-card" data-reveal="feature-card">
                 <div className="feature-meta">
                   <span className="feature-tag">{item.id}</span>
                   <span className="feature-label">{item.title}</span>
@@ -687,7 +843,7 @@ const App = () => {
           </div>
         </section>
 
-        <section className="section workflow-section" id="workflow">
+        <section className="section workflow-section" id="workflow" data-reveal="workflow">
           <div className="section-head">
             <span className="eyebrow">{t.workflow.kicker}</span>
             <h2>{t.workflow.title}</h2>
@@ -696,7 +852,7 @@ const App = () => {
 
           <div className="workflow-grid">
             {t.workflow.steps.map((step, index) => (
-              <article key={step.title} className="workflow-card">
+              <article key={step.title} className="workflow-card" data-reveal="workflow-card">
                 <span className="step-index">0{index + 1}</span>
                 <h3>{step.title}</h3>
                 <p>{step.body}</p>
@@ -705,7 +861,7 @@ const App = () => {
           </div>
         </section>
 
-        <section className="section audience-section" id="audience">
+        <section className="section audience-section" id="audience" data-reveal="audience">
           <div className="section-head">
             <span className="eyebrow">{t.audience.kicker}</span>
             <h2>{t.audience.title}</h2>
@@ -714,7 +870,7 @@ const App = () => {
 
           <div className="audience-grid">
             {t.audience.personas.map((item) => (
-              <article key={item.title} className="audience-card">
+              <article key={item.title} className="audience-card" data-reveal="audience-card">
                 <h3>{item.title}</h3>
                 <p>{item.body}</p>
               </article>
@@ -722,7 +878,7 @@ const App = () => {
           </div>
         </section>
 
-        <section className="section proof-section">
+        <section className="section proof-section" data-reveal="proof">
           <div className="section-head">
             <span className="eyebrow">{t.proof.kicker}</span>
             <h2>{t.proof.title}</h2>
@@ -731,7 +887,7 @@ const App = () => {
 
           <div className="proof-grid">
             {t.proof.cards.map((card) => (
-              <article key={card.title} className="proof-card">
+              <article key={card.title} className="proof-card" data-reveal="proof-card">
                 <h3>{card.title}</h3>
                 <p>{card.body}</p>
               </article>
@@ -739,7 +895,7 @@ const App = () => {
           </div>
         </section>
 
-        <section className="section showcase-section">
+        <section className="section showcase-section" data-reveal="showcase">
           <div className="section-head">
             <span className="eyebrow">{t.media.kicker}</span>
             <h2>{t.media.title}</h2>
@@ -748,7 +904,7 @@ const App = () => {
 
           <div className="showcase-grid">
             {t.media.cards.map((card) => (
-              <article key={card.title} className="showcase-card">
+              <article key={card.title} className="showcase-card" data-reveal="showcase-card">
                 <div className="showcase-placeholder">
                   <img src={card.image} alt={card.alt} />
                 </div>
@@ -759,31 +915,49 @@ const App = () => {
           </div>
         </section>
 
-        <section className="section faq-section" id="faq">
+        <section className="section faq-section" id="faq" data-reveal="faq">
           <div className="section-head">
             <span className="eyebrow">{t.faq.kicker}</span>
             <h2>{t.faq.title}</h2>
           </div>
 
           <div className="faq-list">
-            {t.faq.items.map((item) => (
-              <article key={item.q} className="faq-item">
-                <h3>{item.q}</h3>
-                <p>{item.a}</p>
+            {t.faq.items.map((item, index) => (
+              <article
+                key={item.q}
+                className={`faq-item${faqOpenIndex === index ? " is-open" : ""}`}
+                data-reveal="faq-item"
+              >
+                <button
+                  className="faq-trigger"
+                  type="button"
+                  aria-expanded={faqOpenIndex === index}
+                  onClick={() =>
+                    setFaqOpenIndex((current) => (current === index ? -1 : index))
+                  }
+                >
+                  <h3>{item.q}</h3>
+                  <span className="faq-icon" aria-hidden="true">
+                    {faqOpenIndex === index ? "-" : "+"}
+                  </span>
+                </button>
+                <div className="faq-answer" hidden={faqOpenIndex !== index}>
+                  <p>{item.a}</p>
+                </div>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="cta-section" id="contact">
-          <div className="cta-card">
+        <section className="cta-section" id="contact" data-reveal="contact">
+          <div className="cta-card" data-reveal="cta-card">
             <span className="eyebrow">{t.contact.kicker}</span>
             <h2>{t.contact.title}</h2>
             <p>{t.contact.body}</p>
 
             <div className="contact-grid">
               {t.contact.cards.map((card) => (
-                <article key={card.label} className="contact-chip">
+                <article key={card.label} className="contact-chip" data-reveal="contact-chip">
                   <span>{card.label}</span>
                   <strong>{card.value}</strong>
                 </article>
@@ -794,7 +968,14 @@ const App = () => {
               <a className="button button-primary" href="/PaintersGO.apk">
                 {t.contact.primary}
               </a>
-              <a className="button button-secondary" href="#faq">
+              <a
+                className="button button-secondary"
+                href="#faq"
+                onClick={(event) => {
+                  event.preventDefault();
+                  scrollToSection("#faq");
+                }}
+              >
                 {t.contact.secondary}
               </a>
             </div>
