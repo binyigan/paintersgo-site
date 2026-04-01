@@ -1,36 +1,37 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { BalancedHeadline } from "./components/BalancedHeadline";
 
 type Locale = "zh" | "en";
 
-type Feature = {
+type NavItem = {
+  href: string;
+  label: string;
+};
+
+type HeroMetric = {
+  value: string;
+  label: string;
+};
+
+type FlowCard = {
   id: string;
   title: string;
-  description: string;
+  body: string;
   image: string;
   alt: string;
 };
 
-type WorkflowStep = {
-  title: string;
-  body: string;
-};
-
-type Persona = {
-  title: string;
-  body: string;
-};
-
-type ProofCard = {
-  title: string;
-  body: string;
-};
-
-type MediaCard = {
+type AppPanel = {
   title: string;
   body: string;
   image: string;
   alt: string;
+  bullets: string[];
+};
+
+type UseCase = {
+  title: string;
+  body: string;
 };
 
 type FaqItem = {
@@ -38,63 +39,45 @@ type FaqItem = {
   a: string;
 };
 
-type ContactCard = {
+type ContactChip = {
   label: string;
   value: string;
 };
 
-type MetaCopy = {
-  title: string;
-  description: string;
-};
-
 type SiteCopy = {
-  meta: MetaCopy;
-  nav: {
-    features: string;
-    workflow: string;
-    audience: string;
-    faq: string;
-    contact: string;
+  meta: {
+    title: string;
+    description: string;
   };
+  nav: NavItem[];
   hero: {
     badge: string;
     title: string;
     subtitle: string;
     primaryCta: string;
     secondaryCta: string;
-    stats: Array<{ value: string; label: string }>;
+    metrics: HeroMetric[];
+    screenTitle: string;
+    screenBody: string;
+    floatingTop: string;
+    floatingBottom: string;
   };
-  introStrip: string[];
-  features: {
+  flow: {
     kicker: string;
     title: string;
     description: string;
-    items: Feature[];
+    cards: FlowCard[];
   };
-  workflow: {
+  inside: {
     kicker: string;
     title: string;
     description: string;
-    steps: WorkflowStep[];
+    panels: AppPanel[];
   };
-  audience: {
+  useCases: {
     kicker: string;
     title: string;
-    description: string;
-    personas: Persona[];
-  };
-  proof: {
-    kicker: string;
-    title: string;
-    description: string;
-    cards: ProofCard[];
-  };
-  media: {
-    kicker: string;
-    title: string;
-    description: string;
-    cards: MediaCard[];
+    items: UseCase[];
   };
   faq: {
     kicker: string;
@@ -107,7 +90,7 @@ type SiteCopy = {
     body: string;
     primary: string;
     secondary: string;
-    cards: ContactCard[];
+    chips: ContactChip[];
   };
   footer: {
     product: string;
@@ -116,417 +99,285 @@ type SiteCopy = {
 };
 
 const siteBaseUrl = "https://paintersgo.top";
-const sectionIds = ["home", "features", "workflow", "audience", "faq", "contact"] as const;
+const sectionIds = ["home", "flow", "inside", "use-cases", "faq", "download"] as const;
 
 const copy: Record<Locale, SiteCopy> = {
   zh: {
     meta: {
-      title: "PaintersGO | 从 AI 生成到真实制造的 3D 创作入口",
+      title: "PaintersGO | 一款真正把 3D 创作带到手机上的应用",
       description:
-        "PaintersGO 将 AI 3D 生成、移动端上色编辑、多人协作、云修复与 O2O 制造串成一条更完整的 3D 产品链路。"
+        "PaintersGO 把 AI 生成、3D 上色、多人协作、云修复与打印输出整合成一条更像 app 的移动工作流。"
     },
-    nav: {
-      features: "核心能力",
-      workflow: "创作流程",
-      audience: "适用人群",
-      faq: "常见问题",
-      contact: "下载体验"
-    },
+    nav: [
+      { href: "#flow", label: "核心流程" },
+      { href: "#inside", label: "应用界面" },
+      { href: "#use-cases", label: "适用场景" },
+      { href: "#faq", label: "FAQ" },
+      { href: "#download", label: "下载" }
+    ],
     hero: {
-      badge: "把 3D 创作从复杂工具链，变成更直观的移动体验",
-      title: "从灵感生成，到上色协作，再到落地制造",
+      badge: "A mobile-first 3D creation app",
+      title: "像真正的 3D 应用一样介绍它，而不是像一页散乱官网",
       subtitle:
-        "PaintersGO 不是单点 AI 功能页，而是一个把 3D 内容生成、移动编辑、云端修复与实体输出连接起来的完整入口，让创意更快走向可展示、可分享、可制造的结果。",
+        "PaintersGO 的重点不是堆功能词，而是把 AI 生成、模型上色、多人协作和打印前处理整合成一个在手机上可用、可理解、可持续推进的 3D 创作体验。",
       primaryCta: "下载 Android APK",
-      secondaryCta: "查看核心能力",
-      stats: [
-        { value: "AI 3D", label: "从文本或图片更快生成可继续推进的三维资产" },
-        { value: "Mobile", label: "直接在手机上查看、上色、调整材质与细节" },
-        { value: "Make", label: "继续衔接修复、打印和实体交付的后续流程" }
-      ]
+      secondaryCta: "查看应用界面",
+      metrics: [
+        { value: "AI", label: "从文字或图片生成 3D 起点" },
+        { value: "Paint", label: "在手机上直接上色与查看材质" },
+        { value: "Output", label: "继续走向修复、打印和交付" }
+      ],
+      screenTitle: "移动端 3D 工作台",
+      screenBody: "更接近真实 app 的介绍方式：先看到界面、再理解流程、最后决定是否下载。",
+      floatingTop: "多人共创同一模型",
+      floatingBottom: "打印前修复与输出"
     },
-    introStrip: ["AI 生成 3D", "移动端上色编辑", "多人协作", "云修复", "打印与制造"],
-    features: {
-      kicker: "Core Capabilities",
-      title: "先把用户最关心的五个能力讲清楚",
-      description:
-        "页面不应该只是素材堆叠，而应该帮助访客快速理解 PaintersGO 为什么不同，以及它如何把创作链路真正串起来。",
-      items: [
+    flow: {
+      kicker: "Core Flow",
+      title: "PaintersGO 的价值，在于这四步能自然连起来",
+      description: "这不是几个孤立能力的堆叠，而是一条对移动端更友好的 3D 工作流。",
+      cards: [
         {
           id: "01",
-          title: "AI 3D 生成",
-          description: "从文字描述或参考图片快速生成 3D 起点，降低从想法到模型的启动成本。",
+          title: "AI 生成",
+          body: "从文字提示或图片快速生成三维起点，先把灵感变成可操作对象。",
           image: "/vedio-to-3d.png",
-          alt: "PaintersGO AI 3D generation preview"
+          alt: "PaintersGO AI generation"
         },
         {
           id: "02",
-          title: "移动端上色与编辑",
-          description: "在手机上直接查看模型、切换材质、调整颜色，让表达和修改发生得更即时。",
+          title: "模型上色",
+          body: "直接在手机上查看模型、切换材质、调整颜色，让表达更接近即时创作。",
           image: "/pic1.jpg",
-          alt: "PaintersGO mobile painting and editing"
+          alt: "PaintersGO painting editor"
         },
         {
           id: "03",
-          title: "多人协作",
-          description: "围绕同一个模型共同推进结构、风格与细节，不再把 3D 创作局限为单人流程。",
+          title: "协作推进",
+          body: "邀请团队或朋友围绕同一模型继续迭代，不再停留在单人编辑。",
           image: "/pic2.jpg",
-          alt: "PaintersGO multiplayer collaboration"
+          alt: "PaintersGO collaboration"
         },
         {
           id: "04",
-          title: "云端修复",
-          description: "为复杂模型补上修复环节，让作品在进入打印或制造前具备更好的可用性。",
-          image: "/pic3.jpg",
-          alt: "PaintersGO cloud repair"
-        },
-        {
-          id: "05",
-          title: "O2O 制造与打印",
-          description: "把数字资产继续推进到线下制造与打印场景，让 3D 创作真正抵达现实世界。",
-          image: "/o2o1.png",
-          alt: "PaintersGO O2O manufacturing preview"
+          title: "修复输出",
+          body: "完成云修复后继续走向打印或制造，让数字内容更容易抵达现实世界。",
+          image: "/o2o2.png",
+          alt: "PaintersGO output flow"
         }
       ]
     },
-    workflow: {
-      kicker: "Workflow",
-      title: "从灵感到实体，不再被拆成几段互不相连的流程",
-      description:
-        "PaintersGO 的价值不止在某一个 AI 能力，而在于它把原本分散的步骤整合得更顺，让创作、协作和制造之间的过渡更自然。",
-      steps: [
+    inside: {
+      kicker: "Inside The App",
+      title: "把应用界面放到最前面，访客才能快速理解这是什么产品",
+      description: "相比大段说明文字，真实界面、状态和操作氛围更能建立对 3D app 的第一印象。",
+      panels: [
         {
-          title: "生成起点",
-          body: "输入提示词、导入图片，或从已有模型出发，快速形成可继续打磨的 3D 草案。"
+          title: "生成与查看",
+          body: "先看到内容如何被生成，再看到它如何进入移动端查看和继续编辑。",
+          image: "/AR.png",
+          alt: "PaintersGO app preview",
+          bullets: ["Prompt 到 3D 起点", "移动端查看模型", "更快决定是否继续细化"]
         },
         {
-          title: "移动编辑",
-          body: "在手机上完成查看、上色、局部微调与材质预览，把反馈周期明显缩短。"
-        },
-        {
-          title: "团队协作",
-          body: "让朋友、团队或社区围绕同一模型共同创作，提升推进效率与表达质量。"
-        },
-        {
-          title: "修复与输出",
-          body: "在云端修复后继续连接打印或制造服务，把三维内容推向真实交付。"
+          title: "材质与结果",
+          body: "不是静态海报，而是更贴近 app 内部状态的模型展示和结果呈现。",
+          image: "/video-to-3d1.png",
+          alt: "PaintersGO result preview",
+          bullets: ["颜色与材质表达", "输出效果更直观", "适合介绍成品质量"]
         }
       ]
     },
-    audience: {
-      kicker: "Audience",
-      title: "不只服务传统 3D 从业者，也面向更广泛的创作者",
-      description:
-        "PaintersGO 更像一个降低门槛的创作产品，而不是默认访客已经熟悉复杂 3D 工具链的专业站点。",
-      personas: [
+    useCases: {
+      kicker: "Use Cases",
+      title: "更适合这些会真的下载一个 3D app 的人",
+      items: [
         {
           title: "AI 创作者",
-          body: "更快把概念和视觉方向转成 3D 结果，减少工具门槛带来的中断。"
+          body: "想把灵感尽快变成 3D 结果，不想被复杂桌面软件挡在门外。"
         },
         {
           title: "3D 打印玩家",
-          body: "把数字模型推进到可修复、可打印、可落地的后续环节。"
+          body: "需要从模型处理一路走到修复、打印和实体输出。"
         },
         {
-          title: "设计师与内容团队",
-          body: "在更轻量的移动体验里展示模型效果、颜色方案和成品方向。"
-        },
-        {
-          title: "社群与协作团队",
-          body: "围绕同一个模型同步创作、共享反馈，并更快形成一致结果。"
-        }
-      ]
-    },
-    proof: {
-      kicker: "Why It Matters",
-      title: "首页应该传达的，不只是功能点，而是产品差异",
-      description:
-        "即便后续案例还会持续补充，官网也应该先把 PaintersGO 的核心差异表达清楚，建立访客对产品方向的信任感。",
-      cards: [
-        {
-          title: "一条完整链路，而非孤立功能",
-          body: "生成、编辑、修复、制造被组织成一个连续故事，产品价值更容易被理解。"
-        },
-        {
-          title: "移动优先，而不是把桌面流程搬到手机",
-          body: "PaintersGO 的重点在于让手机成为真实可用的 3D 入口，而不是次级预览端。"
-        },
-        {
-          title: "支持多人推进，而不是默认单人创作",
-          body: "协作能力不仅是卖点，也意味着产品未来可以覆盖更大的创作场景。"
-        }
-      ]
-    },
-    media: {
-      kicker: "Visual Showcase",
-      title: "用真实素材帮助访客更快建立产品直觉",
-      description:
-        "当前页面已经接入仓库中的真实图片资产，后续只需要继续替换成更强的截图、录屏和成品照片即可自然升级。",
-      cards: [
-        {
-          title: "移动端 3D 体验",
-          body: "展示应用界面、模型操作状态和 PaintersGO 的整体产品氛围。",
-          image: "/AR.png",
-          alt: "PaintersGO mobile 3D experience"
-        },
-        {
-          title: "制造与打印方向",
-          body: "展示从数字模型继续走向线下制造服务的产品想象力与场景延展。",
-          image: "/o2o2.png",
-          alt: "PaintersGO manufacturing and printing"
-        },
-        {
-          title: "三维结果展示",
-          body: "展示模型成果、材质效果和最终输出的视觉完成度。",
-          image: "/video-to-3d1.png",
-          alt: "PaintersGO 3D output showcase"
+          title: "内容团队",
+          body: "需要更轻量地展示模型效果、配色方向和视觉成果。"
         }
       ]
     },
     faq: {
       kicker: "FAQ",
-      title: "先回答访客最容易关心的几个问题",
+      title: "先回答真正会影响下载决策的问题",
       items: [
         {
-          q: "PaintersGO 是做什么的？",
-          a: "它是一个连接 AI 3D 生成、移动端上色编辑、多人协作、云修复和实体制造链路的产品。"
+          q: "PaintersGO 是什么？",
+          a: "它是一款把 AI 3D 生成、移动端上色、协作、修复和打印输出整合在一起的 3D 创作应用。"
         },
         {
-          q: "它更像创作工具，还是制造入口？",
-          a: "两者都有，但当前更核心的价值是先降低 3D 创作门槛，再把作品自然延伸到修复、打印和制造。"
+          q: "它更偏创作还是更偏打印？",
+          a: "两者都覆盖，但体验重点是先让 3D 创作在手机上更容易开始，再自然延伸到打印与交付。"
         },
         {
-          q: "现在可以直接下载体验吗？",
-          a: "可以，当前官网已经提供 Android APK 下载入口，后续还会继续补充更多案例、素材和演示内容。"
+          q: "现在可以直接体验吗？",
+          a: "可以，当前官网已经提供 Android APK 下载入口。"
         }
       ]
     },
     contact: {
-      kicker: "Download & Contact",
-      title: "从这里开始体验 PaintersGO",
-      body: "先下载 Android APK 体验当前版本，再通过官网逐步了解更多案例、能力细节和后续制造场景。",
-      primary: "下载 APK",
-      secondary: "查看常见问题",
-      cards: [
-        { label: "平台", value: "当前提供 Android APK" },
-        { label: "语言", value: "支持中文与英文双语浏览" },
-        { label: "当前重点", value: "AI 生成、移动编辑、协作、修复与制造链路" }
+      kicker: "Download",
+      title: "如果你想看一个更像 app 的 3D 产品，先从安装开始",
+      body: "官网负责帮助你快速理解产品，真正的体验仍然发生在应用里。当前已经提供 Android APK 下载。",
+      primary: "立即下载 APK",
+      secondary: "查看 FAQ",
+      chips: [
+        { label: "平台", value: "Android APK" },
+        { label: "语言", value: "中文 / English" },
+        { label: "关键词", value: "AI 生成、上色、协作、打印" }
       ]
     },
     footer: {
       product: "PaintersGO",
-      rights: "PaintersGO 官方站点，持续更新产品演示、素材案例与下载入口。"
+      rights: "PaintersGO 官方站点，持续更新应用界面、演示素材与下载入口。"
     }
   },
   en: {
     meta: {
-      title: "PaintersGO | AI 3D creation, painting, collaboration and making",
+      title: "PaintersGO | A real mobile intro for a 3D creation app",
       description:
-        "PaintersGO lowers the barrier to 3D creation by connecting AI generation, mobile painting, collaboration, cloud repair, and O2O manufacturing."
+        "PaintersGO combines AI generation, model painting, collaboration, cloud repair, and print output into a clearer mobile-first 3D workflow."
     },
-    nav: {
-      features: "Features",
-      workflow: "Workflow",
-      audience: "Audience",
-      faq: "FAQ",
-      contact: "Download"
-    },
-    hero: {
-      badge: "A mobile entry point from AI 3D creation to physical making",
-      title: "Make 3D creation easier to start and easier to bring into the real world",
-      subtitle:
-        "PaintersGO connects AI 3D generation, mobile painting and editing, multiplayer collaboration, cloud repair, and O2O manufacturing into one product flow, helping more people turn ideas into usable, shareable, and manufacturable 3D results.",
-      primaryCta: "Download Android APK",
-      secondaryCta: "Explore Core Features",
-      stats: [
-        { value: "AI", label: "Start 3D creation quickly from text or image input" },
-        { value: "Mobile", label: "Inspect, paint, and refine models directly on phone" },
-        { value: "Make", label: "Extend digital assets into repair, print, and delivery flow" }
-      ]
-    },
-    introStrip: [
-      "AI 3D Generation",
-      "3D Painting & Editing",
-      "Multiplayer Collaboration",
-      "Cloud Repair",
-      "O2O Manufacturing / Printing"
+    nav: [
+      { href: "#flow", label: "Core Flow" },
+      { href: "#inside", label: "App Screens" },
+      { href: "#use-cases", label: "Use Cases" },
+      { href: "#faq", label: "FAQ" },
+      { href: "#download", label: "Download" }
     ],
-    features: {
-      kicker: "Core Capabilities",
-      title: "Start with the five product values that matter most",
-      description:
-        "PaintersGO should be understood as a product that helps people create 3D content more easily and move it closer to real-world output.",
-      items: [
+    hero: {
+      badge: "A mobile-first 3D creation app",
+      title: "Introduce it like a real 3D app, not like a scattered landing page",
+      subtitle:
+        "PaintersGO is not about stacking feature buzzwords. It brings AI generation, model painting, collaboration, and output preparation into a mobile 3D workflow that people can actually understand and want to try.",
+      primaryCta: "Download Android APK",
+      secondaryCta: "See App Screens",
+      metrics: [
+        { value: "AI", label: "Turn text or images into a 3D starting point" },
+        { value: "Paint", label: "Inspect and paint models directly on phone" },
+        { value: "Output", label: "Continue into repair, print, and delivery" }
+      ],
+      screenTitle: "Mobile 3D workspace",
+      screenBody: "A stronger app intro starts with the interface, then the workflow, then the download decision.",
+      floatingTop: "Co-create around one model",
+      floatingBottom: "Repair and output before print"
+    },
+    flow: {
+      kicker: "Core Flow",
+      title: "The value of PaintersGO is that these four steps connect naturally",
+      description: "This should feel like one mobile 3D workflow, not a pile of disconnected features.",
+      cards: [
         {
           id: "01",
-          title: "AI 3D Generation",
-          description:
-            "Generate 3D content from text or images and reduce the startup cost from idea to workable asset.",
+          title: "AI Generation",
+          body: "Start from text prompts or images and turn the idea into something workable in 3D.",
           image: "/vedio-to-3d.png",
-          alt: "PaintersGO AI 3D generation preview"
+          alt: "PaintersGO AI generation"
         },
         {
           id: "02",
-          title: "3D Painting & Editing",
-          description:
-            "Inspect, paint, switch materials, and refine details directly on mobile with a more immediate workflow.",
+          title: "Model Painting",
+          body: "Inspect, switch materials, and paint directly on mobile so the workflow feels immediate.",
           image: "/pic1.jpg",
-          alt: "PaintersGO mobile painting and editing"
+          alt: "PaintersGO painting editor"
         },
         {
           id: "03",
-          title: "Multiplayer Collaboration",
-          description:
-            "Invite teammates, friends, or community creators into the same model workflow and co-create instead of working alone.",
+          title: "Collaboration",
+          body: "Invite teammates or friends to keep evolving the same model instead of stopping at solo editing.",
           image: "/pic2.jpg",
-          alt: "PaintersGO collaboration flow"
+          alt: "PaintersGO collaboration"
         },
         {
           id: "04",
-          title: "Cloud Repair",
-          description:
-            "Prepare complex assets through cloud repair so they can move more smoothly toward print or production readiness.",
-          image: "/pic3.jpg",
-          alt: "PaintersGO cloud repair preview"
-        },
-        {
-          id: "05",
-          title: "O2O Manufacturing / Printing",
-          description:
-            "Carry digital models into offline production and make PaintersGO an entry point to physical output.",
-          image: "/o2o1.png",
-          alt: "PaintersGO O2O manufacturing and printing"
+          title: "Repair & Output",
+          body: "Move through repair and continue toward printing or making so digital work gets closer to reality.",
+          image: "/o2o2.png",
+          alt: "PaintersGO output flow"
         }
       ]
     },
-    workflow: {
-      kicker: "Workflow",
-      title: "From idea to object, without splitting the story into disconnected tools",
-      description:
-        "The value of PaintersGO is not just one AI feature. It is the way the product connects scattered steps into a more natural creation-to-making path.",
-      steps: [
+    inside: {
+      kicker: "Inside The App",
+      title: "Put the app interface first so visitors understand the product quickly",
+      description: "Real screens, states, and visual atmosphere explain a 3D app better than paragraphs of generic product copy.",
+      panels: [
         {
-          title: "Generate",
-          body: "Use prompts, images, or existing models to create a 3D starting point that can be pushed forward."
+          title: "Generate & Inspect",
+          body: "Show how content starts, then how it moves into a mobile interface for inspection and iteration.",
+          image: "/AR.png",
+          alt: "PaintersGO app preview",
+          bullets: ["Prompt to 3D starting point", "Mobile model inspection", "Faster iteration decisions"]
         },
         {
-          title: "Edit",
-          body: "Inspect, paint, preview materials, and refine details directly on mobile."
-        },
-        {
-          title: "Collaborate",
-          body: "Let more people contribute to the same model so ideas, structure, and style can evolve together."
-        },
-        {
-          title: "Repair & Make",
-          body: "Move through cloud repair and continue toward printing or manufacturing services."
+          title: "Materials & Results",
+          body: "Present actual in-app model views and visual output instead of abstract marketing blocks.",
+          image: "/video-to-3d1.png",
+          alt: "PaintersGO result preview",
+          bullets: ["Color and material presentation", "Clearer output expectation", "Stronger result storytelling"]
         }
       ]
     },
-    audience: {
-      kicker: "Audience",
-      title: "Not only for traditional 3D professionals",
-      description:
-        "PaintersGO works better as a product that lowers creation barriers, instead of a site that assumes every visitor already understands complex 3D pipelines.",
-      personas: [
+    useCases: {
+      kicker: "Use Cases",
+      title: "A better fit for people who would actually download a 3D app",
+      items: [
         {
           title: "AI Creators",
-          body: "Turn concepts and visual ideas into 3D content faster with less startup friction."
+          body: "People who want to turn ideas into 3D output quickly without getting blocked by heavy desktop tooling."
         },
         {
           title: "3D Printing Hobbyists",
-          body: "Push digital assets toward repair, print readiness, and real-world output."
+          body: "People who need a path from model handling into repair, printing, and physical output."
         },
         {
-          title: "Designers & Content Creators",
-          body: "Present model visuals and color treatments more directly in a mobile workflow."
-        },
-        {
-          title: "Teams & Communities",
-          body: "Collaborate around the same model and move shared ideas forward together."
-        }
-      ]
-    },
-    proof: {
-      kicker: "Why It Matters",
-      title: "The product differences the homepage should make visible",
-      description:
-        "Even before more case studies arrive, the site should already communicate why PaintersGO is not just another isolated feature page.",
-      cards: [
-        {
-          title: "A connected path, not isolated features",
-          body: "The product story links generation, editing, repair, and making into one clearer journey."
-        },
-        {
-          title: "Mobile-first instead of desktop-first",
-          body: "PaintersGO matters because it brings parts of 3D workflow closer to the phone."
-        },
-        {
-          title: "Built for collaboration, not only solo work",
-          body: "Multiplayer collaboration is both a product differentiator and a future-facing capability."
-        }
-      ]
-    },
-    media: {
-      kicker: "Visual Showcase",
-      title: "Use real visuals to build product intuition faster",
-      description:
-        "These sections already use assets from the current repository. Later they can be replaced with stronger product screenshots, recordings, and result photos.",
-      cards: [
-        {
-          title: "Mobile 3D Experience",
-          body: "Show the app interface, model editing states, and the product's visual atmosphere.",
-          image: "/AR.png",
-          alt: "PaintersGO mobile 3D experience"
-        },
-        {
-          title: "Manufacturing Direction",
-          body: "Show how digital assets can continue into offline production and printing flow.",
-          image: "/o2o2.png",
-          alt: "PaintersGO manufacturing direction"
-        },
-        {
-          title: "3D Result Showcase",
-          body: "Show output quality, visual presentation, and the kind of 3D results users can expect.",
-          image: "/video-to-3d1.png",
-          alt: "PaintersGO 3D results"
+          title: "Content Teams",
+          body: "People who need a lighter way to show model quality, color direction, and visual results."
         }
       ]
     },
     faq: {
       kicker: "FAQ",
-      title: "Answer the first questions visitors are likely to ask",
+      title: "Answer the questions that actually affect the download decision",
       items: [
         {
           q: "What is PaintersGO?",
-          a: "It is a product that connects AI 3D generation, mobile painting and editing, multiplayer collaboration, cloud repair, and physical manufacturing flow."
+          a: "It is a 3D creation app that combines AI generation, mobile painting, collaboration, repair, and print-ready output flow."
         },
         {
-          q: "Is it mainly a creative tool or a manufacturing gateway?",
-          a: "Both matter, but its first value is lowering the barrier to 3D creation before extending into repair, printing, and making."
+          q: "Is it more for creation or more for printing?",
+          a: "It covers both, but the experience starts by making 3D creation easier on mobile before extending naturally toward print and delivery."
         },
         {
-          q: "Can I download it now?",
-          a: "Yes. The current website provides an Android APK download while more case studies and feature materials continue to be added."
+          q: "Can I try it right now?",
+          a: "Yes. The current website already provides an Android APK download."
         }
       ]
     },
     contact: {
-      kicker: "Download & Access",
-      title: "Start exploring PaintersGO here",
-      body:
-        "You can download the current Android APK now and follow future updates as more real cases, demonstrations, and production content are added.",
+      kicker: "Download",
+      title: "If you want to experience a more app-like 3D product, start with the install",
+      body: "The site helps people understand the product quickly. The real experience still happens inside the app, and Android APK is already available.",
       primary: "Download APK",
       secondary: "View FAQ",
-      cards: [
-        { label: "Platform", value: "Android APK currently available" },
-        { label: "Languages", value: "Chinese and English access supported" },
-        { label: "Current Focus", value: "AI generation, mobile editing, collaboration, repair, and making flow" }
+      chips: [
+        { label: "Platform", value: "Android APK" },
+        { label: "Language", value: "Chinese / English" },
+        { label: "Keywords", value: "AI generation, painting, collaboration, print" }
       ]
     },
     footer: {
       product: "PaintersGO",
-      rights: "Official PaintersGO website with evolving demos, assets, and download access."
+      rights: "Official PaintersGO site with evolving app screens, demos, and download access."
     }
   }
 };
@@ -542,13 +393,10 @@ const getAnchorTarget = (href: string) => href.replace("#", "");
 
 const App = () => {
   const initialLocale: Locale =
-    typeof window !== "undefined" && window.location.pathname.startsWith("/en")
-      ? "en"
-      : "zh";
+    typeof window !== "undefined" && window.location.pathname.startsWith("/en") ? "en" : "zh";
 
   const [locale, setLocale] = useState<Locale>(initialLocale);
-  const [activeSection, setActiveSection] =
-    useState<(typeof sectionIds)[number]>("home");
+  const [activeSection, setActiveSection] = useState<(typeof sectionIds)[number]>("home");
   const [menuOpen, setMenuOpen] = useState(false);
   const [faqOpenIndex, setFaqOpenIndex] = useState(0);
   const [scrolled, setScrolled] = useState(false);
@@ -578,7 +426,7 @@ const App = () => {
 
   useEffect(() => {
     const onScroll = () => {
-      setScrolled(window.scrollY > 18);
+      setScrolled(window.scrollY > 16);
     };
 
     onScroll();
@@ -638,7 +486,7 @@ const App = () => {
     );
 
     nodes.forEach((node, index) => {
-      node.style.setProperty("--reveal-delay", `${Math.min(index * 45, 220)}ms`);
+      node.style.setProperty("--reveal-delay", `${Math.min(index * 40, 220)}ms`);
       observer.observe(node);
     });
 
@@ -653,25 +501,12 @@ const App = () => {
       return;
     }
 
-    const top = target.getBoundingClientRect().top + window.scrollY - 110;
+    const top = target.getBoundingClientRect().top + window.scrollY - 96;
     window.history.replaceState({}, "", `${window.location.pathname}#${id}`);
     window.scrollTo({ top: Math.max(top, 0), behavior: "smooth" });
     setActiveSection(id as (typeof sectionIds)[number]);
     setMenuOpen(false);
   };
-
-  const navItems = [
-    { href: "#features", label: t.nav.features },
-    { href: "#workflow", label: t.nav.workflow },
-    { href: "#audience", label: t.nav.audience },
-    { href: "#faq", label: t.nav.faq },
-    { href: "#contact", label: t.nav.contact }
-  ];
-
-  const stageLabels =
-    locale === "zh"
-      ? { left: "AI 生成", top: "多人协作", bottom: "制造 / 打印" }
-      : { left: "AI Generation", top: "Co-create", bottom: "Make / Print" };
 
   return (
     <div className="site-shell">
@@ -704,7 +539,7 @@ const App = () => {
         </button>
 
         <nav className={`nav${menuOpen ? " is-open" : ""}`} id="site-nav">
-          {navItems.map((item) => {
+          {t.nav.map((item) => {
             const target = getAnchorTarget(item.href);
 
             return (
@@ -730,7 +565,9 @@ const App = () => {
             type="button"
             onClick={() => setLocale("zh")}
             aria-pressed={locale === "zh"}
-          >中文</button>
+          >
+            中文
+          </button>
           <button
             className={locale === "en" ? "is-active" : ""}
             type="button"
@@ -750,7 +587,7 @@ const App = () => {
               <BalancedHeadline
                 className="balanced-text balanced-text-hero"
                 locale={locale}
-                minWidthRatio={locale === "zh" ? 0.64 : 0.58}
+                minWidthRatio={locale === "zh" ? 0.62 : 0.58}
                 text={t.hero.title}
               />
             </h1>
@@ -758,317 +595,147 @@ const App = () => {
 
             <div className="hero-actions">
               <a className="button button-primary" href="/PaintersGO.apk">
-                <BalancedHeadline
-                  className="balanced-text balanced-text-button"
-                  locale={locale}
-                  minWidthRatio={0.78}
-                  text={t.hero.primaryCta}
-                />
+                {t.hero.primaryCta}
               </a>
               <a
                 className="button button-secondary"
-                href="#features"
+                href="#inside"
                 onClick={(event) => {
                   event.preventDefault();
-                  scrollToSection("#features");
+                  scrollToSection("#inside");
                 }}
               >
-                <BalancedHeadline
-                  className="balanced-text balanced-text-button"
-                  locale={locale}
-                  minWidthRatio={0.78}
-                  text={t.hero.secondaryCta}
-                />
+                {t.hero.secondaryCta}
               </a>
             </div>
 
-            <div className="hero-stats">
-              {t.hero.stats.map((item) => (
-                <article key={item.label} className="stat-card" data-reveal="stat-card">
+            <div className="hero-metrics">
+              {t.hero.metrics.map((item) => (
+                <article key={item.label} className="metric-card" data-reveal="metric-card">
                   <strong>{item.value}</strong>
                   <span>{item.label}</span>
                 </article>
               ))}
             </div>
-
-            <div className="hero-note">
-              <span>{locale === "zh" ? "已提供 Android APK" : "Android APK available now"}</span>
-              <span>{locale === "zh" ? "移动端优先体验" : "Mobile-first workflow"}</span>
-              <span>{locale === "zh" ? "中英文双语切换" : "Chinese / English"}</span>
-            </div>
           </div>
 
-          <div className="hero-stage" aria-label="PaintersGO visual overview" data-reveal="hero-stage">
-            <img className="hero-stage-image" src="/background.jpg" alt="PaintersGO visual background" />
-
-            <div className="stage-overview">
-              <span className="eyebrow eyebrow-quiet">
-                {locale === "zh" ? "产品工作台" : "Product Workspace"}
-              </span>
-              <h2>
-                {locale === "zh"
-                  ? "把 3D 创作链路收进一个界面"
-                  : "A single surface for the 3D workflow"}
-              </h2>
-              <p>
-                {locale === "zh"
-                  ? "右侧区域不再只是静态拼图，而是更接近真实产品工作台的展示方式。"
-                  : "The right side now feels closer to a product workspace instead of a simple collage."}
-              </p>
-            </div>
-
-            <div className="stage-panel primary-panel">
-              <div className="stage-header">
-                <span className="panel-label">{stageLabels.left}</span>
-                <div className="stage-status">
+          <div className="hero-visual" data-reveal="hero-visual">
+            <div className="screen-card">
+              <div className="screen-header">
+                <div className="screen-dots">
                   <span />
-                  <span>{locale === "zh" ? "实时流程" : "Live flow"}</span>
+                  <span />
+                  <span />
                 </div>
+                <span>{t.hero.screenTitle}</span>
               </div>
-              <div className="panel-screen">
-                <img src="/vedio-to-3d.png" alt="PaintersGO AI generation preview" />
+              <div className="screen-frame">
+                <img src="/AR.png" alt="PaintersGO app preview" />
               </div>
-              <div className="stage-caption-row">
-                <span>Prompt to Model</span>
-                <span>{locale === "zh" ? "移动查看与润色" : "Mobile review & polish"}</span>
-              </div>
-              <div className="stage-chip-row">
-                <span>Text / Image Input</span>
-                <span>Material Preview</span>
-                <span>Fast Iteration</span>
+              <div className="screen-copy">
+                <h2>{t.hero.screenTitle}</h2>
+                <p>{t.hero.screenBody}</p>
               </div>
             </div>
 
-            <div className="stage-panel side-panel top">
-              <span className="panel-label">{stageLabels.top}</span>
-              <div className="mini-preview">
-                <img loading="lazy" src="/pic2.jpg" alt="PaintersGO collaboration preview" />
+            <article className="floating-card floating-top">
+              <div className="floating-thumb">
+                <img src="/pic2.jpg" alt="PaintersGO collaboration preview" />
               </div>
-              <p className="stage-card-note">
-                {locale === "zh"
-                  ? "让团队围绕同一模型同步推进视觉和细节。"
-                  : "Keep the same model moving forward with shared visual feedback."}
-              </p>
-            </div>
+              <span>{t.hero.floatingTop}</span>
+            </article>
 
-            <div className="stage-panel side-panel bottom">
-              <span className="panel-label">{stageLabels.bottom}</span>
-              <div className="mini-preview">
-                <img loading="lazy" src="/o2o1.png" alt="PaintersGO manufacturing preview" />
+            <article className="floating-card floating-bottom">
+              <div className="floating-thumb">
+                <img src="/o2o2.png" alt="PaintersGO output preview" />
               </div>
-              <p className="stage-card-note">
-                {locale === "zh"
-                  ? "从数字内容继续进入修复、打印与实体交付。"
-                  : "Continue from digital content into repair, print, and delivery."}
-              </p>
-            </div>
+              <span>{t.hero.floatingBottom}</span>
+            </article>
           </div>
         </section>
 
-        <section className="capability-strip" data-reveal="capabilities">
-          {t.introStrip.map((item) => (
-            <span key={item}>
-              <BalancedHeadline
-                className="balanced-text balanced-text-pill"
-                locale={locale}
-                minWidthRatio={0.82}
-                text={item}
-              />
-            </span>
-          ))}
-        </section>
-
-        <section className="section" id="features" data-reveal="features">
+        <section className="section flow-section" id="flow" data-reveal="flow">
           <div className="section-head">
-            <span className="eyebrow">{t.features.kicker}</span>
+            <span className="eyebrow">{t.flow.kicker}</span>
             <h2>
               <BalancedHeadline
                 className="balanced-text balanced-text-section"
                 locale={locale}
                 minWidthRatio={locale === "zh" ? 0.66 : 0.6}
-                text={t.features.title}
+                text={t.flow.title}
               />
             </h2>
-            <p>{t.features.description}</p>
+            <p>{t.flow.description}</p>
           </div>
 
-          <div className="feature-grid">
-            {t.features.items.map((item, index) => (
-              <article
-                key={item.id}
-                className={`feature-card feature-card-${index + 1} bento-card`}
-                data-reveal="feature-card"
-              >
-                <div className="feature-meta">
-                  <span className="feature-tag">{item.id}</span>
-                  <span className="feature-label">
-                    <BalancedHeadline
-                      className="balanced-text balanced-text-card"
-                      locale={locale}
-                      minWidthRatio={0.8}
-                      text={item.title}
-                    />
-                  </span>
+          <div className="flow-grid">
+            {t.flow.cards.map((card) => (
+              <article key={card.id} className="flow-card" data-reveal="flow-card">
+                <div className="flow-card-top">
+                  <span className="flow-index">{card.id}</span>
+                  <h3>{card.title}</h3>
                 </div>
-                <p>{item.description}</p>
-                <div className="media-slot media-slot-image">
-                  <img src={item.image} alt={item.alt} />
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="section workflow-section" id="workflow" data-reveal="workflow">
-          <div className="section-head">
-            <span className="eyebrow">{t.workflow.kicker}</span>
-            <h2>
-              <BalancedHeadline
-                className="balanced-text balanced-text-section"
-                locale={locale}
-                minWidthRatio={locale === "zh" ? 0.68 : 0.6}
-                text={t.workflow.title}
-              />
-            </h2>
-            <p>{t.workflow.description}</p>
-          </div>
-
-          <div className="workflow-grid">
-            {t.workflow.steps.map((step, index) => (
-              <article
-                key={step.title}
-                className={`workflow-card workflow-card-${index + 1} bento-card`}
-                data-reveal="workflow-card"
-              >
-                <div className="workflow-card-meta">
-                  <span className="step-index">0{index + 1}</span>
-                  <span className="workflow-chip">
-                    {locale === "zh" ? "流程节点" : "Flow Node"}
-                  </span>
-                </div>
-                <h3>
-                  <BalancedHeadline
-                    className="balanced-text balanced-text-card"
-                    locale={locale}
-                    minWidthRatio={0.8}
-                    text={step.title}
-                  />
-                </h3>
-                <p>{step.body}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="section audience-section" id="audience" data-reveal="audience">
-          <div className="section-head">
-            <span className="eyebrow">{t.audience.kicker}</span>
-            <h2>
-              <BalancedHeadline
-                className="balanced-text balanced-text-section"
-                locale={locale}
-                minWidthRatio={locale === "zh" ? 0.68 : 0.62}
-                text={t.audience.title}
-              />
-            </h2>
-            <p>{t.audience.description}</p>
-          </div>
-
-          <div className="audience-grid">
-            {t.audience.personas.map((item, index) => (
-              <article
-                key={item.title}
-                className={`audience-card audience-card-${index + 1} bento-card`}
-                data-reveal="audience-card"
-              >
-                <span className="card-kicker">
-                  {locale === "zh" ? `适用角色 0${index + 1}` : `Persona 0${index + 1}`}
-                </span>
-                <h3>
-                  <BalancedHeadline
-                    className="balanced-text balanced-text-card"
-                    locale={locale}
-                    minWidthRatio={0.8}
-                    text={item.title}
-                  />
-                </h3>
-                <p>{item.body}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="section proof-section" data-reveal="proof">
-          <div className="section-head">
-            <span className="eyebrow">{t.proof.kicker}</span>
-            <h2>
-              <BalancedHeadline
-                className="balanced-text balanced-text-section"
-                locale={locale}
-                minWidthRatio={locale === "zh" ? 0.68 : 0.62}
-                text={t.proof.title}
-              />
-            </h2>
-            <p>{t.proof.description}</p>
-          </div>
-
-          <div className="proof-grid">
-            {t.proof.cards.map((card, index) => (
-              <article
-                key={card.title}
-                className={`proof-card proof-card-${index + 1} bento-card`}
-                data-reveal="proof-card"
-              >
-                <span className="card-kicker">
-                  {locale === "zh" ? `产品差异 0${index + 1}` : `Differentiator 0${index + 1}`}
-                </span>
-                <h3>
-                  <BalancedHeadline
-                    className="balanced-text balanced-text-card"
-                    locale={locale}
-                    minWidthRatio={0.8}
-                    text={card.title}
-                  />
-                </h3>
                 <p>{card.body}</p>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="section showcase-section" data-reveal="showcase">
-          <div className="section-head">
-            <span className="eyebrow">{t.media.kicker}</span>
-            <h2>
-              <BalancedHeadline
-                className="balanced-text balanced-text-section"
-                locale={locale}
-                minWidthRatio={locale === "zh" ? 0.68 : 0.62}
-                text={t.media.title}
-              />
-            </h2>
-            <p>{t.media.description}</p>
-          </div>
-
-          <div className="showcase-grid">
-            {t.media.cards.map((card, index) => (
-              <article
-                key={card.title}
-                className={`showcase-card showcase-card-${index + 1} bento-card`}
-                data-reveal="showcase-card"
-              >
-                <div className="showcase-placeholder">
+                <div className="flow-media">
                   <img src={card.image} alt={card.alt} />
                 </div>
-                <h3>
-                  <BalancedHeadline
-                    className="balanced-text balanced-text-card"
-                    locale={locale}
-                    minWidthRatio={0.8}
-                    text={card.title}
-                  />
-                </h3>
-                <p>{card.body}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="section inside-section" id="inside" data-reveal="inside">
+          <div className="section-head">
+            <span className="eyebrow">{t.inside.kicker}</span>
+            <h2>
+              <BalancedHeadline
+                className="balanced-text balanced-text-section"
+                locale={locale}
+                minWidthRatio={locale === "zh" ? 0.66 : 0.6}
+                text={t.inside.title}
+              />
+            </h2>
+            <p>{t.inside.description}</p>
+          </div>
+
+          <div className="inside-grid">
+            {t.inside.panels.map((panel) => (
+              <article key={panel.title} className="inside-card" data-reveal="inside-card">
+                <div className="inside-preview">
+                  <img src={panel.image} alt={panel.alt} />
+                </div>
+                <div className="inside-copy">
+                  <h3>{panel.title}</h3>
+                  <p>{panel.body}</p>
+                  <ul className="inside-bullets">
+                    {panel.bullets.map((bullet) => (
+                      <li key={bullet}>{bullet}</li>
+                    ))}
+                  </ul>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="section use-case-section" id="use-cases" data-reveal="use-cases">
+          <div className="section-head">
+            <span className="eyebrow">{t.useCases.kicker}</span>
+            <h2>
+              <BalancedHeadline
+                className="balanced-text balanced-text-section"
+                locale={locale}
+                minWidthRatio={locale === "zh" ? 0.68 : 0.62}
+                text={t.useCases.title}
+              />
+            </h2>
+          </div>
+
+          <div className="use-case-grid">
+            {t.useCases.items.map((item) => (
+              <article key={item.title} className="use-case-card" data-reveal="use-case-card">
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
               </article>
             ))}
           </div>
@@ -1081,7 +748,7 @@ const App = () => {
               <BalancedHeadline
                 className="balanced-text balanced-text-section"
                 locale={locale}
-                minWidthRatio={locale === "zh" ? 0.7 : 0.62}
+                minWidthRatio={locale === "zh" ? 0.68 : 0.62}
                 text={t.faq.title}
               />
             </h2>
@@ -1098,18 +765,9 @@ const App = () => {
                   className="faq-trigger"
                   type="button"
                   aria-expanded={faqOpenIndex === index}
-                  onClick={() =>
-                    setFaqOpenIndex((current) => (current === index ? -1 : index))
-                  }
+                  onClick={() => setFaqOpenIndex((current) => (current === index ? -1 : index))}
                 >
-                  <h3>
-                    <BalancedHeadline
-                      className="balanced-text balanced-text-card"
-                      locale={locale}
-                      minWidthRatio={0.82}
-                      text={item.q}
-                    />
-                  </h3>
+                  <h3>{item.q}</h3>
                   <span className="faq-icon" aria-hidden="true">
                     {faqOpenIndex === index ? "-" : "+"}
                   </span>
@@ -1122,36 +780,22 @@ const App = () => {
           </div>
         </section>
 
-        <section className="cta-section" id="contact" data-reveal="contact">
-          <div className="cta-card" data-reveal="cta-card">
+        <section className="section download-section" id="download" data-reveal="download">
+          <div className="download-copy">
             <span className="eyebrow">{t.contact.kicker}</span>
             <h2>
               <BalancedHeadline
                 className="balanced-text balanced-text-section"
                 locale={locale}
-                minWidthRatio={locale === "zh" ? 0.7 : 0.62}
+                minWidthRatio={locale === "zh" ? 0.68 : 0.62}
                 text={t.contact.title}
               />
             </h2>
             <p>{t.contact.body}</p>
 
-            <div className="contact-grid">
-              {t.contact.cards.map((card) => (
-                <article key={card.label} className="contact-chip" data-reveal="contact-chip">
-                  <span>{card.label}</span>
-                  <strong>{card.value}</strong>
-                </article>
-              ))}
-            </div>
-
-            <div className="hero-actions">
+            <div className="download-actions">
               <a className="button button-primary" href="/PaintersGO.apk">
-                <BalancedHeadline
-                  className="balanced-text balanced-text-button"
-                  locale={locale}
-                  minWidthRatio={0.78}
-                  text={t.contact.primary}
-                />
+                {t.contact.primary}
               </a>
               <a
                 className="button button-secondary"
@@ -1161,14 +805,18 @@ const App = () => {
                   scrollToSection("#faq");
                 }}
               >
-                <BalancedHeadline
-                  className="balanced-text balanced-text-button"
-                  locale={locale}
-                  minWidthRatio={0.78}
-                  text={t.contact.secondary}
-                />
+                {t.contact.secondary}
               </a>
             </div>
+          </div>
+
+          <div className="download-chips">
+            {t.contact.chips.map((chip) => (
+              <article key={chip.label} className="download-chip" data-reveal="download-chip">
+                <span>{chip.label}</span>
+                <strong>{chip.value}</strong>
+              </article>
+            ))}
           </div>
         </section>
       </main>
@@ -1182,5 +830,3 @@ const App = () => {
 };
 
 export default App;
-
-
