@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import {
   ArrowRight,
   Boxes,
@@ -60,6 +61,9 @@ export default function Home() {
               <a href="#features" className="transition hover:text-zinc-950">
                 Features
               </a>
+              <Link href="/about" className="transition hover:text-zinc-950">
+                About
+              </Link>
               <a href="#gallery" className="transition hover:text-zinc-950">
                 Gallery
               </a>
@@ -336,6 +340,59 @@ export default function Home() {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 py-10 md:px-8 md:py-16">
+        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.94fr_1.06fr]">
+          <div className="rounded-[2rem] border border-black/10 bg-[#171311] p-8 text-white shadow-[0_22px_70px_rgba(0,0,0,0.14)] md:p-10">
+            <p className="text-sm uppercase tracking-[0.24em] text-zinc-400">Behind PaintersGO</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">
+              这不只是一个产品页，也是一个个人作品的成长记录。
+            </h2>
+            <p className="mt-4 text-base leading-8 text-zinc-300">
+              如果你想知道作者为什么会做 PaintersGO、灵感来自哪里、网站和 App 是怎么一点点被搭起来的，现在已经有了单独的幕后故事页面。
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/about"
+                className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-medium text-zinc-950 transition hover:bg-zinc-100"
+              >
+                查看作者故事
+              </Link>
+              <a
+                href="/PaintersGO.apk"
+                className="inline-flex h-12 items-center justify-center rounded-full border border-white/10 bg-white/7 px-6 text-sm font-medium text-white transition hover:bg-white/12"
+              >
+                直接下载 App
+              </a>
+            </div>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-3">
+            {[
+              {
+                title: "关于作者",
+                body: "把产品视角、个人兴趣和创作表达揉在一起，讲清楚这个作品是谁做的。",
+              },
+              {
+                title: "灵感来源",
+                body: "从 AI 生成、3D 创作到实体打印之间的体验断层，慢慢长成项目的出发点。",
+              },
+              {
+                title: "开发小故事",
+                body: "从真实模型、App 素材到 Lite Viewer，记录这个网站是如何被做成现在这个样子的。",
+              },
+            ].map((item) => (
+              <article
+                key={item.title}
+                className="rounded-[1.7rem] border border-black/10 bg-white p-6 shadow-[0_18px_60px_rgba(0,0,0,0.06)]"
+              >
+                <p className="text-lg font-semibold">{item.title}</p>
+                <p className="mt-3 text-sm leading-7 text-zinc-700">{item.body}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>

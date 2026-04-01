@@ -18,11 +18,13 @@ The live site now includes:
 - `AI Power` section grounded in real app capabilities
 - `Collaboration` section based on the app's room UI
 - `O2O Printing` section based on the app's O2O flow
+- `About` page for the author story, inspirations, and build notes
 - Gallery and APK download entry
 
 ## Key Files
 
 - `src/app/page.tsx`: homepage structure
+- `src/app/about/page.tsx`: author / inspiration / build story page
 - `src/components/model-stage.tsx`: hero 3D model stage
 - `src/components/live-editor-lite.tsx`: embedded Lite Viewer section
 - `src/components/feature-showcase.tsx`: interactive Collaboration and O2O modules
