@@ -1,92 +1,75 @@
 # PaintersGO Site
 
-This repository now hosts the new React-based PaintersGO landing page.
+This repository now serves the PaintersGO website from the repository root using Next.js.
 
-## Current stack
+## Stack
 
-- `React + Vite + TypeScript`
-- Static assets served from `static/`
-- Production output built to `dist/`
-- Vercel config in `vercel.json`
+- `Next.js 16`
+- `React 19`
+- `Tailwind CSS v4`
+- `Three.js` for the hero stage and Lite Viewer
 
-## Key files
+## Current Site Scope
 
-- `src/App.tsx`: homepage structure and bilingual copy
-- `src/styles.css`: visual system and responsive layout
-- `static/logo.png`: current logo used by the site
-- `static/PaintersGO.apk`: current APK download target
-- `vercel.json`: Vercel build/output settings
+The live site now includes:
 
-## Local development
+- Hero section with the real `ToTu.glb` model
+- `Live Editor Lite` browser previewer
+- `AI Power` section grounded in real app capabilities
+- `Collaboration` section based on the app's room UI
+- `O2O Printing` section based on the app's O2O flow
+- Gallery and APK download entry
 
-Use local dev only for previewing changes on this machine.
+## Key Files
+
+- `src/app/page.tsx`: homepage structure
+- `src/components/model-stage.tsx`: hero 3D model stage
+- `src/components/live-editor-lite.tsx`: embedded Lite Viewer section
+- `src/components/feature-showcase.tsx`: interactive Collaboration and O2O modules
+- `public/paintersgo-lite/index.html`: standalone browser viewer
+- `public/models/ToTu.glb`: current live hero / preview model
+
+## App Source Reference
+
+The website references the real PaintersGO Android app repository:
+
+- `https://github.com/binyigan/paintersgo`
+
+A local inspection copy may exist during development as `paintersgo-source/`, but it is not part of the production site.
+
+## Local Development
 
 ```bash
 npm install
 npm run dev
 ```
 
-Default preview URL:
-
-```text
-http://127.0.0.1:4174
-```
-
-Important:
-
-- `npm run dev` is only for local preview
-- It does not update `paintersgo.top`
-- The real website is deployed by Vercel from GitHub
-
-## Release workflow
-
-This project goes live through:
-
-`local changes -> git commit -> git push origin main -> Vercel deploys -> https://paintersgo.top`
-
-If you want to refresh the real website, do this instead of starting a local dev server:
+## Production Build
 
 ```bash
 npm run build
+npm run lint
+```
+
+## Release Workflow
+
+The production site updates through:
+
+`local changes -> git commit -> git push origin main -> Vercel deploys -> https://paintersgo.top`
+
+If you want to publish a new version:
+
+```bash
+npm install
+npm run build
+npm run lint
 git status --short
-git add index.html src/App.tsx src/styles.css
+git add .
 git commit -m "Describe the change"
 git push origin main
 ```
 
-Notes:
+## Notes
 
-- Pushing to `main` triggers the Vercel deployment for `paintersgo.top`
-- After pushing, wait a short moment and then refresh the website
-- If the goal is to see the real online result, prefer deploy flow over `npm run dev`
-
-## Production build
-
-```bash
-npm run build
-```
-
-Build output will be generated in `dist/`.
-
-## Asset replacement plan
-
-The current homepage is intentionally structured so real assets can be swapped in later without rewriting layout:
-
-- Hero product visual
-- AI generation screenshots or recordings
-- 3D painting editor screenshots
-- Collaboration flow visuals
-- Cloud repair comparison visuals
-- O2O manufacturing / printing visuals
-- Contact and download destination updates
-
-## Repository status
-
-The previous Hugo/PaperMod structure has been removed from this working copy.
-
-The repository is now organized around the React site only:
-
-- `src/` for the application
-- `static/` for public assets
-- `dist/` for build output
-- `vercel.json` for deployment settings
+- `clone-studio/` is a working directory used during the rebuild and is not the production root.
+- `paintersgo-source/` is a local reference checkout of the Android app and should not be deployed.
