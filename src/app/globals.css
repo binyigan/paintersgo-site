@@ -126,5 +126,11 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 5.5rem);
+  }
+  @media (min-width: 768px) {
+    body {
+      padding-bottom: 0;
+    }
   }
 }

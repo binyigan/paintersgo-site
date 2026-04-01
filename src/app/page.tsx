@@ -4,7 +4,9 @@ import {
   Boxes,
   BrainCircuit,
   Download,
+  Layers3,
   PenTool,
+  Smartphone,
   Sparkles,
 } from "lucide-react";
 
@@ -65,6 +67,13 @@ export default function Home() {
                 Download
               </a>
             </nav>
+
+            <a
+              href="#download"
+              className="inline-flex h-10 items-center justify-center rounded-full border border-black/10 bg-zinc-950 px-4 text-sm font-medium text-white transition hover:bg-zinc-800 md:hidden"
+            >
+              下载
+            </a>
           </header>
 
           <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
@@ -102,6 +111,40 @@ export default function Home() {
                   先试看模型
                   <ArrowRight className="h-4 w-4" />
                 </a>
+              </div>
+
+              <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                {[
+                  {
+                    icon: Layers3,
+                    label: "生成到交付",
+                    body: "把 AI 建模、多人协作和打印输出串成一条完整链路。",
+                  },
+                  {
+                    icon: BrainCircuit,
+                    label: "多模型后端",
+                    body: "支持 Meshy、Tripo、Hunyuan、Rodin 等生成能力接入。",
+                  },
+                  {
+                    icon: Smartphone,
+                    label: "先试看再下载",
+                    body: "网页先转模型、看材质、验构图，再进入完整 App。",
+                  },
+                ].map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={item.label}
+                      className="rounded-[1.35rem] border border-black/8 bg-white/70 px-4 py-4"
+                    >
+                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-100 text-amber-900">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <p className="mt-4 text-base font-semibold">{item.label}</p>
+                      <p className="mt-2 text-sm leading-7 text-zinc-700">{item.body}</p>
+                    </div>
+                  );
+                })}
               </div>
 
               <div className="mt-10 grid gap-4 md:grid-cols-3">
@@ -174,7 +217,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl space-y-6">
           <div className="max-w-3xl">
             <p className="text-sm font-medium uppercase tracking-[0.24em] text-amber-700">
-              Features
+              Core Features
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">
               让用户一眼看懂 PaintersGO 不只是“能生成”，而是一个完整的 3D 协作生产面板
@@ -336,7 +379,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl rounded-[2.25rem] border border-black/10 bg-[#13100d] p-8 text-white shadow-[0_24px_100px_rgba(0,0,0,0.18)] md:p-10">
           <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
             <div>
-              <p className="text-sm uppercase tracking-[0.24em] text-zinc-400">Download</p>
+              <p className="text-sm uppercase tracking-[0.24em] text-zinc-400">Get PaintersGO</p>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">
                 给用户一个明确、显眼、不会犹豫的下载入口
               </h2>
@@ -357,6 +400,21 @@ export default function Home() {
                 <Download className="h-6 w-6" />
               </a>
 
+              <div className="grid gap-3 sm:grid-cols-3">
+                {[
+                  "真实 3D 模型可先在网页中试看",
+                  "协作房间与 O2O 流程已在首页完整说明",
+                  "适合安卓用户直接安装体验完整功能",
+                ].map((item) => (
+                  <div
+                    key={item}
+                    className="rounded-[1.5rem] border border-white/10 bg-white/5 px-4 py-4 text-sm leading-7 text-zinc-300"
+                  >
+                    {item}
+                  </div>
+                ))}
+              </div>
+
               <div className="flex items-center justify-between rounded-[1.75rem] border border-white/10 bg-white/5 px-6 py-5">
                 <div>
                   <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">
@@ -370,6 +428,31 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <div className="fixed inset-x-3 bottom-3 z-40 md:hidden">
+        <div className="flex items-center justify-between gap-3 rounded-[1.5rem] border border-black/10 bg-white/92 px-4 py-3 shadow-[0_18px_50px_rgba(0,0,0,0.14)] backdrop-blur">
+          <div className="min-w-0">
+            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">PaintersGO</p>
+            <p className="truncate text-sm font-semibold text-zinc-950">
+              先试看模型，再下载完整 App
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <a
+              href="#live-editor"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 px-4 text-sm font-medium text-zinc-700"
+            >
+              试看
+            </a>
+            <a
+              href="/PaintersGO.apk"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-zinc-950 px-4 text-sm font-medium text-white"
+            >
+              下载
+            </a>
+          </div>
+        </div>
+      </div>
     </main>
   );
 }
