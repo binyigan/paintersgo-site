@@ -19,6 +19,8 @@ This repository now hosts the new React-based PaintersGO landing page.
 
 ## Local development
 
+Use local dev only for previewing changes on this machine.
+
 ```bash
 npm install
 npm run dev
@@ -29,6 +31,34 @@ Default preview URL:
 ```text
 http://127.0.0.1:4174
 ```
+
+Important:
+
+- `npm run dev` is only for local preview
+- It does not update `paintersgo.top`
+- The real website is deployed by Vercel from GitHub
+
+## Release workflow
+
+This project goes live through:
+
+`local changes -> git commit -> git push origin main -> Vercel deploys -> https://paintersgo.top`
+
+If you want to refresh the real website, do this instead of starting a local dev server:
+
+```bash
+npm run build
+git status --short
+git add index.html src/App.tsx src/styles.css
+git commit -m "Describe the change"
+git push origin main
+```
+
+Notes:
+
+- Pushing to `main` triggers the Vercel deployment for `paintersgo.top`
+- After pushing, wait a short moment and then refresh the website
+- If the goal is to see the real online result, prefer deploy flow over `npm run dev`
 
 ## Production build
 

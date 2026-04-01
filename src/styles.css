@@ -1103,11 +1103,14 @@ button {
     top: 8px;
     flex-wrap: wrap;
     border-radius: 28px;
-    padding: 12px;
+    gap: 10px;
+    padding: 10px;
   }
 
   .menu-toggle {
     display: inline-block;
+    width: 44px;
+    height: 44px;
   }
 
   .nav {
@@ -1136,46 +1139,56 @@ button {
 
   .locale-toggle {
     margin-left: auto;
+    width: 100%;
+    order: 3;
+    justify-content: center;
   }
 
   .hero-copy,
   .section,
   .cta-card {
-    padding: 22px;
-    border-radius: 26px;
+    padding: 18px;
+    border-radius: 22px;
   }
 
   .hero h1 {
-    font-size: clamp(2.1rem, 11vw, 3.2rem);
-    line-height: 0.95;
+    font-size: clamp(1.9rem, 10vw, 2.7rem);
+    line-height: 0.98;
   }
 
   .hero-subtitle,
   .section-head p {
     max-width: none;
+    font-size: 0.96rem;
+    line-height: 1.65;
   }
 
   .hero-actions {
     flex-direction: column;
+    gap: 10px;
   }
 
   .button {
     width: 100%;
     min-width: 0;
+    min-height: 46px;
+    padding: 11px 16px;
   }
 
   .hero-stats {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 
   .hero-note {
     flex-direction: column;
+    gap: 8px;
   }
 
   .hero-stage {
     min-height: auto;
-    padding: 14px;
-    border-radius: 28px;
+    padding: 12px;
+    border-radius: 22px;
   }
 
   .stage-overview {
@@ -1183,7 +1196,16 @@ button {
     top: auto;
     left: auto;
     max-width: none;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
+  }
+
+  .stage-overview h2 {
+    font-size: 1.45rem;
+    line-height: 1.05;
+  }
+
+  .stage-overview p {
+    font-size: 0.92rem;
   }
 
   .primary-panel,
@@ -1196,14 +1218,16 @@ button {
   }
 
   .primary-panel {
-    min-height: 290px;
+    min-height: 0;
     margin-top: 0;
+    padding: 14px;
   }
 
   .stage-header,
   .stage-caption-row {
     align-items: flex-start;
     flex-direction: column;
+    gap: 8px;
   }
 
   .workflow-card-meta {
@@ -1213,7 +1237,8 @@ button {
 
   .side-panel.top,
   .side-panel.bottom {
-    margin-top: 12px;
+    margin-top: 10px;
+    padding: 14px;
   }
 
   .capability-strip {
@@ -1230,10 +1255,11 @@ button {
 
   .capability-strip span {
     min-width: max-content;
-    min-height: 44px;
-    padding: 10px 16px;
-    white-space: nowrap;
+    min-height: 40px;
+    padding: 8px 14px;
+    white-space: normal;
     scroll-snap-align: start;
+    font-size: 0.84rem;
   }
 
   .feature-meta {
@@ -1248,21 +1274,64 @@ button {
   }
 
   .media-slot {
-    min-height: 220px;
-    padding: 12px;
-  }
-
-  .showcase-placeholder {
-    min-height: 210px;
+    min-height: 180px;
     padding: 10px;
   }
 
-  .faq-trigger {
+  .showcase-placeholder {
+    min-height: 180px;
+    padding: 10px;
+  }
+
+  .feature-card,
+  .workflow-card,
+  .showcase-card,
+  .audience-card,
+  .proof-card,
+  .contact-chip {
     padding: 18px;
+    border-radius: 20px;
+  }
+
+  .workflow-card h3,
+  .audience-card h3,
+  .proof-card h3,
+  .showcase-card h3,
+  .faq-item h3 {
+    font-size: 1.12rem;
+    margin: 12px 0 8px;
+  }
+
+  .stage-chip-row {
+    gap: 8px;
+    margin-top: 10px;
+  }
+
+  .stage-chip-row span,
+  .workflow-chip,
+  .card-kicker,
+  .hero-note span {
+    font-size: 0.76rem;
+  }
+
+  .stage-card-note,
+  .feature-card p,
+  .workflow-card p,
+  .showcase-card p,
+  .audience-card p,
+  .proof-card p,
+  .faq-item p,
+  .cta-card p {
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+
+  .faq-trigger {
+    padding: 16px;
   }
 
   .faq-answer {
-    padding: 0 18px 18px;
+    padding: 0 16px 16px;
   }
 
   .footer {
@@ -1281,34 +1350,63 @@ button {
   }
 
   .topbar {
-    padding: 10px;
-    border-radius: 22px;
+    top: 6px;
+    padding: 8px;
+    border-radius: 18px;
   }
 
   .brand-mark {
-    width: 36px;
-    height: 36px;
-    border-radius: 12px;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+
+  .brand-text {
+    font-size: 0.95rem;
+  }
+
+  .locale-toggle {
+    padding: 4px;
+  }
+
+  .locale-toggle button {
+    min-width: 0;
+    flex: 1;
+    min-height: 34px;
+    padding: 7px 8px;
+    font-size: 0.85rem;
   }
 
   .hero-copy,
   .section,
   .cta-card {
-    padding: 18px;
-    border-radius: 22px;
+    padding: 16px;
+    border-radius: 18px;
   }
 
   .eyebrow {
     font-size: 0.74rem;
-    padding: 7px 10px;
+    padding: 6px 9px;
   }
 
-  .primary-panel {
-    min-height: 230px;
+  .hero h1 {
+    font-size: clamp(1.75rem, 9vw, 2.3rem);
+  }
+
+  .hero-stage {
+    padding: 10px;
+    border-radius: 18px;
+  }
+
+  .primary-panel,
+  .side-panel.top,
+  .side-panel.bottom {
+    padding: 12px;
+    border-radius: 18px;
   }
 
   .mini-preview {
-    height: 118px;
+    height: 100px;
   }
 
   .stat-card,
@@ -1318,7 +1416,38 @@ button {
   .audience-card,
   .proof-card,
   .contact-chip {
-    border-radius: 22px;
+    border-radius: 18px;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .stat-card strong {
+    font-size: 1.1rem;
+  }
+
+  .panel-screen {
+    padding: 10px;
+    border-radius: 16px;
+  }
+
+  .panel-screen img,
+  .mini-preview img,
+  .showcase-placeholder img,
+  .media-slot-image img {
+    border-radius: 12px;
+  }
+
+  .showcase-placeholder,
+  .media-slot {
+    min-height: 160px;
+  }
+
+  .faq-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 1rem;
   }
 }
 
