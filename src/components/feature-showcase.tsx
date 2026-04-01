@@ -3,6 +3,7 @@
 import Image from "next/image";
 import {
   Copy,
+  Dot,
   MapPinned,
   MessageSquareShare,
   Printer,
@@ -109,22 +110,33 @@ function TabPill({
   active,
   label,
   onClick,
+  accent = "neutral",
 }: {
   active: boolean;
   label: string;
   onClick: () => void;
+  accent?: "neutral" | "emerald";
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={cn(
-        "rounded-full px-4 py-2 text-xs font-medium transition",
+        "inline-flex min-h-11 items-center gap-2 rounded-full px-4 py-2 text-xs font-medium transition duration-200",
         active
-          ? "bg-zinc-950 text-white"
+          ? accent === "emerald"
+            ? "bg-emerald-700 text-white shadow-[0_10px_24px_rgba(5,150,105,0.25)]"
+            : "bg-zinc-950 text-white shadow-[0_10px_24px_rgba(24,24,27,0.18)]"
           : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
       )}
     >
+      <span
+        className={cn(
+          "h-2 w-2 rounded-full transition",
+          active ? "bg-current opacity-100" : "bg-zinc-400 opacity-55"
+        )}
+      />
       {label}
     </button>
   );
@@ -150,13 +162,26 @@ function AppPanel({
   return (
     <article
       className={cn(
-        "overflow-hidden rounded-[1.8rem] border shadow-[0_16px_48px_rgba(0,0,0,0.08)] transition-all duration-200",
+        "overflow-hidden rounded-[1.8rem] border shadow-[0_16px_48px_rgba(0,0,0,0.08)] transition-all duration-300",
         dark ? "border-white/10 bg-[#171514] text-white" : "border-black/10 bg-white"
       )}
     >
       <div className="grid gap-0 lg:grid-cols-[1.02fr_0.98fr]">
-        <div className="relative min-h-[23rem]">
-          <Image src={image} alt={title} fill className="object-cover" />
+        <div className="group relative min-h-[23rem] overflow-hidden">
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-cover transition duration-500 group-hover:scale-[1.02]"
+          />
+          <div
+            className={cn(
+              "absolute inset-0",
+              dark
+                ? "bg-[linear-gradient(180deg,transparent_20%,rgba(12,10,9,0.2)_100%)]"
+                : "bg-[linear-gradient(180deg,transparent_30%,rgba(255,255,255,0.08)_100%)]"
+            )}
+          />
         </div>
         <div className="flex flex-col gap-5 p-6">
           <div>
@@ -247,6 +272,10 @@ export function FeatureShowcase({
             <h3 className="mt-4 text-3xl font-semibold tracking-tight">
               把协作房间做成真正像产品内页的模块
             </h3>
+            <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-zinc-100 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-zinc-500">
+              <Dot className="h-4 w-4" />
+              Auto story mode
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -261,15 +290,17 @@ export function FeatureShowcase({
           </div>
         </div>
 
-        <AppPanel
-          eyebrow={collab.eyebrow}
-          title={collab.title}
-          description={collab.description}
-          image={collab.image}
-          bullets={collab.bullets}
-          stats={collab.stats}
-          dark
-        />
+        <div key={collab.id} className="animate-[fade-in_280ms_ease-out]">
+          <AppPanel
+            eyebrow={collab.eyebrow}
+            title={collab.title}
+            description={collab.description}
+            image={collab.image}
+            bullets={collab.bullets}
+            stats={collab.stats}
+            dark
+          />
+        </div>
       </section>
 
       <section className="grid gap-4 rounded-[2rem] border border-black/10 bg-white p-6 shadow-[0_20px_64px_rgba(0,0,0,0.06)]">
@@ -282,6 +313,10 @@ export function FeatureShowcase({
             <h3 className="mt-4 text-3xl font-semibold tracking-tight">
               把打印与交付流程做成可切换、可理解的链路看板
             </h3>
+            <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-[11px] uppercase tracking-[0.2em] text-emerald-700">
+              <Dot className="h-4 w-4" />
+              Guided walkthrough
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -290,20 +325,23 @@ export function FeatureShowcase({
                 key={item.id}
                 active={item.id === activeO2O}
                 label={item.label}
+                accent="emerald"
                 onClick={() => onO2OChange(item.id)}
               />
             ))}
           </div>
         </div>
 
-        <AppPanel
-          eyebrow={o2o.eyebrow}
-          title={o2o.title}
-          description={o2o.description}
-          image={o2o.image}
-          bullets={o2o.bullets}
-          stats={o2o.stats}
-        />
+        <div key={o2o.id} className="animate-[fade-in_280ms_ease-out]">
+          <AppPanel
+            eyebrow={o2o.eyebrow}
+            title={o2o.title}
+            description={o2o.description}
+            image={o2o.image}
+            bullets={o2o.bullets}
+            stats={o2o.stats}
+          />
+        </div>
 
         <div className="grid gap-3 md:grid-cols-3">
           {[
