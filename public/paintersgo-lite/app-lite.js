@@ -58,9 +58,11 @@
 
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enablePan = false;
-  controls.enableZoom = false;
+  controls.enableZoom = true;
   controls.enableDamping = !isLikelyMobile;
   controls.dampingFactor = 0.06;
+  controls.minDistance = 1.8;
+  controls.maxDistance = 7.8;
   controls.minAzimuthAngle = -1.1;
   controls.maxAzimuthAngle = 1.1;
   controls.minPolarAngle = Math.PI / 3.1;
@@ -355,8 +357,16 @@
     });
   }
 
-  function animate() {
+  let lastFrameTime = 0;
+  const mobileFrameInterval = 1000 / 30;
+
+  function animate(now) {
     requestAnimationFrame(animate);
+    if (isLikelyMobile && now - lastFrameTime < mobileFrameInterval) {
+      return;
+    }
+    lastFrameTime = now;
+
     if (state.autorotate && modelRoot) {
       modelRoot.rotation.y += isLikelyMobile ? 0.0022 : 0.0035;
       halo.rotation.z += isLikelyMobile ? 0.0018 : 0.003;

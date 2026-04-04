@@ -40,6 +40,7 @@
         width: 100%;
         height: 100%;
         outline: none;
+        touch-action: none;
       }
 
       .panel {
@@ -208,6 +209,21 @@
 
         .infocard {
           width: calc(100% - 28px);
+        }
+      }
+
+      @media (max-width: 767px) {
+        .panel {
+          backdrop-filter: none;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+        }
+
+        .status {
+          display: none;
+        }
+
+        .infocard .body {
+          line-height: 1.55;
         }
       }
     </style>

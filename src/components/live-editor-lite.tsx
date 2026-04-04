@@ -46,6 +46,10 @@ export function LiveEditorLite() {
   const [material, setMaterial] = useState<MaterialMode>("plaster");
   const [isFrameLoading, setIsFrameLoading] = useState(true);
   const [viewport, setViewport] = useState<Viewport>("unknown");
+  const [mobileInteractive, setMobileInteractive] = useState(false);
+
+  const isMobile = viewport === "mobile";
+  const canEmbedIframe = viewport === "desktop" || mobileInteractive;
 
   const iframeSrc = useMemo(() => {
     const params = new URLSearchParams({
@@ -53,10 +57,11 @@ export function LiveEditorLite() {
       accent,
       material,
       model: "/models/ToTu.glb",
+      autorotate: viewport === "desktop" ? "true" : "false",
     });
 
     return `/paintersgo-lite/index.html?${params.toString()}`;
-  }, [accent, material, mode]);
+  }, [accent, material, mode, viewport]);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 767px)");
@@ -69,10 +74,8 @@ export function LiveEditorLite() {
     return () => mediaQuery.removeEventListener("change", updateViewport);
   }, []);
 
-  const embedIframe = viewport === "desktop";
-
   function requestFrameReload() {
-    if (embedIframe) {
+    if (canEmbedIframe) {
       setIsFrameLoading(true);
     }
   }
@@ -109,7 +112,7 @@ export function LiveEditorLite() {
 
       <div className="grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="relative h-[20rem] overflow-hidden bg-[radial-gradient(circle_at_top,#fff3d6_0%,#f4ecdf_36%,#ddd0bd_100%)] sm:h-[24rem] lg:h-[27rem]">
-          {embedIframe ? (
+          {canEmbedIframe ? (
             <>
               {isFrameLoading ? (
                 <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[linear-gradient(180deg,rgba(255,248,236,0.88),rgba(244,236,223,0.76))] backdrop-blur-sm">
@@ -131,6 +134,16 @@ export function LiveEditorLite() {
                 loading="lazy"
                 onLoad={() => setIsFrameLoading(false)}
               />
+
+              {isMobile ? (
+                <button
+                  type="button"
+                  onClick={() => setMobileInteractive(false)}
+                  className="absolute right-3 top-3 z-20 inline-flex min-h-9 items-center rounded-full border border-white/25 bg-black/50 px-3 text-xs font-medium text-white backdrop-blur-sm"
+                >
+                  Exit Interaction
+                </button>
+              ) : null}
             </>
           ) : (
             <div className="relative h-full w-full">
@@ -148,13 +161,25 @@ export function LiveEditorLite() {
                   Embedded 3D is disabled on mobile to prevent scroll freezing. Open the full-screen
                   Lite Viewer if you want to interact with the model.
                 </p>
-                <a
-                  href={iframeSrc}
-                  className="mt-3 inline-flex min-h-10 items-center gap-2 rounded-full bg-white px-4 text-xs font-semibold text-zinc-900"
-                >
-                  Open Full-Screen Viewer
-                  <ExternalLink className="h-3.5 w-3.5" />
-                </a>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileInteractive(true);
+                      setIsFrameLoading(true);
+                    }}
+                    className="inline-flex min-h-10 items-center rounded-full bg-white px-4 text-xs font-semibold text-zinc-900"
+                  >
+                    Enable Embedded Zoom
+                  </button>
+                  <a
+                    href={iframeSrc}
+                    className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/25 bg-black/40 px-4 text-xs font-semibold text-white"
+                  >
+                    Open Full-Screen
+                    <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
+                </div>
               </div>
             </div>
           )}
@@ -171,10 +196,10 @@ export function LiveEditorLite() {
             </p>
           </div>
 
-          {viewport !== "desktop" ? (
+          {isMobile ? (
             <div className="rounded-2xl border border-amber-300/50 bg-amber-50 px-4 py-3 text-sm leading-7 text-amber-900">
-              Mobile optimization is active: embedded interactive iframe is paused to avoid page
-              freezing while scrolling.
+              Mobile defaults to smooth-scroll mode. Tap Enable Embedded Zoom only when you need
+              two-finger zoom and rotate.
             </div>
           ) : null}
 
@@ -286,8 +311,7 @@ export function LiveEditorLite() {
               Desktop mode uses embedded interactive viewer for faster comparison between presets.
             </div>
             <div className="rounded-2xl bg-zinc-50 px-4 py-4 text-sm leading-7 text-zinc-700">
-              Mobile mode prioritizes stable scrolling and avoids locking gestures inside an embedded
-              3D frame.
+              Mobile can now switch between smooth-scroll mode and embedded zoom mode.
             </div>
           </div>
         </div>
