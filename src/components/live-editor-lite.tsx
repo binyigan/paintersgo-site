@@ -55,13 +55,13 @@ export function LiveEditorLite() {
 
   return (
     <div className="overflow-hidden rounded-[2rem] border border-black/10 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.08)]">
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/10 px-5 py-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/10 px-4 py-4 md:px-5">
         <div>
           <p className="text-sm font-medium text-zinc-900">Live Editor Lite</p>
           <p className="text-xs text-zinc-500">真实模型网页试看器</p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
           {(["clay", "wireframe", "studio"] as PreviewMode[]).map((item) => (
             <button
               key={item}
@@ -84,7 +84,7 @@ export function LiveEditorLite() {
       </div>
 
       <div className="grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="relative h-[27rem] bg-[radial-gradient(circle_at_top,#fff3d6_0%,#f4ecdf_36%,#ddd0bd_100%)]">
+        <div className="relative h-[20rem] bg-[radial-gradient(circle_at_top,#fff3d6_0%,#f4ecdf_36%,#ddd0bd_100%)] sm:h-[24rem] lg:h-[27rem]">
           {isFrameLoading ? (
             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[linear-gradient(180deg,rgba(255,248,236,0.88),rgba(244,236,223,0.76))] backdrop-blur-sm">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 text-amber-700 shadow-[0_12px_30px_rgba(0,0,0,0.08)]">
@@ -102,11 +102,12 @@ export function LiveEditorLite() {
             src={iframeSrc}
             title="PaintersGO Lite Viewer"
             className="h-full w-full border-0"
+            loading="lazy"
             onLoad={() => setIsFrameLoading(false)}
           />
         </div>
 
-        <div className="space-y-6 p-6">
+        <div className="space-y-6 p-5 md:p-6">
           <div>
             <p className="text-xs uppercase tracking-[0.24em] text-zinc-400">Preview Controls</p>
             <h3 className="mt-2 text-2xl font-semibold">像进入 App 之前的一次快速试用</h3>

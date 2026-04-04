@@ -41,7 +41,7 @@ export default function Home() {
       <section className="relative isolate px-6 pb-16 pt-6 md:px-8 md:pb-24 md:pt-8">
         <div className="absolute inset-x-0 top-0 -z-10 h-[34rem] bg-[radial-gradient(circle_at_top,#ffdd9d_0%,rgba(255,221,157,0.16)_30%,transparent_70%)]" />
         <div className="mx-auto flex max-w-7xl flex-col gap-6">
-          <header className="flex items-center justify-between rounded-full border border-black/10 bg-white/70 px-5 py-3 shadow-[0_12px_40px_rgba(0,0,0,0.06)] backdrop-blur">
+          <header className="flex items-center justify-between rounded-full border border-black/10 bg-white/70 px-4 py-3 shadow-[0_12px_40px_rgba(0,0,0,0.06)] backdrop-blur md:px-5">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-950">
                 <Image src="/logo.png" alt="PaintersGO" width={26} height={26} />
@@ -80,15 +80,42 @@ export default function Home() {
             </a>
           </header>
 
+          <nav className="flex flex-wrap items-center gap-2 md:hidden">
+            <a
+              href="#live-editor"
+              className="inline-flex min-h-10 items-center rounded-full border border-black/10 bg-white/70 px-4 text-xs font-medium text-zinc-700"
+            >
+              Live Editor
+            </a>
+            <a
+              href="#features"
+              className="inline-flex min-h-10 items-center rounded-full border border-black/10 bg-white/70 px-4 text-xs font-medium text-zinc-700"
+            >
+              Features
+            </a>
+            <a
+              href="#gallery"
+              className="inline-flex min-h-10 items-center rounded-full border border-black/10 bg-white/70 px-4 text-xs font-medium text-zinc-700"
+            >
+              Gallery
+            </a>
+            <Link
+              href="/about"
+              className="inline-flex min-h-10 items-center rounded-full border border-black/10 bg-white/70 px-4 text-xs font-medium text-zinc-700"
+            >
+              About
+            </Link>
+          </nav>
+
           <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
-            <section className="rounded-[2rem] border border-black/10 bg-white/75 p-7 shadow-[0_24px_80px_rgba(0,0,0,0.08)] backdrop-blur md:p-10">
+            <section className="rounded-[2rem] border border-black/10 bg-white/75 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.08)] backdrop-blur sm:p-7 md:p-10">
               <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-100/80 px-4 py-2 text-sm text-amber-900">
                 <Sparkles className="h-4 w-4" />
                 从 AI 草模到实体成品的一条龙创作链路
               </div>
 
               <div className="mt-7 max-w-3xl space-y-6">
-                <h1 className="text-4xl font-semibold tracking-tight md:text-6xl md:leading-[1.02]">
+                <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-6xl md:leading-[1.02]">
                   PaintersGO
                   <span className="block text-zinc-500">
                     把 3D 生成、协作编辑与打印输出收进同一个工作台
@@ -486,8 +513,8 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="fixed inset-x-3 bottom-3 z-40 md:hidden">
-        <div className="flex items-center justify-between gap-3 rounded-[1.5rem] border border-black/10 bg-white/92 px-4 py-3 shadow-[0_18px_50px_rgba(0,0,0,0.14)] backdrop-blur">
+      <div className="fixed inset-x-2 bottom-[calc(env(safe-area-inset-bottom)+0.5rem)] z-40 md:hidden">
+        <div className="flex items-center justify-between gap-3 rounded-[1.5rem] border border-black/10 bg-white/92 px-3 py-3 shadow-[0_18px_50px_rgba(0,0,0,0.14)] backdrop-blur sm:px-4">
           <div className="min-w-0">
             <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">PaintersGO</p>
             <p className="truncate text-sm font-semibold text-zinc-950">
