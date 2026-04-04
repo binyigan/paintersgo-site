@@ -1,29 +1,31 @@
 "use client";
 
+import Image from "next/image";
 import { ExternalLink, LoaderCircle, Sparkles } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type PreviewMode = "clay" | "wireframe" | "studio";
 type MaterialMode = "plaster" | "clay" | "plastic" | "ceramic" | "metal";
+type Viewport = "unknown" | "mobile" | "desktop";
 
 const quickPresets = [
   {
     label: "Studio Review",
-    description: "适合先看整体体块和完成度",
+    description: "Best for checking overall silhouette and finish quality.",
     mode: "studio" as PreviewMode,
     material: "ceramic" as MaterialMode,
     accent: "#f59e0b",
   },
   {
     label: "Sculpt Check",
-    description: "更适合观察雕塑轮廓和光影起伏",
+    description: "Highlights shape transitions and light-shadow readability.",
     mode: "clay" as PreviewMode,
     material: "clay" as MaterialMode,
     accent: "#ef4444",
   },
   {
     label: "Topology Peek",
-    description: "快速确认线框和结构分布",
+    description: "Quick wireframe inspection for structure density.",
     mode: "wireframe" as PreviewMode,
     material: "metal" as MaterialMode,
     accent: "#14b8a6",
@@ -36,11 +38,14 @@ const modeLabels: Record<PreviewMode, string> = {
   studio: "Studio",
 };
 
+const materialOptions: MaterialMode[] = ["plaster", "clay", "plastic", "ceramic", "metal"];
+
 export function LiveEditorLite() {
   const [mode, setMode] = useState<PreviewMode>("studio");
   const [accent, setAccent] = useState("#f59e0b");
   const [material, setMaterial] = useState<MaterialMode>("plaster");
   const [isFrameLoading, setIsFrameLoading] = useState(true);
+  const [viewport, setViewport] = useState<Viewport>("unknown");
 
   const iframeSrc = useMemo(() => {
     const params = new URLSearchParams({
@@ -53,12 +58,31 @@ export function LiveEditorLite() {
     return `/paintersgo-lite/index.html?${params.toString()}`;
   }, [accent, material, mode]);
 
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const updateViewport = () => {
+      setViewport(mediaQuery.matches ? "mobile" : "desktop");
+    };
+
+    updateViewport();
+    mediaQuery.addEventListener("change", updateViewport);
+    return () => mediaQuery.removeEventListener("change", updateViewport);
+  }, []);
+
+  const embedIframe = viewport === "desktop";
+
+  function requestFrameReload() {
+    if (embedIframe) {
+      setIsFrameLoading(true);
+    }
+  }
+
   return (
     <div className="overflow-hidden rounded-[2rem] border border-black/10 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.08)]">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-black/10 px-4 py-4 md:px-5">
         <div>
           <p className="text-sm font-medium text-zinc-900">Live Editor Lite</p>
-          <p className="text-xs text-zinc-500">真实模型网页试看器</p>
+          <p className="text-xs text-zinc-500">Real model preview in browser</p>
         </div>
 
         <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
@@ -67,7 +91,7 @@ export function LiveEditorLite() {
               key={item}
               type="button"
               onClick={() => {
-                setIsFrameLoading(true);
+                requestFrameReload();
                 setMode(item);
               }}
               aria-pressed={mode === item}
@@ -84,37 +108,75 @@ export function LiveEditorLite() {
       </div>
 
       <div className="grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="relative h-[20rem] bg-[radial-gradient(circle_at_top,#fff3d6_0%,#f4ecdf_36%,#ddd0bd_100%)] sm:h-[24rem] lg:h-[27rem]">
-          {isFrameLoading ? (
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[linear-gradient(180deg,rgba(255,248,236,0.88),rgba(244,236,223,0.76))] backdrop-blur-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 text-amber-700 shadow-[0_12px_30px_rgba(0,0,0,0.08)]">
-                <LoaderCircle className="h-5 w-5 animate-spin" />
-              </div>
-              <div className="text-center">
-                <p className="text-sm font-semibold text-zinc-900">Updating Lite Viewer</p>
-                <p className="mt-1 text-xs text-zinc-600">正在刷新材质和预览模式</p>
+        <div className="relative h-[20rem] overflow-hidden bg-[radial-gradient(circle_at_top,#fff3d6_0%,#f4ecdf_36%,#ddd0bd_100%)] sm:h-[24rem] lg:h-[27rem]">
+          {embedIframe ? (
+            <>
+              {isFrameLoading ? (
+                <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[linear-gradient(180deg,rgba(255,248,236,0.88),rgba(244,236,223,0.76))] backdrop-blur-sm">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/80 text-amber-700 shadow-[0_12px_30px_rgba(0,0,0,0.08)]">
+                    <LoaderCircle className="h-5 w-5 animate-spin" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-semibold text-zinc-900">Updating Lite Viewer</p>
+                    <p className="mt-1 text-xs text-zinc-600">Loading selected mode and material</p>
+                  </div>
+                </div>
+              ) : null}
+
+              <iframe
+                key={iframeSrc}
+                src={iframeSrc}
+                title="PaintersGO Lite Viewer"
+                className="h-full w-full border-0"
+                loading="lazy"
+                onLoad={() => setIsFrameLoading(false)}
+              />
+            </>
+          ) : (
+            <div className="relative h-full w-full">
+              <Image
+                src="/app-assets/demo_preview.webp"
+                alt="Lite Viewer mobile preview"
+                fill
+                className="object-cover opacity-85"
+                sizes="(max-width: 768px) 100vw, 60vw"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,17,15,0.12)_0%,rgba(20,17,15,0.42)_54%,rgba(20,17,15,0.8)_100%)]" />
+              <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/15 bg-black/35 px-4 py-4 text-white backdrop-blur-sm">
+                <p className="text-xs uppercase tracking-[0.2em] text-zinc-300">Mobile Safe Mode</p>
+                <p className="mt-2 text-sm leading-6">
+                  Embedded 3D is disabled on mobile to prevent scroll freezing. Open the full-screen
+                  Lite Viewer if you want to interact with the model.
+                </p>
+                <a
+                  href={iframeSrc}
+                  className="mt-3 inline-flex min-h-10 items-center gap-2 rounded-full bg-white px-4 text-xs font-semibold text-zinc-900"
+                >
+                  Open Full-Screen Viewer
+                  <ExternalLink className="h-3.5 w-3.5" />
+                </a>
               </div>
             </div>
-          ) : null}
-
-          <iframe
-            key={iframeSrc}
-            src={iframeSrc}
-            title="PaintersGO Lite Viewer"
-            className="h-full w-full border-0"
-            loading="lazy"
-            onLoad={() => setIsFrameLoading(false)}
-          />
+          )}
         </div>
 
         <div className="space-y-6 p-5 md:p-6">
           <div>
             <p className="text-xs uppercase tracking-[0.24em] text-zinc-400">Preview Controls</p>
-            <h3 className="mt-2 text-2xl font-semibold">像进入 App 之前的一次快速试用</h3>
+            <h3 className="mt-2 text-2xl font-semibold">Try model look before opening the app</h3>
             <p className="mt-3 text-sm leading-7 text-zinc-700">
-              这里已经接入真实的 `ToTu.glb`。用户不需要下载 App，也能先在浏览器里旋转模型、切换材质和观察整体形体。
+              This panel uses the real <code>ToTu.glb</code> model parameters. On desktop you can
+              rotate and inspect in-place; on mobile we keep the page smooth by default and provide a
+              dedicated full-screen preview entry.
             </p>
           </div>
+
+          {viewport !== "desktop" ? (
+            <div className="rounded-2xl border border-amber-300/50 bg-amber-50 px-4 py-3 text-sm leading-7 text-amber-900">
+              Mobile optimization is active: embedded interactive iframe is paused to avoid page
+              freezing while scrolling.
+            </div>
+          ) : null}
 
           <div className="grid gap-3">
             {quickPresets.map((preset) => {
@@ -128,7 +190,7 @@ export function LiveEditorLite() {
                   key={preset.label}
                   type="button"
                   onClick={() => {
-                    setIsFrameLoading(true);
+                    requestFrameReload();
                     setMode(preset.mode);
                     setMaterial(preset.material);
                     setAccent(preset.accent);
@@ -164,7 +226,7 @@ export function LiveEditorLite() {
                   key={swatch}
                   type="button"
                   onClick={() => {
-                    setIsFrameLoading(true);
+                    requestFrameReload();
                     setAccent(swatch);
                   }}
                   aria-pressed={accent === swatch}
@@ -183,32 +245,30 @@ export function LiveEditorLite() {
           <div>
             <p className="text-sm font-medium text-zinc-800">Material Preset</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {(["plaster", "clay", "plastic", "ceramic", "metal"] as MaterialMode[]).map(
-                (item) => (
-                  <button
-                    key={item}
-                    type="button"
-                    onClick={() => {
-                      setIsFrameLoading(true);
-                      setMaterial(item);
-                    }}
-                    aria-pressed={material === item}
-                    className={`inline-flex min-h-10 items-center rounded-full px-3 py-1.5 text-xs font-medium transition ${
-                      material === item
-                        ? "bg-zinc-950 text-white shadow-[0_10px_24px_rgba(24,24,27,0.16)]"
-                        : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
-                    }`}
-                  >
-                    {item}
-                  </button>
-                )
-              )}
+              {materialOptions.map((item) => (
+                <button
+                  key={item}
+                  type="button"
+                  onClick={() => {
+                    requestFrameReload();
+                    setMaterial(item);
+                  }}
+                  aria-pressed={material === item}
+                  className={`inline-flex min-h-10 items-center rounded-full px-3 py-1.5 text-xs font-medium transition ${
+                    material === item
+                      ? "bg-zinc-950 text-white shadow-[0_10px_24px_rgba(24,24,27,0.16)]"
+                      : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
+                  }`}
+                >
+                  {item}
+                </button>
+              ))}
             </div>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl bg-zinc-50 px-4 py-4 text-sm leading-7 text-zinc-700">
-              当前组合：{modeLabels[mode]} / {material} / {accent.toUpperCase()}
+              Current setup: {modeLabels[mode]} / {material} / {accent.toUpperCase()}
             </div>
             <a
               href={iframeSrc}
@@ -216,17 +276,18 @@ export function LiveEditorLite() {
               rel="noreferrer"
               className="inline-flex items-center justify-between rounded-2xl bg-zinc-950 px-4 py-4 text-sm font-medium text-white transition hover:bg-zinc-800"
             >
-              单独打开 Lite Viewer
+              Open Lite Viewer
               <ExternalLink className="h-4 w-4" />
             </a>
           </div>
 
           <div className="grid gap-3">
             <div className="rounded-2xl bg-zinc-50 px-4 py-4 text-sm leading-7 text-zinc-700">
-              现在左侧已经是独立网页版 Lite Viewer，不再只是 React 里的演示 Canvas。
+              Desktop mode uses embedded interactive viewer for faster comparison between presets.
             </div>
             <div className="rounded-2xl bg-zinc-50 px-4 py-4 text-sm leading-7 text-zinc-700">
-              这次已经直接加载 `ToTu.glb`。后续如果还有其他 PaintersGO 导出模型，只需要替换 iframe 参数里的模型路径。
+              Mobile mode prioritizes stable scrolling and avoids locking gestures inside an embedded
+              3D frame.
             </div>
           </div>
         </div>

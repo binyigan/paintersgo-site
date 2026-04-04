@@ -37,7 +37,7 @@ const aiModels = ["Meshy", "Tripo", "Hunyuan", "Rodin"];
 
 export default function Home() {
   return (
-    <main className="overflow-x-hidden bg-[linear-gradient(180deg,#f5f0e6_0%,#f7f6f2_18%,#ffffff_42%,#f7f1e5_100%)] text-zinc-950">
+    <main className="overflow-x-hidden [touch-action:pan-y] bg-[linear-gradient(180deg,#f5f0e6_0%,#f7f6f2_18%,#ffffff_42%,#f7f1e5_100%)] text-zinc-950">
       <section className="relative isolate px-6 pb-16 pt-6 md:px-8 md:pb-24 md:pt-8">
         <div className="absolute inset-x-0 top-0 -z-10 h-[34rem] bg-[radial-gradient(circle_at_top,#ffdd9d_0%,rgba(255,221,157,0.16)_30%,transparent_70%)]" />
         <div className="mx-auto flex max-w-7xl flex-col gap-6">

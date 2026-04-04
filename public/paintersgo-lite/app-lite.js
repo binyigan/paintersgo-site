@@ -8,6 +8,7 @@
     model: params.get("model") || "",
     autorotate: params.get("autorotate") !== "false",
   };
+  const isLikelyMobile = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
 
   const canvas = document.getElementById("viewer-canvas");
   const controlsRoot = document.getElementById("controls");
@@ -33,7 +34,7 @@
     alpha: false,
     preserveDrawingBuffer: false,
   });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, isLikelyMobile ? 1 : 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   if (THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
   else if (THREE.sRGBEncoding) renderer.outputEncoding = THREE.sRGBEncoding;
@@ -58,7 +59,7 @@
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.enablePan = false;
   controls.enableZoom = false;
-  controls.enableDamping = true;
+  controls.enableDamping = !isLikelyMobile;
   controls.dampingFactor = 0.06;
   controls.minAzimuthAngle = -1.1;
   controls.maxAzimuthAngle = 1.1;
@@ -357,8 +358,8 @@
   function animate() {
     requestAnimationFrame(animate);
     if (state.autorotate && modelRoot) {
-      modelRoot.rotation.y += 0.0035;
-      halo.rotation.z += 0.003;
+      modelRoot.rotation.y += isLikelyMobile ? 0.0022 : 0.0035;
+      halo.rotation.z += isLikelyMobile ? 0.0018 : 0.003;
     }
     controls.update();
     renderer.render(scene, camera);
