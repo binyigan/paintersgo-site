@@ -6,8 +6,45 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Float, OrbitControls, useGLTF } from "@react-three/drei";
 import { Group } from "three";
 
+import type { Locale } from "@/lib/locale";
+
 const HERO_MODEL_PATH = "/models/ToTu.glb";
 type Viewport = "unknown" | "mobile" | "desktop";
+
+const copyByLocale = {
+  zh: {
+    stageLabelDesktop: "实时 3D 舞台",
+    stageLabelMobile: "移动端顺滑预览",
+    mobileHint:
+      "移动端默认顺滑模式，避免页面滚动卡顿。你可以在下方 Live Editor Lite 中进入全屏交互预览。",
+    mobilePreviewAlt: "PaintersGO 模型预览图",
+    heroAssetLabel: "主视觉模型",
+    heroAssetDescDesktop: "当前首屏舞台渲染真实 ToTu.glb 模型，可直接查看模型质感与比例。",
+    heroAssetDescMobile: "移动端先展示静态预览，再进入独立交互查看页，兼顾流畅性与可看性。",
+    cards: [
+      { label: "模型", value: "ToTu.glb" },
+      { label: "交互", value: "旋转 / 缩放 / 平移" },
+      { label: "预览级别", value: "接近 App" },
+    ],
+  },
+  en: {
+    stageLabelDesktop: "Real-Time 3D Stage",
+    stageLabelMobile: "Mobile Smooth Preview",
+    mobileHint:
+      "Mobile smooth mode is enabled to avoid scroll freezing. Open Live Editor Lite below for full interactive preview.",
+    mobilePreviewAlt: "PaintersGO model preview",
+    heroAssetLabel: "Hero Asset",
+    heroAssetDescDesktop:
+      "The hero stage renders the real ToTu.glb model for direct quality and proportion checks.",
+    heroAssetDescMobile:
+      "On mobile we show a static preview first, then open full interaction in a dedicated viewer flow.",
+    cards: [
+      { label: "Model", value: "ToTu.glb" },
+      { label: "Control", value: "Orbit / Zoom / Pan" },
+      { label: "Preview", value: "App-grade" },
+    ],
+  },
+} as const;
 
 function HeroModel() {
   const rootRef = useRef<Group>(null);
@@ -31,26 +68,25 @@ function HeroModel() {
 
 useGLTF.preload(HERO_MODEL_PATH);
 
-function StaticMobilePreview() {
+function StaticMobilePreview({ hint, alt }: { hint: string; alt: string }) {
   return (
     <div className="absolute inset-0">
       <Image
         src="/app-assets/demo_preview.webp"
-        alt="PaintersGO model preview"
+        alt={alt}
         fill
         className="object-cover opacity-85"
         sizes="(max-width: 768px) 100vw, 50vw"
       />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,17,15,0.15)_0%,rgba(20,17,15,0.32)_46%,rgba(20,17,15,0.74)_100%)]" />
       <div className="absolute inset-x-4 top-16 rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-xs leading-6 text-zinc-200 backdrop-blur-sm">
-        Mobile smooth mode is enabled to avoid scroll freezing. Tap the Lite Viewer section below for
-        full-screen interactive preview.
+        {hint}
       </div>
     </div>
   );
 }
 
-export function ModelStage() {
+export function ModelStage({ locale = "zh" }: { locale?: Locale }) {
   const [viewport, setViewport] = useState<Viewport>("unknown");
 
   useEffect(() => {
@@ -65,11 +101,7 @@ export function ModelStage() {
   }, []);
 
   const isDesktop = viewport === "desktop";
-  const infoCards = [
-    { label: "Model", value: "ToTu.glb" },
-    { label: "Control", value: "Orbit / Zoom / Pan" },
-    { label: "Preview", value: "App-grade" },
-  ];
+  const t = copyByLocale[locale];
 
   return (
     <div className="space-y-4">
@@ -78,7 +110,7 @@ export function ModelStage() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(255,211,145,0.18),transparent_30%),radial-gradient(circle_at_82%_16%,rgba(255,154,76,0.12),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_32%,rgba(0,0,0,0.22)_100%)]" />
 
           <div className="absolute left-5 top-5 z-10 rounded-full border border-white/10 bg-black/25 px-4 py-2 text-xs uppercase tracking-[0.22em] text-zinc-300 backdrop-blur">
-            {isDesktop ? "Real-Time 3D Stage" : "Mobile Smooth Preview"}
+            {isDesktop ? t.stageLabelDesktop : t.stageLabelMobile}
           </div>
 
           <div className="absolute inset-x-0 top-0 h-36 bg-[radial-gradient(circle_at_top,rgba(255,234,198,0.52),transparent_68%)]" />
@@ -124,20 +156,18 @@ export function ModelStage() {
               />
             </Canvas>
           ) : (
-            <StaticMobilePreview />
+            <StaticMobilePreview hint={t.mobileHint} alt={t.mobilePreviewAlt} />
           )}
         </div>
 
         {isDesktop ? (
           <div className="hidden gap-3 md:flex md:flex-col">
             <div className="rounded-[1.25rem] border border-white/10 bg-black/24 px-4 py-4 backdrop-blur-md">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-400">Hero Asset</p>
-              <p className="mt-2 text-sm leading-7 text-zinc-100">
-                Current hero stage renders the real ToTu.glb model for direct 3D quality preview.
-              </p>
+              <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-400">{t.heroAssetLabel}</p>
+              <p className="mt-2 text-sm leading-7 text-zinc-100">{t.heroAssetDescDesktop}</p>
             </div>
 
-            {infoCards.map((item) => (
+            {t.cards.map((item) => (
               <div
                 key={item.label}
                 className="rounded-[1.25rem] border border-white/10 bg-white/8 px-4 py-4 backdrop-blur-md"
@@ -152,11 +182,8 @@ export function ModelStage() {
 
       {!isDesktop ? (
         <div className="rounded-[1.25rem] border border-white/10 bg-black/24 px-4 py-4 backdrop-blur-md">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-400">Hero Asset</p>
-          <p className="mt-2 text-sm leading-7 text-zinc-100">
-            On mobile we use a static preview first, then open full interaction in a dedicated viewer
-            page.
-          </p>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-400">{t.heroAssetLabel}</p>
+          <p className="mt-2 text-sm leading-7 text-zinc-100">{t.heroAssetDescMobile}</p>
         </div>
       ) : null}
     </div>

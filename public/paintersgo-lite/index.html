@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -235,8 +235,8 @@
       <div class="brand-block">
         <div class="brand-mark">PG</div>
         <div class="brand-copy">
-          <strong>PaintersGO Lite Viewer</strong>
-          <span>从 App WebView 核心裁出的浏览器预览器</span>
+          <strong id="brand-title">PaintersGO Lite Viewer</strong>
+          <span id="brand-subtitle">Browser preview extracted from the app WebView core</span>
         </div>
       </div>
 
@@ -244,20 +244,19 @@
     </div>
 
     <div class="panel infocard">
-      <p class="eyebrow">Live Editor Lite</p>
-      <p class="title">网页版先试看模型，再决定要不要进入完整 App</p>
+      <p class="eyebrow" id="info-eyebrow">Live Editor Lite</p>
+      <p class="title" id="info-title">Preview models on web before opening the full app</p>
       <p class="body" id="viewer-description">
-        当前是浏览器可运行的 Lite Viewer，场景和材质思路来自 PaintersGO App 里的 Three.js WebView 内核。
-      </p>
+        This browser Lite Viewer reuses scene and material ideas from the PaintersGO app's Three.js WebView core.</p>
     </div>
 
     <div class="status">
       <div class="panel status-card">
-        <p class="status-label">Material</p>
+        <p class="status-label" id="material-label">Material</p>
         <p class="status-value" id="material-status">Loading</p>
       </div>
       <div class="panel status-card">
-        <p class="status-label">Model</p>
+        <p class="status-label" id="model-label">Model</p>
         <p class="status-value" id="model-status">Procedural placeholder</p>
       </div>
     </div>

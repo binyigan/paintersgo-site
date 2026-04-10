@@ -1,41 +1,136 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  Boxes,
-  BrainCircuit,
-  Download,
-  Layers3,
-  PenTool,
-  Smartphone,
-  Sparkles,
-} from "lucide-react";
+import { ArrowRight, Download, Globe, PenTool, Sparkles } from "lucide-react";
 
 import { FeatureShowcaseShell } from "@/components/feature-showcase-shell";
 import { LiveEditorLite } from "@/components/live-editor-lite";
 import { ModelStage } from "@/components/model-stage";
+import { resolveLocale, withLocale } from "@/lib/locale";
 
-const galleryItems = [
-  {
-    title: "Painter Character",
-    description: "从移动端草图到完整上色的角色模型预览。",
-    image: "/pic1.jpg",
-  },
-  {
-    title: "Collab Creature",
-    description: "适合在协作房间里持续迭代的共享模型。",
-    image: "/pic2.jpg",
-  },
-  {
-    title: "Printable Figure",
-    description: "为 O2O 打印流程准备的展示与输出样例。",
-    image: "/pic3.jpg",
-  },
-];
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 const aiModels = ["Meshy", "Tripo", "Hunyuan", "Rodin"];
 
-export default function Home() {
+const copyByLocale = {
+  zh: {
+    pageTitle: "PaintersGO | AI 驱动的 3D 协作创作平台",
+    pageDescription:
+      "PaintersGO 把 AI 3D 生成、协作房间、在线预览与 O2O 打印交付整合为一条完整创作链路。",
+    brandSubtitle: "AI 驱动的 3D 协作创作平台",
+    navLive: "Live Editor Lite",
+    navFeatures: "核心能力",
+    navAbout: "关于",
+    navGallery: "作品展示",
+    navDownload: "下载",
+    heroBadge: "从 AI 草模到实体成品的一条龙创作链路",
+    heroTitle: "PaintersGO",
+    heroSubtitle: "把 3D 生成、协作编辑与打印输出收进同一个工作台",
+    heroBody: "首屏展示真实 3D 模型，并串联 Web 预览、协作房间与 O2O 打印流程。",
+    ctaPreview: "先试看模型",
+    ctaDownload: "下载 APK",
+    heroPoints: ["多模型 AI 后端", "协作房间", "O2O 打印链路"],
+    liveBadge: "Live Editor Lite",
+    liveTitle: "不装 App，也能先用浏览器试看 PaintersGO 模型",
+    liveBody: "在网页里先旋转、缩放、切换材质，再决定是否下载完整 App。",
+    featuresBadge: "核心能力",
+    featuresTitle: "让用户一眼看懂 PaintersGO 是完整的 3D 协作工作流",
+    featuresBody: "官网展示基于真实 App 素材与真实模型，不是概念图。",
+    aiPowerTitle: "AI 能力矩阵",
+    appPreviewAlt: "PaintersGO 应用预览",
+    galleryBadge: "作品展示",
+    galleryTitle: "展示用户真正愿意分享的 3D 创作成果",
+    galleryItems: [
+      { title: "画师小队角色", image: "/pic1.jpg" },
+      { title: "协作共创生物", image: "/pic2.jpg" },
+      { title: "可打印成品模型", image: "/pic3.jpg" },
+    ],
+    downloadBadge: "获取 PaintersGO",
+    downloadTitle: "给用户一个明确、显眼、不会犹豫的下载入口",
+    downloadBody: "当用户已经看过模型与流程后，这里应该是最顺滑的转化点。",
+    androidLabel: "Android",
+    googlePlayLabel: "Google Play",
+    comingSoon: "即将上线",
+    mobileBar: "先试看模型，再下载完整 App",
+    preview: "试看",
+    download: "下载",
+    language: "语言",
+  },
+  en: {
+    pageTitle: "PaintersGO | AI-powered 3D Co-Creation Platform",
+    pageDescription:
+      "PaintersGO integrates AI 3D generation, collaboration rooms, online preview, and O2O printing into one complete workflow.",
+    brandSubtitle: "AI-powered 3D co-creation platform",
+    navLive: "Live Editor Lite",
+    navFeatures: "Features",
+    navAbout: "About",
+    navGallery: "Gallery",
+    navDownload: "Download",
+    heroBadge: "From AI rough model to physical output in one flow",
+    heroTitle: "PaintersGO",
+    heroSubtitle: "Bring 3D generation, collaboration editing, and printing into one workspace",
+    heroBody: "The hero renders a real 3D model first, then leads into web preview, collaboration rooms, and O2O printing flow.",
+    ctaPreview: "Preview Model First",
+    ctaDownload: "Download APK",
+    heroPoints: ["Multi-model AI backend", "Collaboration rooms", "O2O fulfillment flow"],
+    liveBadge: "Live Editor Lite",
+    liveTitle: "Try PaintersGO models in browser before installing",
+    liveBody: "Rotate, zoom, and switch material modes on web before entering the full app.",
+    featuresBadge: "Core Features",
+    featuresTitle: "Show at a glance that PaintersGO is a full 3D collaboration workflow",
+    featuresBody: "This site uses real app assets and real models, not conceptual placeholders.",
+    aiPowerTitle: "AI Power",
+    appPreviewAlt: "PaintersGO app preview",
+    galleryBadge: "Gallery",
+    galleryTitle: "Showcase 3D outcomes users genuinely want to share",
+    galleryItems: [
+      { title: "Painter Character", image: "/pic1.jpg" },
+      { title: "Collab Creature", image: "/pic2.jpg" },
+      { title: "Printable Figure", image: "/pic3.jpg" },
+    ],
+    downloadBadge: "Get PaintersGO",
+    downloadTitle: "Give users a clear, visible, low-friction download entry",
+    downloadBody: "After model preview and workflow understanding, this should be the smoothest conversion point.",
+    androidLabel: "Android",
+    googlePlayLabel: "Google Play",
+    comingSoon: "Coming Soon",
+    mobileBar: "Preview first, then install full app",
+    preview: "Preview",
+    download: "Download",
+    language: "Language",
+  },
+} as const;
+
+function languageButtonClass(active: boolean): string {
+  return active ? "bg-zinc-950 text-white" : "bg-white text-zinc-700 hover:bg-zinc-100";
+}
+
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}): Promise<Metadata> {
+  const locale = resolveLocale((await searchParams).lang);
+  const t = copyByLocale[locale];
+
+  return {
+    title: t.pageTitle,
+    description: t.pageDescription,
+  };
+}
+
+export default async function Home({ searchParams }: { searchParams: SearchParams }) {
+  const locale = resolveLocale((await searchParams).lang);
+  const t = copyByLocale[locale];
+
+  const zhHref = withLocale("/", "zh");
+  const enHref = withLocale("/", "en");
+  const aboutHref = withLocale("/about", locale);
+  const liveHref = withLocale("/#live-editor", locale);
+  const featureHref = withLocale("/#features", locale);
+  const galleryHref = withLocale("/#gallery", locale);
+  const downloadHref = withLocale("/#download", locale);
+
   return (
     <main className="overflow-x-hidden bg-[linear-gradient(180deg,#f5f0e6_0%,#f7f6f2_18%,#ffffff_42%,#f7f1e5_100%)] text-zinc-950">
       <section className="relative isolate px-6 pb-16 pt-6 md:px-8 md:pb-24 md:pt-8">
@@ -47,164 +142,72 @@ export default function Home() {
                 <Image src="/logo.png" alt="PaintersGO" width={26} height={26} />
               </div>
               <div>
-                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">
-                  PaintersGO
-                </p>
-                <p className="text-sm text-zinc-600">AI 驱动的 3D 协作创作平台</p>
+                <p className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">PaintersGO</p>
+                <p className="text-sm text-zinc-600">{t.brandSubtitle}</p>
               </div>
             </div>
 
             <nav className="hidden items-center gap-6 text-sm text-zinc-600 md:flex">
-              <a href="#live-editor" className="transition hover:text-zinc-950">
-                Live Editor Lite
-              </a>
-              <a href="#features" className="transition hover:text-zinc-950">
-                Features
-              </a>
-              <Link href="/about" className="transition hover:text-zinc-950">
-                About
-              </Link>
-              <a href="#gallery" className="transition hover:text-zinc-950">
-                Gallery
-              </a>
-              <a href="#download" className="transition hover:text-zinc-950">
-                Download
-              </a>
+              <a href={liveHref} className="transition hover:text-zinc-950">{t.navLive}</a>
+              <a href={featureHref} className="transition hover:text-zinc-950">{t.navFeatures}</a>
+              <Link href={aboutHref} className="transition hover:text-zinc-950">{t.navAbout}</Link>
+              <a href={galleryHref} className="transition hover:text-zinc-950">{t.navGallery}</a>
+              <a href={downloadHref} className="transition hover:text-zinc-950">{t.navDownload}</a>
             </nav>
 
-            <a
-              href="#download"
-              className="inline-flex h-10 items-center justify-center rounded-full border border-black/10 bg-zinc-950 px-4 text-sm font-medium text-white transition hover:bg-zinc-800 md:hidden"
-            >
-              下载
-            </a>
+            <div className="hidden items-center gap-1 rounded-full border border-black/10 bg-white/80 p-1 md:flex">
+              <span className="px-2 text-[11px] uppercase tracking-[0.18em] text-zinc-500">{t.language}</span>
+              <Link href={zhHref} className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${languageButtonClass(locale === "zh")}`}>中文</Link>
+              <Link href={enHref} className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${languageButtonClass(locale === "en")}`}>EN</Link>
+            </div>
           </header>
 
-          <nav className="flex flex-wrap items-center gap-2 md:hidden">
-            <a
-              href="#live-editor"
-              className="inline-flex min-h-10 items-center rounded-full border border-black/10 bg-white/70 px-4 text-xs font-medium text-zinc-700"
-            >
-              Live Editor
-            </a>
-            <a
-              href="#features"
-              className="inline-flex min-h-10 items-center rounded-full border border-black/10 bg-white/70 px-4 text-xs font-medium text-zinc-700"
-            >
-              Features
-            </a>
-            <a
-              href="#gallery"
-              className="inline-flex min-h-10 items-center rounded-full border border-black/10 bg-white/70 px-4 text-xs font-medium text-zinc-700"
-            >
-              Gallery
-            </a>
-            <Link
-              href="/about"
-              className="inline-flex min-h-10 items-center rounded-full border border-black/10 bg-white/70 px-4 text-xs font-medium text-zinc-700"
-            >
-              About
-            </Link>
-          </nav>
+          <div className="flex items-center justify-end gap-2 md:hidden">
+            <span className="inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/80 px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-zinc-500">
+              <Globe className="h-3.5 w-3.5" />
+              {t.language}
+            </span>
+            <Link href={zhHref} className={`rounded-full border border-black/10 px-3 py-2 text-xs font-medium ${languageButtonClass(locale === "zh")}`}>中文</Link>
+            <Link href={enHref} className={`rounded-full border border-black/10 px-3 py-2 text-xs font-medium ${languageButtonClass(locale === "en")}`}>EN</Link>
+          </div>
 
           <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
             <section className="rounded-[2rem] border border-black/10 bg-white/75 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.08)] backdrop-blur sm:p-7 md:p-10">
               <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-100/80 px-4 py-2 text-sm text-amber-900">
                 <Sparkles className="h-4 w-4" />
-                从 AI 草模到实体成品的一条龙创作链路
+                {t.heroBadge}
               </div>
 
               <div className="mt-7 max-w-3xl space-y-6">
                 <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-6xl md:leading-[1.02]">
-                  PaintersGO
-                  <span className="block text-zinc-500">
-                    把 3D 生成、协作编辑与打印输出收进同一个工作台
-                  </span>
+                  {t.heroTitle}
+                  <span className="block text-zinc-500">{t.heroSubtitle}</span>
                 </h1>
-                <p className="max-w-2xl text-base leading-8 text-zinc-700 md:text-lg">
-                  首屏直接展示真实 3D 模型，往下滑就能试看 Web 预览器、理解多模型 AI
-                  后端、协作房间，以及从手机屏幕走向实体 3D 打印件的完整流程。
-                </p>
+                <p className="max-w-2xl text-base leading-8 text-zinc-700 md:text-lg">{t.heroBody}</p>
               </div>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href="/PaintersGO.apk"
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-zinc-950 px-6 text-sm font-medium text-white transition hover:bg-zinc-800"
-                >
-                  下载 APK
+                <a href="/PaintersGO.apk" className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-zinc-950 px-6 text-sm font-medium text-white transition hover:bg-zinc-800">
+                  {t.ctaDownload}
                   <Download className="h-4 w-4" />
                 </a>
-                <a
-                  href="#live-editor"
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-6 text-sm font-medium transition hover:bg-zinc-50"
-                >
-                  先试看模型
+                <a href={liveHref} className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-black/10 bg-white px-6 text-sm font-medium transition hover:bg-zinc-50">
+                  {t.ctaPreview}
                   <ArrowRight className="h-4 w-4" />
                 </a>
               </div>
 
               <div className="mt-6 grid gap-3 sm:grid-cols-3">
-                {[
-                  {
-                    icon: Layers3,
-                    label: "生成到交付",
-                    body: "把 AI 建模、多人协作和打印输出串成一条完整链路。",
-                  },
-                  {
-                    icon: BrainCircuit,
-                    label: "多模型后端",
-                    body: "支持 Meshy、Tripo、Hunyuan、Rodin 等生成能力接入。",
-                  },
-                  {
-                    icon: Smartphone,
-                    label: "先试看再下载",
-                    body: "网页先转模型、看材质、验构图，再进入完整 App。",
-                  },
-                ].map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <div
-                      key={item.label}
-                      className="rounded-[1.35rem] border border-black/8 bg-white/70 px-4 py-4"
-                    >
-                      <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-100 text-amber-900">
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      <p className="mt-4 text-base font-semibold">{item.label}</p>
-                      <p className="mt-2 text-sm leading-7 text-zinc-700">{item.body}</p>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <div className="mt-10 grid gap-4 md:grid-cols-3">
-                <article className="rounded-[1.5rem] border border-black/10 bg-zinc-950 p-5 text-white">
-                  <p className="text-sm uppercase tracking-[0.2em] text-zinc-400">AI Power</p>
-                  <p className="mt-3 text-2xl font-semibold">多模型编排</p>
-                  <p className="mt-2 text-sm leading-7 text-zinc-300">
-                    统一接入 Meshy、Tripo、Hunyuan、Rodin 等生成能力。
-                  </p>
-                </article>
-                <article className="rounded-[1.5rem] border border-black/10 bg-white p-5">
-                  <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">Collaboration</p>
-                  <p className="mt-3 text-2xl font-semibold">协作房间</p>
-                  <p className="mt-2 text-sm leading-7 text-zinc-700">
-                    创作、评审、打样三个角色能围绕同一个模型同步推进。
-                  </p>
-                </article>
-                <article className="rounded-[1.5rem] border border-black/10 bg-white p-5">
-                  <p className="text-sm uppercase tracking-[0.2em] text-zinc-500">O2O Printing</p>
-                  <p className="mt-3 text-2xl font-semibold">线上到线下</p>
-                  <p className="mt-2 text-sm leading-7 text-zinc-700">
-                    从移动端生成与检查，直接衔接实体打印与交付。
-                  </p>
-                </article>
+                {t.heroPoints.map((point) => (
+                  <div key={point} className="rounded-[1.35rem] border border-black/8 bg-white/70 px-4 py-4">
+                    <p className="text-sm font-semibold">{point}</p>
+                  </div>
+                ))}
               </div>
             </section>
 
             <aside className="rounded-[2rem] border border-black/10 bg-[#14110f] p-4 shadow-[0_24px_80px_rgba(20,17,15,0.22)]">
-              <ModelStage />
+              <ModelStage locale={locale} />
             </aside>
           </div>
         </div>
@@ -213,57 +216,28 @@ export default function Home() {
       <section id="live-editor" className="px-6 py-10 md:px-8 md:py-16">
         <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="rounded-[2rem] border border-black/10 bg-zinc-950 p-8 text-white shadow-[0_24px_80px_rgba(0,0,0,0.18)]">
-            <p className="text-sm uppercase tracking-[0.24em] text-zinc-400">
-              Live Editor Lite
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">
-              不装 App，也能先用浏览器试看 PaintersGO 模型
-            </h2>
-            <p className="mt-4 text-base leading-8 text-zinc-300">
-              这一块先做成轻量 Web 预览器。用户可以拖拽旋转、切换显示模式、感受模型体积和材质方向，
-              再决定要不要进入完整 App。
-            </p>
-
-            <div className="mt-8 grid gap-3">
-              {[
-                "旋转查看真实模型，模拟 App 内基础审视体验",
-                "切换 Clay / Wireframe / Studio 三种预览模式",
-                "把“下载前先试看”的门槛降到最低",
-              ].map((item) => (
-                <div
-                  key={item}
-                  className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-zinc-200"
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
+            <p className="text-sm uppercase tracking-[0.24em] text-zinc-400">{t.liveBadge}</p>
+            <h2 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">{t.liveTitle}</h2>
+            <p className="mt-4 text-base leading-8 text-zinc-300">{t.liveBody}</p>
           </div>
-
-          <LiveEditorLite />
+          <LiveEditorLite locale={locale} />
         </div>
       </section>
 
       <section id="features" className="px-6 py-10 md:px-8 md:py-16">
         <div className="mx-auto max-w-7xl space-y-6">
           <div className="max-w-3xl">
-            <p className="text-sm font-medium uppercase tracking-[0.24em] text-amber-700">
-              Core Features
-            </p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">
-              让用户一眼看懂 PaintersGO 不只是“能生成”，而是一个完整的 3D 协作生产面板
-            </h2>
+            <p className="text-sm font-medium uppercase tracking-[0.24em] text-amber-700">{t.featuresBadge}</p>
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">{t.featuresTitle}</h2>
+            <p className="mt-4 text-sm leading-7 text-zinc-700">{t.featuresBody}</p>
           </div>
 
           <div className="grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
             <article className="rounded-[1.8rem] border border-black/10 bg-white p-6 shadow-[0_16px_48px_rgba(0,0,0,0.06)]">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-amber-900">
-                <BrainCircuit className="h-6 w-6" />
+                <Sparkles className="h-6 w-6" />
               </div>
-              <h3 className="mt-5 text-2xl font-semibold">AI Power</h3>
-              <p className="mt-3 text-sm leading-7 text-zinc-700">
-                多模型后端统一调度，不锁死在单一生成引擎，让不同风格、速度和精度需求都能被覆盖。
-              </p>
+              <h3 className="mt-5 text-2xl font-semibold">{t.aiPowerTitle}</h3>
               <div className="mt-5 flex flex-wrap gap-2">
                 {aiModels.map((item) => (
                   <span
@@ -276,182 +250,29 @@ export default function Home() {
               </div>
               <div className="mt-6 overflow-hidden rounded-[1.4rem] border border-black/10 bg-zinc-50">
                 <div className="relative h-52">
-                  <Image
-                    src="/app-assets/demo_preview.webp"
-                    alt="PaintersGO app preview"
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-                <div className="p-4 text-sm leading-7 text-zinc-700">
-                  官网这里展示的不是抽象概念，而是 App 里真实存在的生成与预览界面素材。
+                  <Image src="/app-assets/demo_preview.webp" alt={t.appPreviewAlt} fill className="object-cover" />
                 </div>
               </div>
             </article>
 
-            <FeatureShowcaseShell />
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 py-10 md:px-8 md:py-16">
-        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="overflow-hidden rounded-[2rem] border border-black/10 bg-white shadow-[0_20px_64px_rgba(0,0,0,0.06)]">
-            <div className="grid gap-0 md:grid-cols-2">
-              <div className="relative min-h-[20rem]">
-                <Image
-                  src="/app-assets/ar.webp"
-                  alt="PaintersGO mobile AR preview"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="space-y-4 p-8">
-                <p className="inline-flex items-center gap-2 rounded-full bg-zinc-100 px-4 py-2 text-sm text-zinc-600">
-                  <Boxes className="h-4 w-4" />
-                  Product Story
-                </p>
-                <h2 className="text-3xl font-semibold tracking-tight">
-                  把应用介绍从“功能堆砌”改成“可上手的产品体验”
-                </h2>
-                <p className="text-sm leading-7 text-zinc-700">
-                  这一段承接 Hero 和编辑器，告诉用户 PaintersGO 不是一个孤立的模型生成工具，
-                  而是一个连接创意输入、视觉检查、多人协作和实体输出的 3D 创作系统。
-                </p>
-                <div className="grid gap-3 pt-2">
-                  <div className="rounded-2xl bg-zinc-50 px-4 py-4 text-sm text-zinc-700">
-                    适合把 Meshy / Tripo / Hunyuan 的能力统一成一套可控体验。
-                  </div>
-                  <div className="rounded-2xl bg-zinc-50 px-4 py-4 text-sm text-zinc-700">
-                    适合把“在线看看模型”转成真正的下载决策入口。
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid gap-5">
-            <div className="overflow-hidden rounded-[2rem] border border-black/10 bg-white shadow-[0_20px_64px_rgba(0,0,0,0.06)]">
-              <div className="relative h-56">
-                <Image
-                  src="/app-assets/video_to_3d1.webp"
-                  alt="App refine workflow"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <h3 className="text-xl font-semibold">从手机屏幕到打印件</h3>
-                <p className="mt-2 text-sm leading-7 text-zinc-700">
-                  用真实界面和流程图把 O2O 制造过程可视化，比抽象文案更容易建立可信度。
-                </p>
-              </div>
-            </div>
-
-            <div className="overflow-hidden rounded-[2rem] border border-black/10 bg-[#171514] text-white shadow-[0_20px_64px_rgba(0,0,0,0.12)]">
-              <div className="relative h-56">
-                <Image
-                  src="/app-assets/video_to_3d.webp"
-                  alt="AI to 3D"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div className="p-6">
-                <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs uppercase tracking-[0.2em] text-zinc-300">
-                  App-grounded flow
-                </div>
-                <h3 className="text-xl font-semibold">从 AI 到 3D 成果的短路径</h3>
-                <p className="mt-2 text-sm leading-7 text-zinc-300">
-                  让访客快速感受到“文字/图像输入 -&gt; 可看可转的模型 -&gt; 更深度编辑”的产品节奏。
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="px-6 py-10 md:px-8 md:py-16">
-        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.94fr_1.06fr]">
-          <div className="rounded-[2rem] border border-black/10 bg-[#171311] p-8 text-white shadow-[0_22px_70px_rgba(0,0,0,0.14)] md:p-10">
-            <p className="text-sm uppercase tracking-[0.24em] text-zinc-400">Behind PaintersGO</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">
-              这不只是一个产品页，也是一个个人作品的成长记录。
-            </h2>
-            <p className="mt-4 text-base leading-8 text-zinc-300">
-              如果你想知道作者为什么会做 PaintersGO、灵感来自哪里、网站和 App 是怎么一点点被搭起来的，现在已经有了单独的幕后故事页面。
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="/about"
-                className="inline-flex h-12 items-center justify-center rounded-full bg-white px-6 text-sm font-medium text-zinc-950 transition hover:bg-zinc-100"
-              >
-                查看作者故事
-              </Link>
-              <a
-                href="/PaintersGO.apk"
-                className="inline-flex h-12 items-center justify-center rounded-full border border-white/10 bg-white/7 px-6 text-sm font-medium text-white transition hover:bg-white/12"
-              >
-                直接下载 App
-              </a>
-            </div>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-3">
-            {[
-              {
-                title: "关于作者",
-                body: "把产品视角、个人兴趣和创作表达揉在一起，讲清楚这个作品是谁做的。",
-              },
-              {
-                title: "灵感来源",
-                body: "从 AI 生成、3D 创作到实体打印之间的体验断层，慢慢长成项目的出发点。",
-              },
-              {
-                title: "开发小故事",
-                body: "从真实模型、App 素材到 Lite Viewer，记录这个网站是如何被做成现在这个样子的。",
-              },
-            ].map((item) => (
-              <article
-                key={item.title}
-                className="rounded-[1.7rem] border border-black/10 bg-white p-6 shadow-[0_18px_60px_rgba(0,0,0,0.06)]"
-              >
-                <p className="text-lg font-semibold">{item.title}</p>
-                <p className="mt-3 text-sm leading-7 text-zinc-700">{item.body}</p>
-              </article>
-            ))}
+            <FeatureShowcaseShell locale={locale} />
           </div>
         </div>
       </section>
 
       <section id="gallery" className="px-6 py-10 md:px-8 md:py-16">
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-            <div className="max-w-2xl">
-              <p className="text-sm font-medium uppercase tracking-[0.24em] text-amber-700">
-                Gallery
-              </p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">
-                展示用户真的会愿意分享的 3D 创作成果
-              </h2>
-            </div>
-            <p className="max-w-xl text-sm leading-7 text-zinc-700">
-              这里不只是“放几张图”，而是把 PaintersGO 作为创作平台的结果质量展示出来。
-            </p>
-          </div>
+          <p className="text-sm font-medium uppercase tracking-[0.24em] text-amber-700">{t.galleryBadge}</p>
+          <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">{t.galleryTitle}</h2>
 
           <div className="mt-8 grid gap-5 md:grid-cols-3">
-            {galleryItems.map((item) => (
-              <article
-                key={item.title}
-                className="overflow-hidden rounded-[2rem] border border-black/10 bg-white shadow-[0_18px_60px_rgba(0,0,0,0.06)]"
-              >
+            {t.galleryItems.map((item) => (
+              <article key={item.title} className="overflow-hidden rounded-[2rem] border border-black/10 bg-white shadow-[0_18px_60px_rgba(0,0,0,0.06)]">
                 <div className="relative h-72">
                   <Image src={item.image} alt={item.title} fill className="object-cover" />
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-7 text-zinc-700">{item.description}</p>
                 </div>
               </article>
             ))}
@@ -463,48 +284,24 @@ export default function Home() {
         <div className="mx-auto max-w-7xl rounded-[2.25rem] border border-black/10 bg-[#13100d] p-8 text-white shadow-[0_24px_100px_rgba(0,0,0,0.18)] md:p-10">
           <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
             <div>
-              <p className="text-sm uppercase tracking-[0.24em] text-zinc-400">Get PaintersGO</p>
-              <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">
-                给用户一个明确、显眼、不会犹豫的下载入口
-              </h2>
-              <p className="mt-4 max-w-2xl text-base leading-8 text-zinc-300">
-                当用户已经在网页上看过模型、理解过协作和打印流程，这里就应该是最顺滑的转化点。
-              </p>
+              <p className="text-sm uppercase tracking-[0.24em] text-zinc-400">{t.downloadBadge}</p>
+              <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">{t.downloadTitle}</h2>
+              <p className="mt-4 max-w-2xl text-base leading-8 text-zinc-300">{t.downloadBody}</p>
             </div>
 
             <div className="grid gap-4">
-              <a
-                href="/PaintersGO.apk"
-                className="flex items-center justify-between rounded-[1.75rem] border border-white/10 bg-white/7 px-6 py-5 transition hover:bg-white/12"
-              >
+              <a href="/PaintersGO.apk" className="flex items-center justify-between rounded-[1.75rem] border border-white/10 bg-white/7 px-6 py-5 transition hover:bg-white/12">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">Android</p>
-                  <p className="mt-2 text-2xl font-semibold">Download APK</p>
+                  <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">{t.androidLabel}</p>
+                  <p className="mt-2 text-2xl font-semibold">{t.download}</p>
                 </div>
                 <Download className="h-6 w-6" />
               </a>
 
-              <div className="grid gap-3 sm:grid-cols-3">
-                {[
-                  "真实 3D 模型可先在网页中试看",
-                  "协作房间与 O2O 流程已在首页完整说明",
-                  "适合安卓用户直接安装体验完整功能",
-                ].map((item) => (
-                  <div
-                    key={item}
-                    className="rounded-[1.5rem] border border-white/10 bg-white/5 px-4 py-4 text-sm leading-7 text-zinc-300"
-                  >
-                    {item}
-                  </div>
-                ))}
-              </div>
-
               <div className="flex items-center justify-between rounded-[1.75rem] border border-white/10 bg-white/5 px-6 py-5">
                 <div>
-                  <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">
-                    Google Play
-                  </p>
-                  <p className="mt-2 text-2xl font-semibold">Coming Soon</p>
+                  <p className="text-xs uppercase tracking-[0.22em] text-zinc-400">{t.googlePlayLabel}</p>
+                  <p className="mt-2 text-2xl font-semibold">{t.comingSoon}</p>
                 </div>
                 <PenTool className="h-6 w-6 text-zinc-400" />
               </div>
@@ -517,22 +314,14 @@ export default function Home() {
         <div className="flex items-center justify-between gap-3 rounded-[1.5rem] border border-black/10 bg-white/92 px-3 py-3 shadow-[0_18px_50px_rgba(0,0,0,0.14)] backdrop-blur sm:px-4">
           <div className="min-w-0">
             <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">PaintersGO</p>
-            <p className="truncate text-sm font-semibold text-zinc-950">
-              先试看模型，再下载完整 App
-            </p>
+            <p className="truncate text-sm font-semibold text-zinc-950">{t.mobileBar}</p>
           </div>
           <div className="flex items-center gap-2">
-            <a
-              href="#live-editor"
-              className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 px-4 text-sm font-medium text-zinc-700"
-            >
-              试看
+            <a href={liveHref} className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 px-4 text-sm font-medium text-zinc-700">
+              {t.preview}
             </a>
-            <a
-              href="/PaintersGO.apk"
-              className="inline-flex h-11 items-center justify-center rounded-full bg-zinc-950 px-4 text-sm font-medium text-white"
-            >
-              下载
+            <a href="/PaintersGO.apk" className="inline-flex h-11 items-center justify-center rounded-full bg-zinc-950 px-4 text-sm font-medium text-white">
+              {t.download}
             </a>
           </div>
         </div>

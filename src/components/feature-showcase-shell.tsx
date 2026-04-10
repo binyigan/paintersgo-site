@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 
 import { FeatureShowcase } from "@/components/feature-showcase";
+import type { Locale } from "@/lib/locale";
 
 const collabOrder = ["create", "join"] as const;
 const o2oOrder = ["map", "logistics"] as const;
 
-export function FeatureShowcaseShell() {
+export function FeatureShowcaseShell({ locale = "zh" }: { locale?: Locale }) {
   const [activeCollab, setActiveCollab] = useState("create");
   const [activeO2O, setActiveO2O] = useState("map");
   const pauseUntilRef = useRef(0);
@@ -38,6 +39,7 @@ export function FeatureShowcaseShell() {
 
   return (
     <FeatureShowcase
+      locale={locale}
       activeCollab={activeCollab}
       activeO2O={activeO2O}
       onCollabChange={(id) => {

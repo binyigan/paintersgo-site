@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "PaintersGO | AI 驱动的 3D 协作创作平台",
+  title: "PaintersGO | AI-powered 3D Co-Creation Platform",
   description:
-    "PaintersGO 将 AI 3D 生成、协作房间、在线试看与 O2O 打印流程整合成一个更完整的 3D 创作入口。",
+    "PaintersGO integrates AI 3D generation, collaboration rooms, online preview, and O2O printing into one complete creation workflow.",
 };
 
 export default function RootLayout({
@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="zh-CN"
+      lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>

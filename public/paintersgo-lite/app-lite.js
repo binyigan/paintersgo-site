@@ -1,6 +1,8 @@
 (function () {
   const params = new URLSearchParams(window.location.search);
+  const locale = params.get("lang") === "en" ? "en" : "zh";
   const state = {
+    lang: locale,
     mode: params.get("mode") || "studio",
     material: params.get("material") || "plaster",
     accent: params.get("accent") || "#f59e0b",
@@ -8,6 +10,71 @@
     model: params.get("model") || "",
     autorotate: params.get("autorotate") !== "false",
   };
+  const copyByLocale = {
+    zh: {
+      documentTitle: "PaintersGO Lite 预览器",
+      brandTitle: "PaintersGO Lite 预览器",
+      brandSubtitle: "来自 App WebView 内核的浏览器预览器",
+      infoEyebrow: "Live Editor Lite",
+      infoTitle: "先在网页试看模型，再决定是否进入完整 App",
+      defaultDescription:
+        "当前是浏览器可运行的 Lite Viewer，场景和材质思路来自 PaintersGO App 的 Three.js WebView 内核。",
+      materialLabel: "材质",
+      modelLabel: "模型",
+      proceduralPlaceholder: "程序化占位模型（可替换为导出的 GLB）",
+      proceduralDescription:
+        "当前没有接入真实导出模型，所以先显示一个可交互的占位 3D 角色。接入 PaintersGO 导出的 GLB 后，这个 viewer 会直接展示真实模型。",
+      loadedDescription:
+        "这个 Lite Viewer 已支持通过 URL 加载外部 GLB/GLTF/STL 模型，方便先在官网做公开试看。",
+      loadedStlPrefix: "已加载 STL：",
+      loadedGltfPrefix: "已加载 GLTF：",
+      failedPrefix: "模型加载失败：",
+      modeLabels: {
+        studio: "工作室",
+        clay: "粘土",
+        wireframe: "线框",
+      },
+      materialLabels: {
+        plaster: "石膏",
+        clay: "陶土",
+        plastic: "塑料",
+        ceramic: "陶瓷",
+        metal: "金属",
+      },
+    },
+    en: {
+      documentTitle: "PaintersGO Lite Viewer",
+      brandTitle: "PaintersGO Lite Viewer",
+      brandSubtitle: "Browser preview extracted from the app WebView core",
+      infoEyebrow: "Live Editor Lite",
+      infoTitle: "Preview models on web before opening the full app",
+      defaultDescription:
+        "This browser Lite Viewer reuses scene and material ideas from the PaintersGO app's Three.js WebView core.",
+      materialLabel: "Material",
+      modelLabel: "Model",
+      proceduralPlaceholder: "Procedural placeholder (replace with exported GLB later)",
+      proceduralDescription:
+        "No exported production model is connected yet, so a procedural interactive placeholder is shown first. Once a PaintersGO GLB is connected, this viewer renders the real model.",
+      loadedDescription:
+        "This Lite Viewer supports loading external GLB/GLTF/STL models by URL for public preview on the website.",
+      loadedStlPrefix: "Loaded STL from ",
+      loadedGltfPrefix: "Loaded GLTF from ",
+      failedPrefix: "Failed to load model from ",
+      modeLabels: {
+        studio: "Studio",
+        clay: "Clay",
+        wireframe: "Wireframe",
+      },
+      materialLabels: {
+        plaster: "Plaster",
+        clay: "Clay",
+        plastic: "Plastic",
+        ceramic: "Ceramic",
+        metal: "Metal",
+      },
+    },
+  };
+  const t = copyByLocale[locale];
   const isLikelyMobile = window.matchMedia("(max-width: 767px), (pointer: coarse)").matches;
 
   const canvas = document.getElementById("viewer-canvas");
@@ -15,6 +82,12 @@
   const materialStatus = document.getElementById("material-status");
   const modelStatus = document.getElementById("model-status");
   const viewerDescription = document.getElementById("viewer-description");
+  const brandTitle = document.getElementById("brand-title");
+  const brandSubtitle = document.getElementById("brand-subtitle");
+  const infoEyebrow = document.getElementById("info-eyebrow");
+  const infoTitle = document.getElementById("info-title");
+  const materialLabel = document.getElementById("material-label");
+  const modelLabel = document.getElementById("model-label");
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(state.bg);
@@ -105,6 +178,7 @@
 
   function updateUrl() {
     const next = new URLSearchParams();
+    next.set("lang", state.lang);
     next.set("mode", state.mode);
     next.set("material", state.material);
     next.set("accent", state.accent);
@@ -114,8 +188,10 @@
     history.replaceState({}, "", `${window.location.pathname}?${next.toString()}`);
   }
 
-  function setStatus(text) {
-    materialStatus.textContent = text;
+  function setStatus() {
+    const modeLabel = t.modeLabels[state.mode] || state.mode;
+    const materialValue = t.materialLabels[state.material] || state.material;
+    materialStatus.textContent = `${modeLabel} / ${materialValue}`;
   }
 
   function clearModel() {
@@ -180,7 +256,7 @@
     });
     halo.material.color.set(state.accent);
     halo.material.emissive.set(state.accent);
-    setStatus(`${state.mode} / ${state.material}`);
+    setStatus();
   }
 
   function buildProceduralModel() {
@@ -260,11 +336,11 @@
     modelRoot = buildProceduralModel();
     stageGroup.add(modelRoot);
     fitModel(modelRoot);
-    modelStatus.textContent = "Procedural placeholder (replace with exported GLB later)";
-    setDescription(
-      "当前没有接入真实导出模型，所以先显示一个可交互的占位 3D 角色。接入 PaintersGO 导出的 GLB 后，这个 viewer 会直接展示真实模型。"
-    );
-    setStatus(`${state.mode} / ${state.material}`);
+    modelStatus.textContent = t.proceduralPlaceholder;
+    setDescription(t.proceduralDescription);
+
+
+    setStatus();
   }
 
   function loadModel(url) {
@@ -281,15 +357,15 @@
       fitModel(modelRoot);
       applyMaterial(buildMaterial());
       modelStatus.textContent = lower.endsWith(".stl")
-        ? `Loaded STL from ${url}`
-        : `Loaded GLTF from ${url}`;
-      setDescription(
-        "这个 Lite Viewer 现在已经支持用 URL 加载外部 GLB/GLTF/STL 模型，方便先在官网里做公开试看。"
-      );
+        ? `${t.loadedStlPrefix}${url}`
+        : `${t.loadedGltfPrefix}${url}`;
+      setDescription(t.loadedDescription);
+
+
     };
 
     const onError = function () {
-      modelStatus.textContent = `Failed to load model from ${url}`;
+      modelStatus.textContent = `${t.failedPrefix}${url}`;
       showProceduralFallback();
     };
 
@@ -351,7 +427,8 @@
         const button = document.createElement("button");
         button.type = "button";
         button.className = `chip${state[group.key] === value ? " is-active" : ""}`;
-        button.textContent = value;
+        const labelMap = group.key === "mode" ? t.modeLabels : t.materialLabels;
+        button.textContent = labelMap[value] || value;
         button.addEventListener("click", function () {
           group.onClick(value);
         });
@@ -383,6 +460,16 @@
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
+
+  document.documentElement.lang = locale === "en" ? "en" : "zh-CN";
+  document.title = t.documentTitle;
+  if (brandTitle) brandTitle.textContent = t.brandTitle;
+  if (brandSubtitle) brandSubtitle.textContent = t.brandSubtitle;
+  if (infoEyebrow) infoEyebrow.textContent = t.infoEyebrow;
+  if (infoTitle) infoTitle.textContent = t.infoTitle;
+  if (viewerDescription) viewerDescription.textContent = t.defaultDescription;
+  if (materialLabel) materialLabel.textContent = t.materialLabel;
+  if (modelLabel) modelLabel.textContent = t.modelLabel;
 
   document.documentElement.style.setProperty("--accent", state.accent);
   renderButtons();
