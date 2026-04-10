@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Download, Globe, PenTool, Sparkles } from "lucide-react";
+import { ArrowRight, Download, PenTool, Sparkles } from "lucide-react";
 
 import { FeatureShowcaseShell } from "@/components/feature-showcase-shell";
 import { LiveEditorLite } from "@/components/live-editor-lite";
@@ -147,7 +147,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
               </div>
             </div>
 
-            <nav className="hidden items-center gap-6 text-sm text-zinc-600 md:flex">
+            <nav className="hidden items-center gap-6 text-sm text-zinc-600 lg:flex">
               <a href={liveHref} className="transition hover:text-zinc-950">{t.navLive}</a>
               <a href={featureHref} className="transition hover:text-zinc-950">{t.navFeatures}</a>
               <Link href={aboutHref} className="transition hover:text-zinc-950">{t.navAbout}</Link>
@@ -155,21 +155,12 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
               <a href={downloadHref} className="transition hover:text-zinc-950">{t.navDownload}</a>
             </nav>
 
-            <div className="hidden items-center gap-1 rounded-full border border-black/10 bg-white/80 p-1 md:flex">
+            <div className="flex shrink-0 items-center gap-1 rounded-full border border-black/10 bg-white/80 p-1">
               <span className="px-2 text-[11px] uppercase tracking-[0.18em] text-zinc-500">{t.language}</span>
               <Link href={zhHref} className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${languageButtonClass(locale === "zh")}`}>中文</Link>
               <Link href={enHref} className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${languageButtonClass(locale === "en")}`}>EN</Link>
             </div>
           </header>
-
-          <div className="flex items-center justify-end gap-2 md:hidden">
-            <span className="inline-flex items-center gap-1 rounded-full border border-black/10 bg-white/80 px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-zinc-500">
-              <Globe className="h-3.5 w-3.5" />
-              {t.language}
-            </span>
-            <Link href={zhHref} className={`rounded-full border border-black/10 px-3 py-2 text-xs font-medium ${languageButtonClass(locale === "zh")}`}>中文</Link>
-            <Link href={enHref} className={`rounded-full border border-black/10 px-3 py-2 text-xs font-medium ${languageButtonClass(locale === "en")}`}>EN</Link>
-          </div>
 
           <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
             <section className="rounded-[2rem] border border-black/10 bg-white/75 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.08)] backdrop-blur sm:p-7 md:p-10">
