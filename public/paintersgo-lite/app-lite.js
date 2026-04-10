@@ -57,16 +57,19 @@
   scene.add(rimLight);
 
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  controls.enablePan = false;
+  controls.enablePan = true;
   controls.enableZoom = true;
   controls.enableDamping = !isLikelyMobile;
   controls.dampingFactor = 0.06;
-  controls.minDistance = 1.8;
-  controls.maxDistance = 7.8;
-  controls.minAzimuthAngle = -1.1;
-  controls.maxAzimuthAngle = 1.1;
-  controls.minPolarAngle = Math.PI / 3.1;
-  controls.maxPolarAngle = Math.PI / 1.72;
+  controls.minDistance = 1.1;
+  controls.maxDistance = 11.5;
+  controls.minAzimuthAngle = -Infinity;
+  controls.maxAzimuthAngle = Infinity;
+  controls.minPolarAngle = 0.06;
+  controls.maxPolarAngle = Math.PI - 0.06;
+  controls.rotateSpeed = 0.9;
+  controls.zoomSpeed = 1.05;
+  controls.panSpeed = 0.85;
 
   const stageGroup = new THREE.Group();
   scene.add(stageGroup);

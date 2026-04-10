@@ -191,7 +191,7 @@ export function LiveEditorLite() {
             <h3 className="mt-2 text-2xl font-semibold">Try model look before opening the app</h3>
             <p className="mt-3 text-sm leading-7 text-zinc-700">
               This panel uses the real <code>ToTu.glb</code> model parameters. On desktop you can
-              rotate and inspect in-place; on mobile we keep the page smooth by default and provide a
+              orbit, zoom, and pan in-place; on mobile we keep the page smooth by default and provide a
               dedicated full-screen preview entry.
             </p>
           </div>
