@@ -147,7 +147,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
               </div>
             </div>
 
-            <nav className="hidden items-center gap-6 text-sm text-zinc-600 lg:flex">
+            <nav className="hidden items-center gap-6 text-sm text-zinc-600 lg:flex [@media(pointer:coarse)]:hidden">
               <a href={liveHref} className="transition hover:text-zinc-950">{t.navLive}</a>
               <a href={featureHref} className="transition hover:text-zinc-950">{t.navFeatures}</a>
               <Link href={aboutHref} className="transition hover:text-zinc-950">{t.navAbout}</Link>
@@ -162,7 +162,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             </div>
           </header>
 
-          <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr]">
+          <div className="grid gap-6 lg:grid-cols-[1.08fr_0.92fr] [@media(pointer:coarse)]:grid-cols-1">
             <section className="rounded-[2rem] border border-black/10 bg-white/75 p-5 shadow-[0_24px_80px_rgba(0,0,0,0.08)] backdrop-blur sm:p-7 md:p-10">
               <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-100/80 px-4 py-2 text-sm text-amber-900">
                 <Sparkles className="h-4 w-4" />
@@ -205,7 +205,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       </section>
 
       <section id="live-editor" className="px-6 py-10 md:px-8 md:py-16">
-        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="mx-auto grid max-w-7xl gap-6 lg:grid-cols-[0.9fr_1.1fr] [@media(pointer:coarse)]:grid-cols-1">
           <div className="rounded-[2rem] border border-black/10 bg-zinc-950 p-8 text-white shadow-[0_24px_80px_rgba(0,0,0,0.18)]">
             <p className="text-sm uppercase tracking-[0.24em] text-zinc-400">{t.liveBadge}</p>
             <h2 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">{t.liveTitle}</h2>
@@ -223,7 +223,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <p className="mt-4 text-sm leading-7 text-zinc-700">{t.featuresBody}</p>
           </div>
 
-          <div className="grid gap-5 lg:grid-cols-[0.92fr_1.08fr]">
+          <div className="grid gap-5 lg:grid-cols-[0.92fr_1.08fr] [@media(pointer:coarse)]:grid-cols-1">
             <article className="rounded-[1.8rem] border border-black/10 bg-white p-6 shadow-[0_16px_48px_rgba(0,0,0,0.06)]">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-amber-900">
                 <Sparkles className="h-6 w-6" />
@@ -273,7 +273,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
 
       <section id="download" className="px-6 pb-18 pt-10 md:px-8 md:pb-24 md:pt-16">
         <div className="mx-auto max-w-7xl rounded-[2.25rem] border border-black/10 bg-[#13100d] p-8 text-white shadow-[0_24px_100px_rgba(0,0,0,0.18)] md:p-10">
-          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="grid gap-8 lg:grid-cols-[1.05fr_0.95fr] [@media(pointer:coarse)]:grid-cols-1">
             <div>
               <p className="text-sm uppercase tracking-[0.24em] text-zinc-400">{t.downloadBadge}</p>
               <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-5xl">{t.downloadTitle}</h2>
@@ -301,22 +301,6 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </div>
       </section>
 
-      <div className="hidden">
-        <div className="flex items-center justify-between gap-3 rounded-[1.5rem] border border-black/10 bg-white/92 px-3 py-3 shadow-[0_18px_50px_rgba(0,0,0,0.14)] backdrop-blur sm:px-4">
-          <div className="min-w-0">
-            <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">PaintersGO</p>
-            <p className="truncate text-sm font-semibold text-zinc-950">{t.mobileBar}</p>
-          </div>
-          <div className="flex items-center gap-2">
-            <a href={liveHref} className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 px-4 text-sm font-medium text-zinc-700">
-              {t.preview}
-            </a>
-            <a href="/PaintersGO.apk" className="inline-flex h-11 items-center justify-center rounded-full bg-zinc-950 px-4 text-sm font-medium text-white">
-              {t.download}
-            </a>
-          </div>
-        </div>
-      </div>
     </main>
   );
 }

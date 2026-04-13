@@ -179,14 +179,20 @@ export function LiveEditorLite({ locale = "zh" }: { locale?: Locale }) {
   }, [accent, locale, material, mode, viewport]);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 1023px), (pointer: coarse)");
+    const narrowQuery = window.matchMedia("(max-width: 1279px)");
+    const coarseQuery = window.matchMedia("(pointer: coarse)");
     const updateViewport = () => {
-      setViewport(mediaQuery.matches ? "mobile" : "desktop");
+      const touchDevice = coarseQuery.matches || navigator.maxTouchPoints > 0;
+      setViewport(touchDevice || narrowQuery.matches ? "mobile" : "desktop");
     };
 
     updateViewport();
-    mediaQuery.addEventListener("change", updateViewport);
-    return () => mediaQuery.removeEventListener("change", updateViewport);
+    narrowQuery.addEventListener("change", updateViewport);
+    coarseQuery.addEventListener("change", updateViewport);
+    return () => {
+      narrowQuery.removeEventListener("change", updateViewport);
+      coarseQuery.removeEventListener("change", updateViewport);
+    };
   }, []);
 
   function requestFrameReload() {
