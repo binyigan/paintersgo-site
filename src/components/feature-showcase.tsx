@@ -322,8 +322,8 @@ function AppPanel({
         dark ? "border-white/10 bg-[#171514] text-white" : "border-black/10 bg-white"
       )}
     >
-      <div className="grid gap-0 lg:grid-cols-[1.02fr_0.98fr]">
-        <div className="group relative min-h-[23rem] overflow-hidden">
+      <div className="grid gap-0 xl:grid-cols-[1.02fr_0.98fr]">
+        <div className="group relative min-h-[19rem] overflow-hidden sm:min-h-[22rem]">
           <Image
             src={image}
             alt={title}
@@ -339,7 +339,7 @@ function AppPanel({
             )}
           />
         </div>
-        <div className="flex flex-col gap-5 p-6">
+        <div className="flex flex-col gap-5 p-5 sm:p-6">
           <div>
             <p
               className={cn(
@@ -421,7 +421,7 @@ export function FeatureShowcase({
 
   return (
     <div className="grid gap-6">
-      <section className="grid gap-4 rounded-[2rem] border border-black/10 bg-white p-6 shadow-[0_20px_64px_rgba(0,0,0,0.06)]">
+      <section className="grid gap-4 rounded-[2rem] border border-black/10 bg-white p-5 shadow-[0_20px_64px_rgba(0,0,0,0.06)] sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-zinc-100 px-4 py-2 text-sm text-zinc-600">
@@ -460,7 +460,7 @@ export function FeatureShowcase({
         </div>
       </section>
 
-      <section className="grid gap-4 rounded-[2rem] border border-black/10 bg-white p-6 shadow-[0_20px_64px_rgba(0,0,0,0.06)]">
+      <section className="grid gap-4 rounded-[2rem] border border-black/10 bg-white p-5 shadow-[0_20px_64px_rgba(0,0,0,0.06)] sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="inline-flex items-center gap-2 rounded-full bg-emerald-50 px-4 py-2 text-sm text-emerald-800">
@@ -502,10 +502,7 @@ export function FeatureShowcase({
           {sectionText.processCards.map((item) => {
             const Icon = item.icon;
             return (
-              <div
-                key={item.label}
-                className="rounded-[1.5rem] border border-black/10 bg-zinc-50 p-5"
-              >
+              <div key={item.label} className="rounded-[1.5rem] border border-black/10 bg-zinc-50 p-5">
                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-zinc-700 shadow-sm">
                   <Icon className="h-5 w-5" />
                 </div>

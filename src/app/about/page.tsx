@@ -39,8 +39,7 @@ const copyByLocale = {
   },
   en: {
     pageTitle: "About PaintersGO | Author Story",
-    pageDescription:
-      "Learn inspirations and the build journey behind PaintersGO from author perspective.",
+    pageDescription: "Learn inspirations and the build journey behind PaintersGO from the author perspective.",
     subtitle: "Author, inspirations, and build story",
     backHome: "Back to Home",
     download: "Download APK",
@@ -94,9 +93,9 @@ export default async function AboutPage({ searchParams }: { searchParams: Search
 
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#f7f0e3_0%,#fbfaf6_22%,#ffffff_48%,#f4ede1_100%)] text-zinc-950">
-      <section className="px-6 pb-12 pt-6 md:px-8 md:pb-16 md:pt-8">
+      <section className="px-4 pb-12 pt-4 sm:px-6 md:px-8 md:pb-16 md:pt-6 xl:pb-20 xl:pt-8">
         <div className="mx-auto flex max-w-6xl flex-col gap-6">
-          <header className="flex flex-wrap items-center justify-between gap-3 rounded-full border border-black/10 bg-white/78 px-5 py-3 shadow-[0_12px_40px_rgba(0,0,0,0.06)] backdrop-blur">
+          <header className="flex flex-col gap-4 rounded-[1.75rem] border border-black/10 bg-white/78 px-5 py-4 shadow-[0_12px_40px_rgba(0,0,0,0.06)] backdrop-blur lg:flex-row lg:items-center lg:justify-between lg:rounded-full">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">PaintersGO</p>
               <p className="text-sm text-zinc-600">{t.subtitle}</p>
@@ -120,7 +119,7 @@ export default async function AboutPage({ searchParams }: { searchParams: Search
             </div>
           </header>
 
-          <section className="rounded-[2rem] border border-black/10 bg-white/80 p-8 shadow-[0_24px_80px_rgba(0,0,0,0.08)] md:p-10">
+          <section className="rounded-[2rem] border border-black/10 bg-white/80 p-6 shadow-[0_24px_80px_rgba(0,0,0,0.08)] md:p-8 xl:p-10">
             <h1 className="max-w-4xl text-4xl font-semibold tracking-tight md:text-6xl md:leading-[1.05]">{t.title}</h1>
             <p className="mt-6 max-w-3xl text-base leading-8 text-zinc-700 md:text-lg">{t.body}</p>
 

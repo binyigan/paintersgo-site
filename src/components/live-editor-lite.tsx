@@ -97,16 +97,13 @@ const copyByLocale = {
     loadingBody: "加载你选择的模式和材质",
     exitInteraction: "退出交互",
     mobileSafeMode: "移动端安全模式",
-    mobileSafeBody:
-      "移动端默认关闭内嵌 3D，避免滚动卡顿。需要交互时可打开全屏 Lite Viewer。",
+    mobileSafeBody: "移动端默认关闭内嵌 3D，避免滚动卡顿。需要交互时可打开全屏 Lite Viewer。",
     enableEmbeddedZoom: "启用内嵌交互",
     openFullScreen: "全屏打开",
     previewControls: "预览控制",
     panelTitle: "先看模型效果，再决定是否进入 App",
-    panelBody:
-      "这个面板直接使用真实 ToTu.glb 参数。桌面端支持旋转、缩放、平移；移动端默认优先滚动流畅。",
-    mobileTip:
-      "移动端默认是顺滑滚动模式。只有在需要双指缩放和旋转时，再开启内嵌交互。",
+    panelBody: "这个面板直接使用真实 ToTu.glb 参数。桌面端支持旋转、缩放、平移；移动端默认优先滚动流畅。",
+    mobileTip: "移动端默认是顺滑滚动模式。只有在需要双指缩放和旋转时，再开启内嵌交互。",
     active: "已启用",
     accentColor: "强调色",
     materialPreset: "材质预设",
@@ -125,16 +122,13 @@ const copyByLocale = {
     loadingBody: "Loading selected mode and material",
     exitInteraction: "Exit Interaction",
     mobileSafeMode: "Mobile Safe Mode",
-    mobileSafeBody:
-      "Embedded 3D is disabled on mobile to prevent scroll freezing. Open full-screen Lite Viewer for interaction.",
+    mobileSafeBody: "Embedded 3D is disabled on mobile to prevent scroll freezing. Open full-screen Lite Viewer for interaction.",
     enableEmbeddedZoom: "Enable Embedded Zoom",
     openFullScreen: "Open Full-Screen",
     previewControls: "Preview Controls",
     panelTitle: "Try model look before opening the app",
-    panelBody:
-      "This panel uses real ToTu.glb parameters. On desktop you can orbit, zoom, and pan in-place; on mobile we keep smooth scrolling by default.",
-    mobileTip:
-      "Mobile defaults to smooth-scroll mode. Enable embedded zoom only when you need two-finger interaction.",
+    panelBody: "This panel uses real ToTu.glb parameters. On desktop you can orbit, zoom, and pan in-place; on mobile we keep smooth scrolling by default.",
+    mobileTip: "Mobile defaults to smooth-scroll mode. Enable embedded zoom only when you need two-finger interaction.",
     active: "Active",
     accentColor: "Accent Color",
     materialPreset: "Material Preset",
@@ -179,18 +173,20 @@ export function LiveEditorLite({ locale = "zh" }: { locale?: Locale }) {
   }, [accent, locale, material, mode, viewport]);
 
   useEffect(() => {
-    const narrowQuery = window.matchMedia("(max-width: 1279px)");
+    const largeQuery = window.matchMedia("(min-width: 1280px)");
     const coarseQuery = window.matchMedia("(pointer: coarse)");
+
     const updateViewport = () => {
       const touchDevice = coarseQuery.matches || navigator.maxTouchPoints > 0;
-      setViewport(touchDevice || narrowQuery.matches ? "mobile" : "desktop");
+      setViewport(!touchDevice && largeQuery.matches ? "desktop" : "mobile");
     };
 
     updateViewport();
-    narrowQuery.addEventListener("change", updateViewport);
+    largeQuery.addEventListener("change", updateViewport);
     coarseQuery.addEventListener("change", updateViewport);
+
     return () => {
-      narrowQuery.removeEventListener("change", updateViewport);
+      largeQuery.removeEventListener("change", updateViewport);
       coarseQuery.removeEventListener("change", updateViewport);
     };
   }, []);
@@ -209,7 +205,7 @@ export function LiveEditorLite({ locale = "zh" }: { locale?: Locale }) {
           <p className="text-xs text-zinc-500">{t.headerSubtitle}</p>
         </div>
 
-        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+        <div className="flex w-full flex-wrap items-center gap-2 xl:w-auto">
           {(["clay", "wireframe", "studio"] as PreviewMode[]).map((item) => (
             <button
               key={item}
@@ -231,8 +227,8 @@ export function LiveEditorLite({ locale = "zh" }: { locale?: Locale }) {
         </div>
       </div>
 
-      <div className="grid gap-0 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="relative h-[20rem] overflow-hidden bg-[radial-gradient(circle_at_top,#fff3d6_0%,#f4ecdf_36%,#ddd0bd_100%)] sm:h-[24rem] lg:h-[27rem]">
+      <div className="grid gap-0 xl:grid-cols-[minmax(0,1.08fr)_minmax(20rem,0.92fr)]">
+        <div className="relative h-[18rem] overflow-hidden bg-[radial-gradient(circle_at_top,#fff3d6_0%,#f4ecdf_36%,#ddd0bd_100%)] sm:h-[22rem] xl:h-[28rem]">
           {canEmbedIframe ? (
             <>
               {isFrameLoading ? (
@@ -419,7 +415,7 @@ export function LiveEditorLite({ locale = "zh" }: { locale?: Locale }) {
             </a>
           </div>
 
-          <div className="grid gap-3">
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
             <div className="rounded-2xl bg-zinc-50 px-4 py-4 text-sm leading-7 text-zinc-700">
               {t.desktopNote}
             </div>

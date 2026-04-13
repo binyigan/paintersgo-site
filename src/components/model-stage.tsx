@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, Float, OrbitControls, useGLTF } from "@react-three/drei";
 import { Group } from "three";
@@ -15,11 +15,10 @@ const copyByLocale = {
   zh: {
     stageLabelDesktop: "实时 3D 舞台",
     stageLabelMobile: "移动端顺滑预览",
-    mobileHint:
-      "移动端默认顺滑模式，避免页面滚动卡顿。你可以在下方 Live Editor Lite 中进入全屏交互预览。",
+    mobileHint: "移动端默认使用轻预览模式，避免滚动卡顿。下方 Live Editor Lite 可进入完整交互。",
     mobilePreviewAlt: "PaintersGO 模型预览图",
     heroAssetLabel: "主视觉模型",
-    heroAssetDescDesktop: "当前首屏舞台渲染真实 ToTu.glb 模型，可直接查看模型质感与比例。",
+    heroAssetDescDesktop: "当前首屏舞台渲染真实 ToTu.glb 模型，可直接查看模型质感、比例与整体轮廓。",
     heroAssetDescMobile: "移动端先展示静态预览，再进入独立交互查看页，兼顾流畅性与可看性。",
     cards: [
       { label: "模型", value: "ToTu.glb" },
@@ -30,14 +29,11 @@ const copyByLocale = {
   en: {
     stageLabelDesktop: "Real-Time 3D Stage",
     stageLabelMobile: "Mobile Smooth Preview",
-    mobileHint:
-      "Mobile smooth mode is enabled to avoid scroll freezing. Open Live Editor Lite below for full interactive preview.",
+    mobileHint: "Mobile uses a light preview mode by default to keep scrolling smooth. Open Live Editor Lite below for full interaction.",
     mobilePreviewAlt: "PaintersGO model preview",
     heroAssetLabel: "Hero Asset",
-    heroAssetDescDesktop:
-      "The hero stage renders the real ToTu.glb model for direct quality and proportion checks.",
-    heroAssetDescMobile:
-      "On mobile we show a static preview first, then open full interaction in a dedicated viewer flow.",
+    heroAssetDescDesktop: "The hero stage renders the real ToTu.glb model for direct quality, proportion, and silhouette checks.",
+    heroAssetDescMobile: "On mobile we show a static preview first, then open full interaction in a dedicated viewer flow.",
     cards: [
       { label: "Model", value: "ToTu.glb" },
       { label: "Control", value: "Orbit / Zoom / Pan" },
@@ -49,7 +45,7 @@ const copyByLocale = {
 function HeroModel() {
   const rootRef = useRef<Group>(null);
   const { scene } = useGLTF(HERO_MODEL_PATH);
-  const clonedScene = useMemo(() => scene.clone(true), [scene]);
+  const [clonedScene] = useState(() => scene.clone(true));
 
   useFrame((state) => {
     if (!rootRef.current) return;
@@ -78,8 +74,8 @@ function StaticMobilePreview({ hint, alt }: { hint: string; alt: string }) {
         className="object-cover opacity-85"
         sizes="(max-width: 768px) 100vw, 50vw"
       />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,17,15,0.15)_0%,rgba(20,17,15,0.32)_46%,rgba(20,17,15,0.74)_100%)]" />
-      <div className="absolute inset-x-4 top-16 rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-xs leading-6 text-zinc-200 backdrop-blur-sm">
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,17,15,0.12)_0%,rgba(20,17,15,0.32)_46%,rgba(20,17,15,0.76)_100%)]" />
+      <div className="absolute inset-x-4 bottom-4 rounded-2xl border border-white/10 bg-black/35 px-4 py-3 text-xs leading-6 text-zinc-200 backdrop-blur-sm">
         {hint}
       </div>
     </div>
@@ -90,108 +86,100 @@ export function ModelStage({ locale = "zh" }: { locale?: Locale }) {
   const [viewport, setViewport] = useState<Viewport>("unknown");
 
   useEffect(() => {
-    const narrowQuery = window.matchMedia("(max-width: 1279px)");
+    const largeQuery = window.matchMedia("(min-width: 1280px)");
     const coarseQuery = window.matchMedia("(pointer: coarse)");
+
     const updateViewport = () => {
       const touchDevice = coarseQuery.matches || navigator.maxTouchPoints > 0;
-      setViewport(touchDevice || narrowQuery.matches ? "mobile" : "desktop");
+      setViewport(!touchDevice && largeQuery.matches ? "desktop" : "mobile");
     };
 
     updateViewport();
-    narrowQuery.addEventListener("change", updateViewport);
+    largeQuery.addEventListener("change", updateViewport);
     coarseQuery.addEventListener("change", updateViewport);
+
     return () => {
-      narrowQuery.removeEventListener("change", updateViewport);
+      largeQuery.removeEventListener("change", updateViewport);
       coarseQuery.removeEventListener("change", updateViewport);
     };
   }, []);
 
   const isDesktop = viewport === "desktop";
   const t = copyByLocale[locale];
+  const description = isDesktop ? t.heroAssetDescDesktop : t.heroAssetDescMobile;
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_16.5rem]">
-        <div className="relative h-[20rem] overflow-hidden rounded-[1.7rem] border border-white/10 bg-[radial-gradient(circle_at_top,#8c6330_0%,#3b2d22_30%,#171311_68%)] sm:h-[24rem] xl:h-[32rem]">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(255,211,145,0.18),transparent_30%),radial-gradient(circle_at_82%_16%,rgba(255,154,76,0.12),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_32%,rgba(0,0,0,0.22)_100%)]" />
+      <div className="relative h-[18rem] overflow-hidden rounded-[1.7rem] border border-white/10 bg-[radial-gradient(circle_at_top,#8c6330_0%,#3b2d22_30%,#171311_68%)] sm:h-[23rem] xl:h-[31rem]">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(255,211,145,0.18),transparent_30%),radial-gradient(circle_at_82%_16%,rgba(255,154,76,0.12),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_32%,rgba(0,0,0,0.22)_100%)]" />
 
-          <div className="absolute left-5 top-5 z-10 rounded-full border border-white/10 bg-black/25 px-4 py-2 text-xs uppercase tracking-[0.22em] text-zinc-300 backdrop-blur">
-            {isDesktop ? t.stageLabelDesktop : t.stageLabelMobile}
-          </div>
-
-          <div className="absolute inset-x-0 top-0 h-36 bg-[radial-gradient(circle_at_top,rgba(255,234,198,0.52),transparent_68%)]" />
-          <div className="absolute left-1/2 top-[16%] h-44 w-44 -translate-x-1/2 rounded-full bg-amber-200/12 blur-3xl" />
-
-          {isDesktop ? (
-            <Canvas camera={{ position: [0.18, 0.52, 4.85], fov: 31 }} shadows dpr={[1, 1.4]}>
-              <color attach="background" args={["#14110f"]} />
-              <fog attach="fog" args={["#14110f", 4.6, 9]} />
-              <ambientLight intensity={0.85} color="#fff4df" />
-              <hemisphereLight intensity={0.72} groundColor="#1b1512" color="#ffe7c0" />
-              <directionalLight position={[4.5, 5.4, 3.2]} intensity={2.8} color="#ffe3bc" />
-              <pointLight position={[-3.8, 2.4, -2]} intensity={10} color="#fb923c" />
-              <pointLight position={[3.4, 1.8, 2.8]} intensity={7} color="#fde68a" />
-              <spotLight position={[0, 5, 2]} angle={0.27} penumbra={0.9} intensity={18} color="#fff7ed" />
-
-              <Suspense fallback={null}>
-                <HeroModel />
-                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.12, 0]} receiveShadow>
-                  <circleGeometry args={[5.4, 64]} />
-                  <shadowMaterial transparent opacity={0.34} />
-                </mesh>
-                <mesh position={[0, -1.94, -1.3]}>
-                  <torusGeometry args={[2.26, 0.045, 16, 100]} />
-                  <meshStandardMaterial color="#f6c77b" emissive="#a3631a" emissiveIntensity={1.15} />
-                </mesh>
-                <mesh position={[0, -1.6, -2.5]}>
-                  <ringGeometry args={[2.3, 3.6, 80]} />
-                  <meshBasicMaterial color="#ffb85c" transparent opacity={0.09} />
-                </mesh>
-                <Environment preset="sunset" />
-              </Suspense>
-
-              <OrbitControls
-                enablePan
-                enableZoom
-                enableDamping
-                dampingFactor={0.08}
-                minDistance={2}
-                maxDistance={9.8}
-                minPolarAngle={0.2}
-                maxPolarAngle={Math.PI - 0.2}
-              />
-            </Canvas>
-          ) : (
-            <StaticMobilePreview hint={t.mobileHint} alt={t.mobilePreviewAlt} />
-          )}
+        <div className="absolute left-4 top-4 z-10 rounded-full border border-white/10 bg-black/25 px-4 py-2 text-[11px] uppercase tracking-[0.22em] text-zinc-300 backdrop-blur sm:left-5 sm:top-5">
+          {isDesktop ? t.stageLabelDesktop : t.stageLabelMobile}
         </div>
+
+        <div className="absolute inset-x-0 top-0 h-36 bg-[radial-gradient(circle_at_top,rgba(255,234,198,0.52),transparent_68%)]" />
+        <div className="absolute left-1/2 top-[16%] h-44 w-44 -translate-x-1/2 rounded-full bg-amber-200/12 blur-3xl" />
 
         {isDesktop ? (
-          <div className="hidden gap-3 xl:flex xl:flex-col">
-            <div className="rounded-[1.25rem] border border-white/10 bg-black/24 px-4 py-4 backdrop-blur-md">
-              <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-400">{t.heroAssetLabel}</p>
-              <p className="mt-2 text-sm leading-7 text-zinc-100">{t.heroAssetDescDesktop}</p>
-            </div>
+          <Canvas camera={{ position: [0.18, 0.52, 4.85], fov: 31 }} shadows dpr={[1, 1.4]}>
+            <color attach="background" args={["#14110f"]} />
+            <fog attach="fog" args={["#14110f", 4.6, 9]} />
+            <ambientLight intensity={0.85} color="#fff4df" />
+            <hemisphereLight intensity={0.72} groundColor="#1b1512" color="#ffe7c0" />
+            <directionalLight position={[4.5, 5.4, 3.2]} intensity={2.8} color="#ffe3bc" />
+            <pointLight position={[-3.8, 2.4, -2]} intensity={10} color="#fb923c" />
+            <pointLight position={[3.4, 1.8, 2.8]} intensity={7} color="#fde68a" />
+            <spotLight position={[0, 5, 2]} angle={0.27} penumbra={0.9} intensity={18} color="#fff7ed" />
 
-            {t.cards.map((item) => (
-              <div
-                key={item.label}
-                className="rounded-[1.25rem] border border-white/10 bg-white/8 px-4 py-4 backdrop-blur-md"
-              >
-                <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">{item.label}</p>
-                <p className="mt-2 text-sm font-medium text-zinc-100">{item.value}</p>
-              </div>
-            ))}
-          </div>
-        ) : null}
+            <Suspense fallback={null}>
+              <HeroModel />
+              <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.12, 0]} receiveShadow>
+                <circleGeometry args={[5.4, 64]} />
+                <shadowMaterial transparent opacity={0.34} />
+              </mesh>
+              <mesh position={[0, -1.94, -1.3]}>
+                <torusGeometry args={[2.26, 0.045, 16, 100]} />
+                <meshStandardMaterial color="#f6c77b" emissive="#a3631a" emissiveIntensity={1.15} />
+              </mesh>
+              <mesh position={[0, -1.6, -2.5]}>
+                <ringGeometry args={[2.3, 3.6, 80]} />
+                <meshBasicMaterial color="#ffb85c" transparent opacity={0.09} />
+              </mesh>
+              <Environment preset="sunset" />
+            </Suspense>
+
+            <OrbitControls
+              enablePan
+              enableZoom
+              enableDamping
+              dampingFactor={0.08}
+              minDistance={2}
+              maxDistance={9.8}
+              minPolarAngle={0.2}
+              maxPolarAngle={Math.PI - 0.2}
+            />
+          </Canvas>
+        ) : (
+          <StaticMobilePreview hint={t.mobileHint} alt={t.mobilePreviewAlt} />
+        )}
       </div>
 
-      {!isDesktop ? (
-        <div className="rounded-[1.25rem] border border-white/10 bg-black/24 px-4 py-4 backdrop-blur-md">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-400">{t.heroAssetLabel}</p>
-          <p className="mt-2 text-sm leading-7 text-zinc-100">{t.heroAssetDescMobile}</p>
-        </div>
-      ) : null}
+      <div className="rounded-[1.35rem] border border-white/10 bg-black/24 px-4 py-4 backdrop-blur-md">
+        <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-400">{t.heroAssetLabel}</p>
+        <p className="mt-2 text-sm leading-7 text-zinc-100">{description}</p>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        {t.cards.map((item) => (
+          <div
+            key={item.label}
+            className="rounded-[1.25rem] border border-white/10 bg-white/8 px-4 py-4 backdrop-blur-md"
+          >
+            <p className="text-[11px] uppercase tracking-[0.2em] text-zinc-500">{item.label}</p>
+            <p className="mt-2 text-sm font-medium text-zinc-100">{item.value}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
