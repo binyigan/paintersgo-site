@@ -90,7 +90,7 @@ export function ModelStage({ locale = "zh" }: { locale?: Locale }) {
   const [viewport, setViewport] = useState<Viewport>("unknown");
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const mediaQuery = window.matchMedia("(max-width: 1023px), (pointer: coarse)");
     const updateViewport = () => {
       setViewport(mediaQuery.matches ? "mobile" : "desktop");
     };
@@ -105,8 +105,8 @@ export function ModelStage({ locale = "zh" }: { locale?: Locale }) {
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_16.5rem]">
-        <div className="relative h-[24rem] overflow-hidden rounded-[1.7rem] border border-white/10 bg-[radial-gradient(circle_at_top,#8c6330_0%,#3b2d22_30%,#171311_68%)] md:h-[32rem]">
+      <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_16.5rem]">
+        <div className="relative h-[20rem] overflow-hidden rounded-[1.7rem] border border-white/10 bg-[radial-gradient(circle_at_top,#8c6330_0%,#3b2d22_30%,#171311_68%)] sm:h-[24rem] xl:h-[32rem]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(255,211,145,0.18),transparent_30%),radial-gradient(circle_at_82%_16%,rgba(255,154,76,0.12),transparent_26%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent_32%,rgba(0,0,0,0.22)_100%)]" />
 
           <div className="absolute left-5 top-5 z-10 rounded-full border border-white/10 bg-black/25 px-4 py-2 text-xs uppercase tracking-[0.22em] text-zinc-300 backdrop-blur">
@@ -161,7 +161,7 @@ export function ModelStage({ locale = "zh" }: { locale?: Locale }) {
         </div>
 
         {isDesktop ? (
-          <div className="hidden gap-3 md:flex md:flex-col">
+          <div className="hidden gap-3 xl:flex xl:flex-col">
             <div className="rounded-[1.25rem] border border-white/10 bg-black/24 px-4 py-4 backdrop-blur-md">
               <p className="text-[11px] uppercase tracking-[0.22em] text-zinc-400">{t.heroAssetLabel}</p>
               <p className="mt-2 text-sm leading-7 text-zinc-100">{t.heroAssetDescDesktop}</p>

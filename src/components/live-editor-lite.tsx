@@ -179,7 +179,7 @@ export function LiveEditorLite({ locale = "zh" }: { locale?: Locale }) {
   }, [accent, locale, material, mode, viewport]);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const mediaQuery = window.matchMedia("(max-width: 1023px), (pointer: coarse)");
     const updateViewport = () => {
       setViewport(mediaQuery.matches ? "mobile" : "desktop");
     };

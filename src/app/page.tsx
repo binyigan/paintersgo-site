@@ -136,14 +136,14 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       <section className="relative isolate px-6 pb-16 pt-6 md:px-8 md:pb-24 md:pt-8">
         <div className="absolute inset-x-0 top-0 -z-10 h-[34rem] bg-[radial-gradient(circle_at_top,#ffdd9d_0%,rgba(255,221,157,0.16)_30%,transparent_70%)]" />
         <div className="mx-auto flex max-w-7xl flex-col gap-6">
-          <header className="flex items-center justify-between rounded-full border border-black/10 bg-white/70 px-4 py-3 shadow-[0_12px_40px_rgba(0,0,0,0.06)] backdrop-blur md:px-5">
-            <div className="flex items-center gap-3">
+          <header className="flex flex-wrap items-center justify-between gap-3 rounded-[1.6rem] border border-black/10 bg-white/70 px-4 py-3 shadow-[0_12px_40px_rgba(0,0,0,0.06)] backdrop-blur md:rounded-full md:px-5">
+            <div className="flex min-w-0 items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-950">
                 <Image src="/logo.png" alt="PaintersGO" width={26} height={26} />
               </div>
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm font-semibold uppercase tracking-[0.22em] text-zinc-500">PaintersGO</p>
-                <p className="text-sm text-zinc-600">{t.brandSubtitle}</p>
+                <p className="truncate text-xs text-zinc-600 sm:text-sm">{t.brandSubtitle}</p>
               </div>
             </div>
 
@@ -156,9 +156,9 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             </nav>
 
             <div className="flex shrink-0 items-center gap-1 rounded-full border border-black/10 bg-white/80 p-1">
-              <span className="px-2 text-[11px] uppercase tracking-[0.18em] text-zinc-500">{t.language}</span>
-              <Link href={zhHref} className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${languageButtonClass(locale === "zh")}`}>中文</Link>
-              <Link href={enHref} className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${languageButtonClass(locale === "en")}`}>EN</Link>
+              <span className="hidden px-2 text-[11px] uppercase tracking-[0.18em] text-zinc-500 sm:inline">{t.language}</span>
+              <Link href={zhHref} className={`rounded-full px-2.5 py-1 text-xs font-medium transition sm:px-3 sm:py-1.5 ${languageButtonClass(locale === "zh")}`}>中文</Link>
+              <Link href={enHref} className={`rounded-full px-2.5 py-1 text-xs font-medium transition sm:px-3 sm:py-1.5 ${languageButtonClass(locale === "en")}`}>EN</Link>
             </div>
           </header>
 
@@ -301,7 +301,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </div>
       </section>
 
-      <div className="fixed inset-x-2 bottom-[calc(env(safe-area-inset-bottom)+0.5rem)] z-40 md:hidden">
+      <div className="hidden">
         <div className="flex items-center justify-between gap-3 rounded-[1.5rem] border border-black/10 bg-white/92 px-3 py-3 shadow-[0_18px_50px_rgba(0,0,0,0.14)] backdrop-blur sm:px-4">
           <div className="min-w-0">
             <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">PaintersGO</p>
