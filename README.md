@@ -28,14 +28,13 @@ Always use **Release Workflow**, not `npm run dev`.
 - `Next.js 16`
 - `React 19`
 - `Tailwind CSS v4`
-- `Three.js` for the hero stage and Lite Viewer
+- `Three.js` for the hero stage
 
 ## Current Site Scope
 
 The live site now includes:
 
 - Hero section with the real `ToTu.glb` model
-- `Live Editor Lite` browser previewer
 - `AI Power` section grounded in real app capabilities
 - `Collaboration` section based on the app's room UI
 - `O2O Printing` section based on the app's O2O flow
@@ -47,9 +46,7 @@ The live site now includes:
 - `src/app/page.tsx`: homepage structure
 - `src/app/about/page.tsx`: author / inspiration / build story page
 - `src/components/model-stage.tsx`: hero 3D model stage
-- `src/components/live-editor-lite.tsx`: embedded Lite Viewer section
 - `src/components/feature-showcase.tsx`: interactive Collaboration and O2O modules
-- `public/paintersgo-lite/index.html`: standalone browser viewer
 - `public/models/ToTu.glb`: current live hero / preview model
 
 ## App Source Reference

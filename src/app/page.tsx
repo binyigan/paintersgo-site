@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Download, PenTool, Sparkles } from "lucide-react";
+import { Download, PenTool, Sparkles } from "lucide-react";
 
 import { FeatureShowcaseShell } from "@/components/feature-showcase-shell";
-import { LiveEditorLite } from "@/components/live-editor-lite";
 import { ModelStage } from "@/components/model-stage";
 import { resolveLocale, withLocale } from "@/lib/locale";
 
@@ -18,7 +17,6 @@ const copyByLocale = {
     pageDescription:
       "PaintersGO 将 AI 3D 生成、协作房间、在线预览与 O2O 打印交付整合为一条完整创作链路。",
     brandSubtitle: "AI 驱动的 3D 协作创作平台",
-    navLive: "Live Editor Lite",
     navFeatures: "核心能力",
     navAbout: "关于",
     navGallery: "作品展示",
@@ -27,12 +25,8 @@ const copyByLocale = {
     heroTitle: "PaintersGO",
     heroSubtitle: "把 3D 生成、协作编辑与打印输出收进同一个工作台",
     heroBody: "首屏展示真实 3D 模型，并串联 Web 预览、协作房间与 O2O 打印流程。",
-    ctaPreview: "先试看模型",
     ctaDownload: "下载 APK",
     heroPoints: ["多模型 AI 后端", "协作房间", "O2O 打印链路"],
-    liveBadge: "Live Editor Lite",
-    liveTitle: "不装 App，也能先用浏览器试看 PaintersGO 模型",
-    liveBody: "在网页里先旋转、缩放、切换材质，再决定是否下载完整 App。",
     featuresBadge: "核心能力",
     featuresTitle: "让用户一眼看懂 PaintersGO 是完整的 3D 协作工作流",
     featuresBody: "官网展示基于真实 App 素材与真实模型，不是概念图。",
@@ -60,7 +54,6 @@ const copyByLocale = {
     pageDescription:
       "PaintersGO integrates AI 3D generation, collaboration rooms, online preview, and O2O printing into one complete workflow.",
     brandSubtitle: "AI-powered 3D co-creation platform",
-    navLive: "Live Editor Lite",
     navFeatures: "Features",
     navAbout: "About",
     navGallery: "Gallery",
@@ -69,12 +62,8 @@ const copyByLocale = {
     heroTitle: "PaintersGO",
     heroSubtitle: "Bring 3D generation, collaboration editing, and printing into one workspace",
     heroBody: "The hero renders a real 3D model first, then leads into web preview, collaboration rooms, and O2O printing flow.",
-    ctaPreview: "Preview Model First",
     ctaDownload: "Download APK",
     heroPoints: ["Multi-model AI backend", "Collaboration rooms", "O2O fulfillment flow"],
-    liveBadge: "Live Editor Lite",
-    liveTitle: "Try PaintersGO models in browser before installing",
-    liveBody: "Rotate, zoom, and switch material modes on web before entering the full app.",
     featuresBadge: "Core Features",
     featuresTitle: "Show at a glance that PaintersGO is a full 3D collaboration workflow",
     featuresBody: "This site uses real app assets and real models, not conceptual placeholders.",
@@ -126,7 +115,6 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const zhHref = withLocale("/", "zh");
   const enHref = withLocale("/", "en");
   const aboutHref = withLocale("/about", locale);
-  const liveHref = withLocale("/#live-editor", locale);
   const featureHref = withLocale("/#features", locale);
   const galleryHref = withLocale("/#gallery", locale);
   const downloadHref = withLocale("/#download", locale);
@@ -150,9 +138,6 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             </div>
 
             <nav className="hidden items-center gap-6 text-sm text-zinc-600 xl:flex">
-              <a href={liveHref} className="transition hover:text-zinc-950">
-                {t.navLive}
-              </a>
               <a href={featureHref} className="transition hover:text-zinc-950">
                 {t.navFeatures}
               </a>
@@ -211,13 +196,6 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
                   {t.ctaDownload}
                   <Download className="h-4 w-4" />
                 </a>
-                <a
-                  href={liveHref}
-                  className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/10 bg-white/6 px-6 text-sm font-medium text-white transition hover:bg-white/10"
-                >
-                  {t.ctaPreview}
-                  <ArrowRight className="h-4 w-4" />
-                </a>
               </div>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-3">
@@ -236,17 +214,6 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
               <ModelStage locale={locale} />
             </aside>
           </div>
-        </div>
-      </section>
-
-      <section id="live-editor" className="px-4 py-12 sm:px-6 md:px-8 md:py-16 xl:py-20">
-        <div className="mx-auto grid max-w-7xl gap-6 xl:grid-cols-[minmax(18rem,0.82fr)_minmax(0,1.18fr)]">
-          <div className="rounded-[2rem] border border-black/10 bg-zinc-950 p-6 text-white shadow-[0_24px_80px_rgba(0,0,0,0.18)] sm:p-8">
-            <p className="text-sm uppercase tracking-[0.24em] text-zinc-400">{t.liveBadge}</p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight md:text-4xl">{t.liveTitle}</h2>
-            <p className="mt-4 text-base leading-8 text-zinc-300">{t.liveBody}</p>
-          </div>
-          <LiveEditorLite locale={locale} />
         </div>
       </section>
 

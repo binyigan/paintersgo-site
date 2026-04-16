@@ -15,7 +15,7 @@ const copyByLocale = {
   zh: {
     stageLabelDesktop: "实时 3D 舞台",
     stageLabelMobile: "移动端顺滑预览",
-    mobileHint: "移动端默认使用轻预览模式，避免滚动卡顿。下方 Live Editor Lite 可进入完整交互。",
+    mobileHint: "移动端默认使用轻预览模式，避免滚动卡顿，同时保持模型展示清晰可读。",
     mobilePreviewAlt: "PaintersGO 模型预览图",
     heroAssetLabel: "主视觉模型",
     heroAssetDescDesktop: "当前首屏舞台渲染真实 ToTu.glb 模型，可直接查看模型质感、比例与整体轮廓。",
@@ -29,7 +29,7 @@ const copyByLocale = {
   en: {
     stageLabelDesktop: "Real-Time 3D Stage",
     stageLabelMobile: "Mobile Smooth Preview",
-    mobileHint: "Mobile uses a light preview mode by default to keep scrolling smooth. Open Live Editor Lite below for full interaction.",
+    mobileHint: "Mobile uses a light preview mode by default to keep scrolling smooth while keeping the model presentation readable.",
     mobilePreviewAlt: "PaintersGO model preview",
     heroAssetLabel: "Hero Asset",
     heroAssetDescDesktop: "The hero stage renders the real ToTu.glb model for direct quality, proportion, and silhouette checks.",
