@@ -17,152 +17,546 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
+import { InfoMenu } from "@/components/info-menu";
+import type { Locale } from "@/lib/locale";
+import { resolveLocale, withLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
 
-export const metadata: Metadata = {
-  title: "PaintersGO - AI-Driven 3D Modeling on Android",
-  description:
-    "The all-in-one AI-powered 3D modeling studio. Transform text or images into detailed 3D models and print them directly from your phone.",
-};
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
-const engines = ["Meshy", "Rodin", "Tripo", "Hunyuan"];
+type FeatureKey =
+  | "textTo3D"
+  | "imageTo3D"
+  | "multiEngine"
+  | "editor"
+  | "repair"
+  | "collab"
+  | "printing";
+
+type StepKey = "input" | "generate" | "refine" | "collaborate" | "export";
+
+type TechKey =
+  | "compose"
+  | "threeBridge"
+  | "remoteConfig"
+  | "architecture"
+  | "security";
 
 type FeatureCardConfig = {
-  title: string;
-  description: string;
+  key: FeatureKey;
   icon: LucideIcon;
   iconClassName: string;
   className?: string;
   image?: string;
-  imageAlt?: string;
   variant?: "stacked" | "split";
 };
 
-const featureCards: FeatureCardConfig[] = [
+type FeatureCopy = {
+  title: string;
+  description: string;
+  imageAlt?: string;
+};
+
+type StepCopy = {
+  title: string;
+  description: string;
+};
+
+type TechCopy = {
+  title: string;
+  description: string;
+};
+
+type HomeCopy = {
+  metadataTitle: string;
+  metadataDescription: string;
+  nav: {
+    features: string;
+    howItWorks: string;
+    techStack: string;
+  };
+  menu: {
+    buttonLabel: string;
+    buttonHint: string;
+    authorTitle: string;
+    authorBody: string;
+    workTitle: string;
+    workBody: string;
+    languageLabel: string;
+    quickLinksLabel: string;
+    englishLabel: string;
+    chineseLabel: string;
+    jumpFeatures: string;
+    jumpFlow: string;
+    jumpTech: string;
+    download: string;
+  };
+  hero: {
+    titleLead: string;
+    titleAccent: string;
+    titleTrail: string;
+    body: string;
+    ctaDownload: string;
+    imageAlt: string;
+  };
+  engineCloud: string;
+  features: {
+    eyebrow: string;
+    body: string;
+    cards: Record<FeatureKey, FeatureCopy>;
+  };
+  flow: {
+    eyebrow: string;
+    body: string;
+    steps: Record<StepKey, StepCopy>;
+  };
+  tech: {
+    eyebrow: string;
+    body: string;
+    version: string;
+    cards: Record<TechKey, TechCopy>;
+    qualityTitle: string;
+    qualityBody: string;
+    readinessTitle: string;
+    readinessBody: string;
+  };
+  cta: {
+    title: string;
+    body: string;
+    button: string;
+  };
+  footer: {
+    copyright: string;
+    websiteLabel: string;
+    shareLabel: string;
+  };
+};
+
+const engines = ["Meshy", "Rodin", "Tripo", "Hunyuan"] as const;
+
+const featureDefinitions: FeatureCardConfig[] = [
   {
-    title: "AI Text-to-3D",
-    description:
-      "Simply describe your vision in plain text. PaintersGO routes the request through powerful generation engines and turns prompts into rich 3D forms in seconds.",
+    key: "textTo3D",
     icon: WandSparkles,
     iconClassName: "text-primary",
     className: "md:col-span-2 lg:col-span-2",
     image: "/app-assets/video_to_3d1.webp",
-    imageAlt: "PaintersGO text-to-3D generation preview",
     variant: "stacked",
   },
   {
-    title: "AI Image-to-3D",
-    description:
-      "Upload a single image to reconstruct volume, silhouette, and depth so ideas can move into 3D without complex desktop tooling.",
+    key: "imageTo3D",
     icon: ImageUp,
     iconClassName: "text-secondary",
   },
   {
-    title: "Multi-Engine",
-    description:
-      "Switch between Meshy, Rodin, Tripo, and Hunyuan to match the model style, speed, or fidelity you need for the task.",
+    key: "multiEngine",
     icon: Layers3,
     iconClassName: "text-tertiary-dim",
   },
   {
-    title: "Real-Time 3D Editor",
-    description:
-      "Inspect, orbit, refine, and preview directly from a mobile-first viewport designed to keep creation fast and tactile.",
+    key: "editor",
     icon: Boxes,
     iconClassName: "text-primary-fixed",
   },
   {
-    title: "Cloud Model Repair",
-    description:
-      "Instantly close mesh issues, repair normals, and clean geometry for reliable exports and production-ready printable output.",
+    key: "repair",
     icon: Wrench,
     iconClassName: "text-error",
     className: "md:col-span-2 lg:col-span-2",
     image: "/app-assets/demo_refine.webp",
-    imageAlt: "PaintersGO model refinement and repair preview",
     variant: "split",
   },
   {
-    title: "Multi-User Collab",
-    description:
-      "Bring teammates into shared rooms for synchronized feedback, review, and model decisions around the same creative context.",
+    key: "collab",
     icon: Users,
     iconClassName: "text-secondary-fixed",
   },
   {
-    title: "O2O Printing",
-    description:
-      "Move from digital model to physical delivery with one connected workflow for review, production, and final fulfillment.",
+    key: "printing",
     icon: Printer,
     iconClassName: "text-primary",
   },
 ];
 
 const steps = [
-  {
-    number: "1",
-    title: "Input Inspiration",
-    description: "Upload reference images or type descriptive prompts to start the concept.",
-  },
-  {
-    number: "2",
-    title: "AI Generation",
-    description: "Choose the engine that best fits the style and generate the initial 3D result.",
-  },
-  {
-    number: "3",
-    title: "Refine & Repair",
-    description: "Clean topology, repair mesh quality, and tune the output for presentation or print.",
-  },
-  {
-    number: "4",
-    title: "Collaborate",
-    description: "Invite others into the process to review, comment, and align on the model.",
-  },
-  {
-    number: "5",
-    title: "Print & Export",
-    description: "Order physical output or export production-ready files for downstream use.",
-  },
-];
+  { key: "input", number: "1" },
+  { key: "generate", number: "2" },
+  { key: "refine", number: "3" },
+  { key: "collaborate", number: "4" },
+  { key: "export", number: "5" },
+] as const satisfies ReadonlyArray<{ key: StepKey; number: string }>;
 
-const techCards = [
+const techDefinitions = [
   {
-    title: "Kotlin + Jetpack Compose",
-    description: "Native Android UI for fluid motion, responsive interaction, and efficient threading.",
+    key: "compose",
     borderClassName: "border-primary",
     textClassName: "text-primary",
   },
   {
-    title: "Three.js + WebView Bridge",
-    description: "High-performance 3D rendering with mobile-friendly interaction and preview control.",
+    key: "threeBridge",
     borderClassName: "border-secondary",
     textClassName: "text-secondary",
   },
   {
-    title: "Firebase Remote Config",
-    description: "Dynamic parameter control for engines, quality tuning, and rollout experimentation.",
+    key: "remoteConfig",
     borderClassName: "border-tertiary-dim",
     textClassName: "text-tertiary-dim",
   },
   {
-    title: "Multi-Provider Architecture",
-    description: "A unified orchestration layer connecting top-tier AI generation providers in one app.",
+    key: "architecture",
     borderClassName: "border-primary-fixed",
     textClassName: "text-primary-fixed",
   },
   {
-    title: "Secure API Storage",
-    description: "Protected credential handling and safer provider access for production-grade operation.",
+    key: "security",
     borderClassName: "border-error",
     textClassName: "text-error",
   },
-];
+] as const satisfies ReadonlyArray<{
+  key: TechKey;
+  borderClassName: string;
+  textClassName: string;
+}>;
 
-function FeatureCard({ card }: { card: FeatureCardConfig }) {
+const copyByLocale: Record<Locale, HomeCopy> = {
+  en: {
+    metadataTitle: "PaintersGO - AI-Driven 3D Modeling on Android",
+    metadataDescription:
+      "The all-in-one AI-powered 3D modeling studio. Transform text or images into detailed 3D models and print them directly from your phone.",
+    nav: {
+      features: "Features",
+      howItWorks: "How it Works",
+      techStack: "Tech Stack",
+    },
+    menu: {
+      buttonLabel: "Overview",
+      buttonHint: "author, work, language",
+      authorTitle: "About the Author",
+      authorBody:
+        "A product-led experiment focused on connecting AI generation, mobile creation, and physical 3D output into one coherent experience.",
+      workTitle: "About the Work",
+      workBody:
+        "PaintersGO is designed as a mobile-first 3D workflow covering generation, refinement, collaboration, and print fulfillment in one story.",
+      languageLabel: "Language Switch",
+      quickLinksLabel: "Quick Actions",
+      englishLabel: "EN",
+      chineseLabel: "\u4e2d\u6587",
+      jumpFeatures: "View Features",
+      jumpFlow: "See Workflow",
+      jumpTech: "Open Tech Stack",
+      download: "Download APK",
+    },
+    hero: {
+      titleLead: "PaintersGO: From Inspiration to",
+      titleAccent: "3D Realities",
+      titleTrail: "on Android",
+      body:
+        "The all-in-one AI-powered 3D modeling studio. Transform text or images into detailed 3D models and print them directly from your phone.",
+      ctaDownload: "Download APK for Android",
+      imageAlt: "PaintersGO Android augmented reality preview",
+    },
+    engineCloud: "Powered by Industry Leading Engines",
+    features: {
+      eyebrow: "Core Creative Engine",
+      body:
+        "High-fidelity 3D generation, repair, collaboration, and delivery in one mobile workflow.",
+      cards: {
+        textTo3D: {
+          title: "AI Text-to-3D",
+          description:
+            "Describe your vision in plain text. PaintersGO routes the request through powerful generation engines and turns prompts into rich 3D forms in seconds.",
+          imageAlt: "PaintersGO text-to-3D generation preview",
+        },
+        imageTo3D: {
+          title: "AI Image-to-3D",
+          description:
+            "Upload a single image to reconstruct volume, silhouette, and depth so ideas can move into 3D without complex desktop tooling.",
+        },
+        multiEngine: {
+          title: "Multi-Engine",
+          description:
+            "Switch between Meshy, Rodin, Tripo, and Hunyuan to match the model style, speed, or fidelity you need for the task.",
+        },
+        editor: {
+          title: "Real-Time 3D Editor",
+          description:
+            "Inspect, orbit, refine, and preview directly from a mobile-first viewport designed to keep creation fast and tactile.",
+        },
+        repair: {
+          title: "Cloud Model Repair",
+          description:
+            "Instantly close mesh issues, repair normals, and clean geometry for reliable exports and production-ready printable output.",
+          imageAlt: "PaintersGO model refinement and repair preview",
+        },
+        collab: {
+          title: "Multi-User Collab",
+          description:
+            "Bring teammates into shared rooms for synchronized feedback, review, and model decisions around the same creative context.",
+        },
+        printing: {
+          title: "O2O Printing",
+          description:
+            "Move from digital model to physical delivery with one connected workflow for review, production, and final fulfillment.",
+        },
+      },
+    },
+    flow: {
+      eyebrow: "Sculpting in Five Steps",
+      body: "From concept to physical object with minimal friction.",
+      steps: {
+        input: {
+          title: "Input Inspiration",
+          description: "Upload reference images or type descriptive prompts to start the concept.",
+        },
+        generate: {
+          title: "AI Generation",
+          description: "Choose the engine that best fits the style and generate the initial 3D result.",
+        },
+        refine: {
+          title: "Refine & Repair",
+          description: "Clean topology, repair mesh quality, and tune the output for presentation or print.",
+        },
+        collaborate: {
+          title: "Collaborate",
+          description: "Invite others into the process to review, comment, and align on the model.",
+        },
+        export: {
+          title: "Print & Export",
+          description: "Order physical output or export production-ready files for downstream use.",
+        },
+      },
+    },
+    tech: {
+      eyebrow: "Under the Hood",
+      body: "A professional-grade mobile architecture shaped for AI-native 3D creation.",
+      version: "PaintersGO-Core v2.4.0",
+      cards: {
+        compose: {
+          title: "Kotlin + Jetpack Compose",
+          description:
+            "Native Android UI for fluid motion, responsive interaction, and efficient threading.",
+        },
+        threeBridge: {
+          title: "Three.js + WebView Bridge",
+          description:
+            "High-performance 3D rendering with mobile-friendly interaction and preview control.",
+        },
+        remoteConfig: {
+          title: "Firebase Remote Config",
+          description:
+            "Dynamic parameter control for engines, quality tuning, and rollout experimentation.",
+        },
+        architecture: {
+          title: "Multi-Provider Architecture",
+          description:
+            "A unified orchestration layer connecting top-tier AI generation providers in one app.",
+        },
+        security: {
+          title: "Secure API Storage",
+          description:
+            "Protected credential handling and safer provider access for production-grade operation.",
+        },
+      },
+      qualityTitle: "AI Workflow Quality",
+      qualityBody:
+        "Prompt orchestration, preview iteration, and device-native polish work together so the app feels like one coherent studio instead of disconnected tools.",
+      readinessTitle: "Production Readiness",
+      readinessBody:
+        "Repair, export, collaboration, and fulfillment are treated as first-class steps, making the pipeline more reliable for real-world output.",
+    },
+    cta: {
+      title: "Start Your 3D Journey Today",
+      body:
+        "Join artists, makers, and creative teams already moving from concept to physical form with PaintersGO.",
+      button: "Get the App Now",
+    },
+    footer: {
+      copyright: "(c) 2025 PaintersGO. Sculpting the future of 3D.",
+      websiteLabel: "PaintersGO website",
+      shareLabel: "Share repository",
+    },
+  },
+  zh: {
+    metadataTitle:
+      "PaintersGO - Android \u7aef AI 3D \u5efa\u6a21\u5de5\u4f5c\u5ba4",
+    metadataDescription:
+      "\u4e00\u4f53\u5316 AI 3D \u521b\u4f5c\u5de5\u4f5c\u5ba4\u3002\u628a\u6587\u5b57\u6216\u56fe\u50cf\u8f6c\u6210\u7cbe\u7ec6 3D \u6a21\u578b\uff0c\u5e76\u76f4\u63a5\u5728\u624b\u673a\u4e0a\u5b8c\u6210\u9884\u89c8\u3001\u534f\u4f5c\u4e0e\u6253\u5370\u843d\u5730\u3002",
+    nav: {
+      features: "\u529f\u80fd\u4eae\u70b9",
+      howItWorks: "\u5de5\u4f5c\u6d41\u7a0b",
+      techStack: "\u6280\u672f\u6808",
+    },
+    menu: {
+      buttonLabel: "\u66f4\u591a\u4fe1\u606f",
+      buttonHint: "\u4f5c\u8005\u3001\u4f5c\u54c1\u3001\u8bed\u8a00",
+      authorTitle: "\u5173\u4e8e\u4f5c\u8005",
+      authorBody:
+        "\u8fd9\u662f\u4e00\u4e2a\u4ee5\u4ea7\u54c1\u4f53\u9a8c\u4e3a\u6838\u5fc3\u7684\u4e2a\u4eba\u5b9e\u9a8c\uff0c\u76ee\u6807\u662f\u628a AI \u751f\u6210\u3001\u79fb\u52a8\u521b\u4f5c\u4e0e\u5b9e\u4f53 3D \u8f93\u51fa\u4e32\u6210\u4e00\u6761\u5b8c\u6574\u94fe\u8def\u3002",
+      workTitle: "\u5173\u4e8e\u4f5c\u54c1",
+      workBody:
+        "PaintersGO \u88ab\u8bbe\u8ba1\u6210\u4e00\u5957\u79fb\u52a8\u7aef 3D \u5de5\u4f5c\u6d41\uff0c\u628a\u751f\u6210\u3001\u7cbe\u4fee\u3001\u534f\u4f5c\u4e0e\u6253\u5370\u4ea4\u4ed8\u653e\u5728\u540c\u4e00\u4e2a\u4f53\u9a8c\u91cc\u3002",
+      languageLabel: "\u53cc\u8bed\u5207\u6362",
+      quickLinksLabel: "\u5feb\u901f\u5165\u53e3",
+      englishLabel: "EN",
+      chineseLabel: "\u4e2d\u6587",
+      jumpFeatures: "\u67e5\u770b\u529f\u80fd",
+      jumpFlow: "\u67e5\u770b\u6d41\u7a0b",
+      jumpTech: "\u67e5\u770b\u6280\u672f\u6808",
+      download: "\u4e0b\u8f7d APK",
+    },
+    hero: {
+      titleLead:
+        "PaintersGO\uff1a\u5728 Android \u4e0a\u628a\u7075\u611f\u76f4\u63a5\u53d8\u6210",
+      titleAccent: "3D \u6210\u679c",
+      titleTrail: "",
+      body:
+        "\u4e00\u4f53\u5316 AI 3D \u521b\u4f5c\u5de5\u4f5c\u5ba4\u3002\u628a\u6587\u5b57\u6216\u56fe\u50cf\u8f6c\u6210\u7cbe\u7ec6 3D \u6a21\u578b\uff0c\u5e76\u76f4\u63a5\u5728\u624b\u673a\u4e0a\u5b8c\u6210\u9884\u89c8\u3001\u534f\u4f5c\u4e0e\u6253\u5370\u843d\u5730\u3002",
+      ctaDownload: "\u4e0b\u8f7d Android APK",
+      imageAlt: "PaintersGO Android \u589e\u5f3a\u73b0\u5b9e\u9884\u89c8",
+    },
+    engineCloud: "\u7531\u9886\u5148\u7684 3D \u751f\u6210\u5f15\u64ce\u9a71\u52a8",
+    features: {
+      eyebrow: "\u6838\u5fc3\u521b\u4f5c\u5f15\u64ce",
+      body:
+        "\u628a\u9ad8\u8d28\u91cf 3D \u751f\u6210\u3001\u4fee\u590d\u3001\u534f\u4f5c\u4e0e\u4ea4\u4ed8\u6574\u5408\u5230\u540c\u4e00\u5957\u79fb\u52a8\u7aef\u5de5\u4f5c\u6d41\u91cc\u3002",
+      cards: {
+        textTo3D: {
+          title: "AI \u6587\u751f 3D",
+          description:
+            "\u76f4\u63a5\u8f93\u5165\u6587\u5b57\u63cf\u8ff0\u4f60\u7684\u60f3\u6cd5\u3002PaintersGO \u4f1a\u8c03\u7528\u5f3a\u5927\u7684\u751f\u6210\u5f15\u64ce\uff0c\u5728\u51e0\u79d2\u5185\u628a\u63d0\u793a\u8bcd\u8f6c\u6210\u5b8c\u6574\u7684 3D \u5f62\u4f53\u3002",
+          imageAlt: "PaintersGO \u6587\u751f 3D \u529f\u80fd\u9884\u89c8",
+        },
+        imageTo3D: {
+          title: "AI \u56fe\u751f 3D",
+          description:
+            "\u4e0a\u4f20\u5355\u5f20\u56fe\u7247\u5373\u53ef\u91cd\u5efa\u4f53\u79ef\u3001\u8f6e\u5ed3\u548c\u6df1\u5ea6\uff0c\u8ba9\u7075\u611f\u66f4\u5feb\u8fdb\u5165 3D\uff0c\u800c\u4e0d\u5fc5\u4f9d\u8d56\u590d\u6742\u684c\u9762\u8f6f\u4ef6\u3002",
+        },
+        multiEngine: {
+          title: "\u591a\u5f15\u64ce\u751f\u6210",
+          description:
+            "\u53ef\u5728 Meshy\u3001Rodin\u3001Tripo \u548c Hunyuan \u4e4b\u95f4\u5207\u6362\uff0c\u6309\u98ce\u683c\u3001\u901f\u5ea6\u548c\u7cbe\u5ea6\u9009\u62e9\u6700\u5408\u9002\u7684\u6a21\u578b\u5f15\u64ce\u3002",
+        },
+        editor: {
+          title: "\u5b9e\u65f6 3D \u7f16\u8f91",
+          description:
+            "\u5728\u79fb\u52a8\u7aef\u4f18\u5148\u7684\u89c6\u53e3\u91cc\u76f4\u63a5\u67e5\u770b\u3001\u65cb\u8f6c\u3001\u5fae\u8c03\u548c\u9884\u89c8\uff0c\u8ba9\u521b\u4f5c\u4fdd\u6301\u5feb\u901f\u3001\u76f4\u63a5\u548c\u987a\u624b\u3002",
+        },
+        repair: {
+          title: "\u4e91\u7aef\u6a21\u578b\u4fee\u590d",
+          description:
+            "\u5373\u65f6\u4fee\u590d\u7f51\u683c\u95ee\u9898\u3001\u6cd5\u7ebf\u9519\u8bef\u548c\u51e0\u4f55\u7f3a\u9677\uff0c\u8ba9\u5bfc\u51fa\u7ed3\u679c\u66f4\u7a33\u5b9a\uff0c\u4e5f\u66f4\u9002\u5408\u540e\u7eed\u6253\u5370\u4e0e\u751f\u4ea7\u3002",
+          imageAlt: "PaintersGO \u6a21\u578b\u4fee\u590d\u529f\u80fd\u9884\u89c8",
+        },
+        collab: {
+          title: "\u591a\u4eba\u534f\u4f5c",
+          description:
+            "\u628a\u56e2\u961f\u6210\u5458\u5e26\u8fdb\u5171\u4eab\u521b\u4f5c\u7a7a\u95f4\uff0c\u5728\u540c\u4e00\u4efd\u6a21\u578b\u4e0a\u4e0b\u6587\u91cc\u5b8c\u6210\u540c\u6b65\u8bc4\u5ba1\u3001\u53cd\u9988\u548c\u51b3\u7b56\u3002",
+        },
+        printing: {
+          title: "O2O \u6253\u5370",
+          description:
+            "\u4ece\u6570\u5b57\u6a21\u578b\u76f4\u63a5\u8d70\u5411\u5b9e\u4f53\u4ea4\u4ed8\uff0c\u628a\u8bc4\u5ba1\u3001\u751f\u4ea7\u548c\u5c65\u7ea6\u8fde\u63a5\u6210\u4e00\u6761\u5b8c\u6574\u7684\u771f\u5b9e\u4e16\u754c\u6d41\u7a0b\u3002",
+        },
+      },
+    },
+    flow: {
+      eyebrow: "\u4e94\u6b65\u5b8c\u6210 3D \u521b\u4f5c",
+      body:
+        "\u4ece\u6982\u5ff5\u5230\u5b9e\u4f53\u7ed3\u679c\uff0c\u628a\u8def\u5f84\u538b\u7f29\u5230\u66f4\u987a\u6ed1\u3001\u66f4\u5c11\u963b\u529b\u7684\u79fb\u52a8\u7aef\u4f53\u9a8c\u91cc\u3002",
+      steps: {
+        input: {
+          title: "\u8f93\u5165\u7075\u611f",
+          description:
+            "\u4e0a\u4f20\u53c2\u8003\u56fe\u6216\u8f93\u5165\u6587\u5b57\u63d0\u793a\uff0c\u4ece\u60f3\u6cd5\u76f4\u63a5\u542f\u52a8\u521b\u4f5c\u3002",
+        },
+        generate: {
+          title: "AI \u751f\u6210",
+          description:
+            "\u9009\u62e9\u9002\u5408\u7684\u5f15\u64ce\uff0c\u5feb\u901f\u4ea7\u51fa\u7b2c\u4e00\u7248 3D \u7ed3\u679c\u3002",
+        },
+        refine: {
+          title: "\u7cbe\u4fee\u4e0e\u4fee\u590d",
+          description:
+            "\u6e05\u7406\u62d3\u6251\u3001\u4fee\u590d\u6a21\u578b\u8d28\u91cf\uff0c\u5e76\u7ee7\u7eed\u4f18\u5316\u5c55\u793a\u4e0e\u6253\u5370\u8868\u73b0\u3002",
+        },
+        collaborate: {
+          title: "\u534f\u4f5c\u8bc4\u5ba1",
+          description:
+            "\u9080\u8bf7\u4ed6\u4eba\u4e00\u8d77\u67e5\u770b\u3001\u8bc4\u8bba\u5e76\u5bf9\u6a21\u578b\u65b9\u5411\u8fbe\u6210\u5171\u8bc6\u3002",
+        },
+        export: {
+          title: "\u6253\u5370\u4e0e\u5bfc\u51fa",
+          description:
+            "\u53ef\u4ee5\u76f4\u63a5\u4e0b\u5355\u6253\u5370\uff0c\u4e5f\u53ef\u4ee5\u5bfc\u51fa\u53ef\u7528\u4e8e\u540e\u7eed\u751f\u4ea7\u7684\u6a21\u578b\u6587\u4ef6\u3002",
+        },
+      },
+    },
+    tech: {
+      eyebrow: "\u5e95\u5c42\u80fd\u529b",
+      body:
+        "\u4e00\u5957\u9762\u5411 AI \u539f\u751f 3D \u521b\u4f5c\u7684\u4e13\u4e1a\u7ea7\u79fb\u52a8\u7aef\u67b6\u6784\u3002",
+      version: "PaintersGO-Core v2.4.0",
+      cards: {
+        compose: {
+          title: "Kotlin + Jetpack Compose",
+          description:
+            "\u539f\u751f Android UI \u6808\uff0c\u5e26\u6765\u66f4\u6d41\u7545\u7684\u52a8\u6548\u3001\u66f4\u5feb\u7684\u54cd\u5e94\u548c\u66f4\u7a33\u7684\u7ebf\u7a0b\u7ba1\u7406\u3002",
+        },
+        threeBridge: {
+          title: "Three.js + WebView Bridge",
+          description:
+            "\u9ad8\u6027\u80fd 3D \u6e32\u67d3\u80fd\u529b\uff0c\u517c\u987e\u79fb\u52a8\u7aef\u4ea4\u4e92\u548c\u9884\u89c8\u63a7\u5236\u3002",
+        },
+        remoteConfig: {
+          title: "Firebase Remote Config",
+          description:
+            "\u52a8\u6001\u8c03\u6574\u5f15\u64ce\u53c2\u6570\u3001\u8d28\u91cf\u7b56\u7565\u548c\u5b9e\u9a8c\u914d\u7f6e\uff0c\u63d0\u5347\u6574\u4f53\u751f\u6210\u4f53\u9a8c\u3002",
+        },
+        architecture: {
+          title: "\u591a\u63d0\u4f9b\u65b9\u67b6\u6784",
+          description:
+            "\u7edf\u4e00\u7f16\u6392\u9876\u7ea7 AI \u751f\u6210\u80fd\u529b\uff0c\u628a\u4e0d\u540c\u6a21\u578b\u670d\u52a1\u6574\u5408\u8fdb\u540c\u4e00\u5e94\u7528\u3002",
+        },
+        security: {
+          title: "\u5b89\u5168 API \u5b58\u50a8",
+          description:
+            "\u66f4\u7a33\u59a5\u5730\u7ba1\u7406\u51ed\u636e\u548c\u670d\u52a1\u8bbf\u95ee\uff0c\u8ba9\u751f\u4ea7\u7ea7\u8c03\u7528\u66f4\u5b89\u5168\u53ef\u9760\u3002",
+        },
+      },
+      qualityTitle: "AI \u5de5\u4f5c\u6d41\u8d28\u611f",
+      qualityBody:
+        "\u4ece\u63d0\u793a\u8bcd\u7f16\u6392\u3001\u9884\u89c8\u8fed\u4ee3\u5230\u8bbe\u5907\u7aef\u8868\u73b0\uff0cPaintersGO \u8ffd\u6c42\u7684\u662f\u4e00\u4f53\u5316\u5de5\u4f5c\u5ba4\u4f53\u9a8c\uff0c\u800c\u4e0d\u662f\u4e00\u5806\u62fc\u63a5\u8d77\u6765\u7684\u5de5\u5177\u3002",
+      readinessTitle: "\u751f\u4ea7\u5c31\u7eea\u80fd\u529b",
+      readinessBody:
+        "\u628a\u4fee\u590d\u3001\u5bfc\u51fa\u3001\u534f\u4f5c\u548c\u4ea4\u4ed8\u90fd\u89c6\u4e3a\u4e00\u7b49\u80fd\u529b\uff0c\u8ba9\u6574\u4e2a\u94fe\u8def\u66f4\u63a5\u8fd1\u771f\u5b9e\u521b\u4f5c\u4e0e\u751f\u4ea7\u573a\u666f\u3002",
+    },
+    cta: {
+      title: "\u73b0\u5728\u5f00\u59cb\u4f60\u7684 3D \u521b\u4f5c\u4e4b\u65c5",
+      body:
+        "\u52a0\u5165\u5df2\u7ecf\u5728\u7528 PaintersGO \u628a\u7075\u611f\u63a8\u8fdb\u5230\u771f\u5b9e\u6210\u679c\u7684\u827a\u672f\u5bb6\u3001\u521b\u4f5c\u8005\u548c\u5236\u4f5c\u56e2\u961f\u3002",
+      button: "\u7acb\u5373\u83b7\u53d6\u5e94\u7528",
+    },
+    footer: {
+      copyright:
+        "(c) 2025 PaintersGO\u3002\u96d5\u523b 3D \u521b\u4f5c\u7684\u672a\u6765\u3002",
+      websiteLabel: "PaintersGO \u5b98\u7f51",
+      shareLabel: "\u9879\u76ee\u4ed3\u5e93",
+    },
+  },
+};
+
+function FeatureCard({
+  locale,
+  card,
+}: {
+  locale: Locale;
+  card: FeatureCardConfig;
+}) {
   const Icon = card.icon;
+  const copy = copyByLocale[locale].features.cards[card.key];
+  const hasImage = Boolean(card.image && copy.imageAlt);
 
-  if (card.variant === "split" && card.image && card.imageAlt) {
+  if (card.variant === "split" && card.image && copy.imageAlt) {
     return (
       <article
         className={cn(
@@ -173,14 +567,18 @@ function FeatureCard({ card }: { card: FeatureCardConfig }) {
         <div className="flex flex-col gap-8 md:flex-row">
           <div className="md:max-w-sm">
             <Icon className={cn("mb-6 h-10 w-10", card.iconClassName)} />
-            <h3 className="mb-3 font-headline text-xl font-bold text-on-surface">{card.title}</h3>
-            <p className="text-sm leading-relaxed text-on-surface-variant">{card.description}</p>
+            <h3 className="mb-3 font-headline text-xl font-bold text-on-surface">
+              {copy.title}
+            </h3>
+            <p className="text-sm leading-relaxed text-on-surface-variant">
+              {copy.description}
+            </p>
           </div>
 
           <div className="relative h-40 w-full overflow-hidden rounded-lg border border-outline-variant/10 bg-surface-container-lowest md:flex-1">
             <Image
               src={card.image}
-              alt={card.imageAlt}
+              alt={copy.imageAlt}
               fill
               className="object-cover"
               sizes="(max-width: 768px) 100vw, 40vw"
@@ -199,14 +597,16 @@ function FeatureCard({ card }: { card: FeatureCardConfig }) {
       )}
     >
       <Icon className={cn("mb-6 h-10 w-10", card.iconClassName)} />
-      <h3 className="mb-3 font-headline text-xl font-bold text-on-surface">{card.title}</h3>
-      <p className="text-sm leading-relaxed text-on-surface-variant">{card.description}</p>
+      <h3 className="mb-3 font-headline text-xl font-bold text-on-surface">
+        {copy.title}
+      </h3>
+      <p className="text-sm leading-relaxed text-on-surface-variant">{copy.description}</p>
 
-      {card.image && card.imageAlt ? (
+      {hasImage && card.image ? (
         <div className="relative mt-6 h-48 overflow-hidden rounded-lg border border-outline-variant/10 bg-surface-container-lowest">
           <Image
             src={card.image}
-            alt={card.imageAlt}
+            alt={copy.imageAlt ?? copy.title}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-110"
             sizes="(max-width: 768px) 100vw, 50vw"
@@ -217,45 +617,77 @@ function FeatureCard({ card }: { card: FeatureCardConfig }) {
   );
 }
 
-export default function Home() {
+export async function generateMetadata({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}): Promise<Metadata> {
+  const locale = resolveLocale((await searchParams).lang);
+  const t = copyByLocale[locale];
+
+  return {
+    title: t.metadataTitle,
+    description: t.metadataDescription,
+  };
+}
+
+export default async function Home({ searchParams }: { searchParams: SearchParams }) {
+  const locale = resolveLocale((await searchParams).lang);
+  const t = copyByLocale[locale];
+
+  const featureHref = withLocale("/#features", locale);
+  const howItWorksHref = withLocale("/#how-it-works", locale);
+  const techHref = withLocale("/#tech-stack", locale);
+  const downloadHref = withLocale("/#download", locale);
+  const zhHref = withLocale("/", "zh");
+  const enHref = withLocale("/", "en");
+
+  const quickLinks = [
+    { href: featureHref, label: t.menu.jumpFeatures, tone: "primary" as const },
+    { href: howItWorksHref, label: t.menu.jumpFlow, tone: "secondary" as const },
+    { href: techHref, label: t.menu.jumpTech, tone: "neutral" as const },
+    { href: "/PaintersGO.apk", label: t.menu.download, tone: "download" as const },
+  ];
+
   return (
     <main id="top" className="overflow-x-hidden">
       <header className="fixed top-0 z-50 w-full border-b border-outline-variant/10 bg-background/80 backdrop-blur-xl shadow-[0_20px_40px_-10px_rgba(71,0,124,0.08)]">
         <nav className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4 font-headline tracking-tight md:px-8">
           <Link
-            href="/"
+            href={withLocale("/", locale)}
             className="bg-gradient-to-br from-primary to-primary-dim bg-clip-text text-2xl font-bold text-transparent"
           >
             PaintersGO
           </Link>
 
           <div className="hidden items-center gap-8 md:flex">
-            <a
-              href="#features"
+            <Link
+              href={featureHref}
               className="border-b-2 border-primary pb-1 text-sm font-bold text-primary transition-colors"
             >
-              Features
-            </a>
-            <a
-              href="#how-it-works"
+              {t.nav.features}
+            </Link>
+            <Link
+              href={howItWorksHref}
               className="text-sm text-on-surface/70 transition-colors hover:text-on-surface"
             >
-              How it Works
-            </a>
-            <a
-              href="#tech-stack"
+              {t.nav.howItWorks}
+            </Link>
+            <Link
+              href={techHref}
               className="text-sm text-on-surface/70 transition-colors hover:text-on-surface"
             >
-              Tech Stack
-            </a>
+              {t.nav.techStack}
+            </Link>
           </div>
 
-          <a
-            href="/PaintersGO.apk"
-            className="bg-primary-gradient inline-flex min-h-11 items-center justify-center rounded-lg px-6 py-2 text-sm font-bold text-primary-foreground shadow-[0_0_15px_rgba(83,221,252,0.15)] transition-transform duration-300 hover:scale-95 active:scale-90"
-          >
-            Download
-          </a>
+          <InfoMenu
+            locale={locale}
+            copy={t.menu}
+            quickLinks={quickLinks}
+            enHref={enHref}
+            zhHref={zhHref}
+          />
         </nav>
       </header>
 
@@ -272,12 +704,11 @@ export default function Home() {
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center">
           <div className="relative z-10 animate-[fade-in_0.7s_ease-out_both]">
             <h1 className="mb-6 max-w-4xl font-headline text-5xl font-bold leading-tight tracking-tight md:text-7xl">
-              PaintersGO: From Inspiration to <span className="text-secondary">3D Realities</span>{" "}
-              on Android
+              {t.hero.titleLead} <span className="text-secondary">{t.hero.titleAccent}</span>{" "}
+              {t.hero.titleTrail}
             </h1>
             <p className="mb-10 max-w-xl text-lg leading-relaxed text-on-surface-variant md:text-xl">
-              The all-in-one AI-powered 3D modeling studio. Transform text or images into
-              detailed 3D models and print them directly from your phone.
+              {t.hero.body}
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -286,12 +717,12 @@ export default function Home() {
                 className="bg-primary-gradient inline-flex min-h-14 items-center gap-3 rounded-lg px-8 py-4 text-lg font-bold text-primary-foreground transition-transform duration-300 hover:scale-95 active:scale-90"
               >
                 <Download className="h-5 w-5" />
-                Download APK for Android
+                {t.hero.ctaDownload}
               </a>
             </div>
           </div>
 
-          <div className="relative group">
+          <div className="group relative">
             <div
               aria-hidden="true"
               className="absolute -inset-4 rounded-full bg-primary/20 blur-[100px]"
@@ -306,10 +737,10 @@ export default function Home() {
               <div className="relative aspect-square overflow-hidden rounded-[1.5rem] lg:rounded-[999px]">
                 <Image
                   src="/AR.png"
-                  alt="PaintersGO Android augmented reality preview"
+                  alt={t.hero.imageAlt}
                   fill
                   priority
-                  className="object-cover scale-105 transition-transform duration-700 group-hover:scale-110"
+                  className="scale-105 object-cover transition-transform duration-700 group-hover:scale-110"
                   sizes="(max-width: 1024px) 100vw, 42vw"
                 />
               </div>
@@ -317,11 +748,10 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       <section className="border-y border-outline-variant/15 bg-surface-container-low py-12">
         <div className="mx-auto max-w-7xl px-6 md:px-8">
           <p className="mb-8 text-center font-label text-xs uppercase tracking-[0.32em] text-on-surface-variant">
-            Powered by Industry Leading Engines
+            {t.engineCloud}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-12 opacity-60 md:gap-24">
             {engines.map((engine) => (
@@ -337,17 +767,14 @@ export default function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-16 max-w-2xl">
             <h2 className="mb-4 font-headline text-4xl font-bold text-on-surface">
-              Core Creative Engine
+              {t.features.eyebrow}
             </h2>
-            <p className="text-on-surface-variant">
-              High-fidelity 3D generation, repair, collaboration, and delivery in one mobile
-              workflow.
-            </p>
+            <p className="text-on-surface-variant">{t.features.body}</p>
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-4">
-            {featureCards.map((card) => (
-              <FeatureCard key={card.title} card={card} />
+            {featureDefinitions.map((card) => (
+              <FeatureCard key={card.key} locale={locale} card={card} />
             ))}
           </div>
         </div>
@@ -357,11 +784,9 @@ export default function Home() {
         <div className="mx-auto max-w-7xl">
           <div className="mb-20 text-center">
             <h2 className="mb-4 font-headline text-4xl font-bold text-on-surface">
-              Sculpting in Five Steps
+              {t.flow.eyebrow}
             </h2>
-            <p className="text-on-surface-variant">
-              From concept to physical object with minimal friction.
-            </p>
+            <p className="text-on-surface-variant">{t.flow.body}</p>
           </div>
 
           <div className="relative grid grid-cols-1 gap-8 md:grid-cols-5">
@@ -370,19 +795,23 @@ export default function Home() {
               className="absolute left-6 right-6 top-6 hidden border-t border-dashed border-outline-variant/30 md:block"
             />
 
-            {steps.map((step) => (
-              <div key={step.number} className="relative z-10">
-                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-secondary/30 bg-surface-container-highest font-headline font-bold text-secondary">
-                  {step.number}
+            {steps.map((step) => {
+              const stepCopy = t.flow.steps[step.key];
+
+              return (
+                <div key={step.number} className="relative z-10">
+                  <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-full border border-secondary/30 bg-surface-container-highest font-headline font-bold text-secondary">
+                    {step.number}
+                  </div>
+                  <h3 className="mb-2 font-headline text-lg font-bold text-on-surface">
+                    {stepCopy.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-on-surface-variant">
+                    {stepCopy.description}
+                  </p>
                 </div>
-                <h3 className="mb-2 font-headline text-lg font-bold text-on-surface">
-                  {step.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-on-surface-variant">
-                  {step.description}
-                </p>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>
@@ -392,54 +821,54 @@ export default function Home() {
           <div className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
               <h2 className="mb-4 font-headline text-4xl font-bold text-on-surface">
-                Under the Hood
+                {t.tech.eyebrow}
               </h2>
-              <p className="text-on-surface-variant">
-                A professional-grade mobile architecture shaped for AI-native 3D creation.
-              </p>
+              <p className="text-on-surface-variant">{t.tech.body}</p>
             </div>
             <div className="hidden text-right md:block">
-              <span className="font-mono text-sm text-tertiary">PaintersGO-Core v2.4.0</span>
+              <span className="font-mono text-sm text-tertiary">{t.tech.version}</span>
             </div>
           </div>
 
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {techCards.map((card) => (
-              <article
-                key={card.title}
-                className={cn(
-                  "rounded-lg border-l-2 bg-surface-container-highest p-6",
-                  card.borderClassName,
-                )}
-              >
-                <h3 className={cn("mb-2 font-headline text-lg font-bold", card.textClassName)}>
-                  {card.title}
-                </h3>
-                <p className="text-sm leading-relaxed text-on-surface-variant">
-                  {card.description}
-                </p>
-              </article>
-            ))}
+            {techDefinitions.map((card) => {
+              const techCopy = t.tech.cards[card.key];
+
+              return (
+                <article
+                  key={card.key}
+                  className={cn(
+                    "rounded-lg border-l-2 bg-surface-container-highest p-6",
+                    card.borderClassName,
+                  )}
+                >
+                  <h3 className={cn("mb-2 font-headline text-lg font-bold", card.textClassName)}>
+                    {techCopy.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-on-surface-variant">
+                    {techCopy.description}
+                  </p>
+                </article>
+              );
+            })}
 
             <article className="rounded-lg border-l-2 border-secondary-fixed bg-surface-container-highest p-6">
               <h3 className="mb-2 flex items-center gap-2 font-headline text-lg font-bold text-secondary-fixed">
                 <Sparkles className="h-4 w-4" />
-                AI Workflow Quality
+                {t.tech.qualityTitle}
               </h3>
               <p className="text-sm leading-relaxed text-on-surface-variant">
-                Prompt orchestration, preview iteration, and device-native polish work together
-                so the app feels like one coherent studio instead of a stack of disconnected tools.
+                {t.tech.qualityBody}
               </p>
             </article>
 
             <article className="rounded-lg border-l-2 border-primary bg-surface-container-highest p-6">
               <h3 className="mb-2 flex items-center gap-2 font-headline text-lg font-bold text-primary">
                 <ShieldCheck className="h-4 w-4" />
-                Production Readiness
+                {t.tech.readinessTitle}
               </h3>
               <p className="text-sm leading-relaxed text-on-surface-variant">
-                Repair, export, collaboration, and fulfillment are treated as first-class steps,
-                making the pipeline more reliable for real-world output.
+                {t.tech.readinessBody}
               </p>
             </article>
           </div>
@@ -459,11 +888,10 @@ export default function Home() {
 
           <div className="relative z-10">
             <h2 className="mb-8 font-headline text-4xl font-bold text-on-surface md:text-5xl">
-              Start Your 3D Journey Today
+              {t.cta.title}
             </h2>
             <p className="mx-auto mb-10 max-w-2xl text-lg leading-relaxed text-on-surface-variant">
-              Join artists, makers, and creative teams already moving from concept to physical
-              form with PaintersGO.
+              {t.cta.body}
             </p>
 
             <a
@@ -471,7 +899,7 @@ export default function Home() {
               className="bg-primary-gradient inline-flex min-h-14 items-center gap-4 rounded-lg px-10 py-5 text-xl font-bold text-primary-foreground transition-transform duration-300 hover:scale-105 active:scale-95"
             >
               <Download className="h-5 w-5" />
-              Get the App Now
+              {t.cta.button}
             </a>
           </div>
         </div>
@@ -481,42 +909,40 @@ export default function Home() {
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 px-6 md:flex-row md:px-8">
           <div className="flex flex-col items-center gap-2 md:items-start">
             <span className="font-headline text-lg font-bold text-on-surface">PaintersGO</span>
-            <p className="font-body text-sm text-on-surface/50">
-              (c) 2025 PaintersGO. Sculpting the future of 3D.
-            </p>
+            <p className="font-body text-sm text-on-surface/50">{t.footer.copyright}</p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-8 font-body text-sm">
-            <a
-              href="#features"
+            <Link
+              href={featureHref}
               className="text-on-surface/50 transition-colors hover:text-secondary"
             >
-              Features
-            </a>
-            <a
-              href="#how-it-works"
+              {t.nav.features}
+            </Link>
+            <Link
+              href={howItWorksHref}
               className="text-on-surface/50 transition-colors hover:text-secondary"
             >
-              How it Works
-            </a>
-            <a
-              href="#download"
+              {t.nav.howItWorks}
+            </Link>
+            <Link
+              href={downloadHref}
               className="text-on-surface/50 transition-colors hover:text-secondary"
             >
-              Download
-            </a>
-            <a
-              href="#tech-stack"
+              {t.menu.download}
+            </Link>
+            <Link
+              href={techHref}
               className="text-on-surface/50 transition-colors hover:text-secondary"
             >
-              Tech Stack
-            </a>
+              {t.nav.techStack}
+            </Link>
           </div>
 
           <div className="flex gap-4">
             <a
               href="https://paintersgo.top"
-              aria-label="PaintersGO website"
+              aria-label={t.footer.websiteLabel}
               className="text-on-surface/30 transition-colors hover:text-primary"
             >
               <Globe2 className="h-5 w-5" />
@@ -525,7 +951,7 @@ export default function Home() {
               href="https://github.com/binyigan/paintersgo-site"
               target="_blank"
               rel="noreferrer"
-              aria-label="Share repository"
+              aria-label={t.footer.shareLabel}
               className="text-on-surface/30 transition-colors hover:text-primary"
             >
               <Share2 className="h-5 w-5" />
