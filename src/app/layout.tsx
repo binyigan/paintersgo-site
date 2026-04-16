@@ -1,21 +1,29 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "PaintersGO | AI-powered 3D Co-Creation Platform",
+  title: "PaintersGO - AI-Driven 3D Modeling on Android",
   description:
-    "PaintersGO integrates AI 3D generation, collaboration rooms, online preview, and O2O printing into one complete creation workflow.",
+    "The all-in-one AI-powered 3D modeling studio. Transform text or images into detailed 3D models and print them directly from your phone.",
 };
 
 export default function RootLayout({
@@ -26,9 +34,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${spaceGrotesk.variable} ${geistMono.variable} dark h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col bg-background text-on-surface font-body selection:bg-primary/30">
+        {children}
+      </body>
     </html>
   );
 }
