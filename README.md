@@ -28,26 +28,28 @@ Always use **Release Workflow**, not `npm run dev`.
 - `Next.js 16`
 - `React 19`
 - `Tailwind CSS v4`
-- `Three.js` for the hero stage
+- `next/font` for self-hosted Google fonts
+- `lucide-react` for UI icons
 
 ## Current Site Scope
 
 The live site now includes:
 
-- Hero section with the real `ToTu.glb` model
-- `AI Power` section grounded in real app capabilities
-- `Collaboration` section based on the app's room UI
-- `O2O Printing` section based on the app's O2O flow
-- `About` page for the author story, inspirations, and build notes
-- Gallery and APK download entry
+- Dark AI landing page hero with APK download CTA
+- Engine logo cloud for Meshy, Rodin, Tripo, and Hunyuan
+- Bento-style feature grid for generation, repair, collaboration, and printing
+- Five-step workflow section
+- Tech stack section
+- Final download CTA and footer
 
 ## Key Files
 
 - `src/app/page.tsx`: homepage structure
-- `src/app/about/page.tsx`: author / inspiration / build story page
-- `src/components/model-stage.tsx`: hero 3D model stage
-- `src/components/feature-showcase.tsx`: interactive Collaboration and O2O modules
-- `public/models/ToTu.glb`: current live hero / preview model
+- `src/app/layout.tsx`: global metadata and font setup
+- `src/app/globals.css`: theme tokens and shared landing page styles
+- `public/AR.png`: hero visual
+- `public/app-assets/video_to_3d1.webp`: feature visual
+- `public/app-assets/demo_refine.webp`: repair feature visual
 
 ## App Source Reference
 
