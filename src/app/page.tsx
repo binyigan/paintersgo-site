@@ -77,18 +77,11 @@ type HomeCopy = {
   };
   menu: {
     buttonLabel: string;
-    buttonHint: string;
     authorTitle: string;
-    authorBody: string;
     workTitle: string;
-    workBody: string;
     languageLabel: string;
-    quickLinksLabel: string;
     englishLabel: string;
     chineseLabel: string;
-    jumpFeatures: string;
-    jumpFlow: string;
-    jumpTech: string;
     download: string;
   };
   hero: {
@@ -229,21 +222,12 @@ const copyByLocale: Record<Locale, HomeCopy> = {
       techStack: "Tech Stack",
     },
     menu: {
-      buttonLabel: "Overview",
-      buttonHint: "author, work, language",
+      buttonLabel: "Open menu",
       authorTitle: "About the Author",
-      authorBody:
-        "A product-led experiment focused on connecting AI generation, mobile creation, and physical 3D output into one coherent experience.",
       workTitle: "About the Work",
-      workBody:
-        "PaintersGO is designed as a mobile-first 3D workflow covering generation, refinement, collaboration, and print fulfillment in one story.",
       languageLabel: "Language Switch",
-      quickLinksLabel: "Quick Actions",
       englishLabel: "EN",
       chineseLabel: "\u4e2d\u6587",
-      jumpFeatures: "View Features",
-      jumpFlow: "See Workflow",
-      jumpTech: "Open Tech Stack",
       download: "Download APK",
     },
     hero: {
@@ -387,21 +371,12 @@ const copyByLocale: Record<Locale, HomeCopy> = {
       techStack: "\u6280\u672f\u6808",
     },
     menu: {
-      buttonLabel: "\u66f4\u591a\u4fe1\u606f",
-      buttonHint: "\u4f5c\u8005\u3001\u4f5c\u54c1\u3001\u8bed\u8a00",
+      buttonLabel: "\u6253\u5f00\u83dc\u5355",
       authorTitle: "\u5173\u4e8e\u4f5c\u8005",
-      authorBody:
-        "\u8fd9\u662f\u4e00\u4e2a\u4ee5\u4ea7\u54c1\u4f53\u9a8c\u4e3a\u6838\u5fc3\u7684\u4e2a\u4eba\u5b9e\u9a8c\uff0c\u76ee\u6807\u662f\u628a AI \u751f\u6210\u3001\u79fb\u52a8\u521b\u4f5c\u4e0e\u5b9e\u4f53 3D \u8f93\u51fa\u4e32\u6210\u4e00\u6761\u5b8c\u6574\u94fe\u8def\u3002",
       workTitle: "\u5173\u4e8e\u4f5c\u54c1",
-      workBody:
-        "PaintersGO \u88ab\u8bbe\u8ba1\u6210\u4e00\u5957\u79fb\u52a8\u7aef 3D \u5de5\u4f5c\u6d41\uff0c\u628a\u751f\u6210\u3001\u7cbe\u4fee\u3001\u534f\u4f5c\u4e0e\u6253\u5370\u4ea4\u4ed8\u653e\u5728\u540c\u4e00\u4e2a\u4f53\u9a8c\u91cc\u3002",
       languageLabel: "\u53cc\u8bed\u5207\u6362",
-      quickLinksLabel: "\u5feb\u901f\u5165\u53e3",
       englishLabel: "EN",
       chineseLabel: "\u4e2d\u6587",
-      jumpFeatures: "\u67e5\u770b\u529f\u80fd",
-      jumpFlow: "\u67e5\u770b\u6d41\u7a0b",
-      jumpTech: "\u67e5\u770b\u6280\u672f\u6808",
       download: "\u4e0b\u8f7d APK",
     },
     hero: {
@@ -639,15 +614,10 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const howItWorksHref = withLocale("/#how-it-works", locale);
   const techHref = withLocale("/#tech-stack", locale);
   const downloadHref = withLocale("/#download", locale);
+  const authorHref = withLocale("/author", locale);
+  const projectHref = withLocale("/project", locale);
   const zhHref = withLocale("/", "zh");
   const enHref = withLocale("/", "en");
-
-  const quickLinks = [
-    { href: featureHref, label: t.menu.jumpFeatures, tone: "primary" as const },
-    { href: howItWorksHref, label: t.menu.jumpFlow, tone: "secondary" as const },
-    { href: techHref, label: t.menu.jumpTech, tone: "neutral" as const },
-    { href: "/PaintersGO.apk", label: t.menu.download, tone: "download" as const },
-  ];
 
   return (
     <main id="top" className="overflow-x-hidden">
@@ -684,7 +654,8 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           <InfoMenu
             locale={locale}
             copy={t.menu}
-            quickLinks={quickLinks}
+            authorHref={authorHref}
+            workHref={projectHref}
             enHref={enHref}
             zhHref={zhHref}
           />
