@@ -128,9 +128,10 @@ const featureDefinitions: FeatureCardConfig[] = [
     icon: "wandSparkles",
     iconClassName: "text-primary",
     media: {
-      type: "image",
-      src: "/app-assets/video_to_3d1.webp",
+      type: "video",
+      src: "/app-assets/feature-previews/ai-to-3d.mp4",
       alt: "AI generation to 3D preview",
+      poster: "/app-assets/video_to_3d1.webp",
     },
   },
   {
@@ -139,7 +140,7 @@ const featureDefinitions: FeatureCardConfig[] = [
     iconClassName: "text-tertiary-dim",
     media: {
       type: "image",
-      src: "/AR.png",
+      src: "/app-assets/feature-previews/multi-engine.png",
       alt: "Multi-engine generation preview",
     },
   },
@@ -149,7 +150,7 @@ const featureDefinitions: FeatureCardConfig[] = [
     iconClassName: "text-primary-fixed",
     media: {
       type: "image",
-      src: "/AR.png",
+      src: "/app-assets/feature-previews/editor.jpg",
       alt: "Real-time 3D editor preview",
     },
   },
@@ -159,7 +160,7 @@ const featureDefinitions: FeatureCardConfig[] = [
     iconClassName: "text-error",
     media: {
       type: "image",
-      src: "/app-assets/demo_refine.webp",
+      src: "/app-assets/feature-previews/repair.png",
       alt: "Cloud model repair preview",
     },
   },
@@ -169,7 +170,7 @@ const featureDefinitions: FeatureCardConfig[] = [
     iconClassName: "text-secondary-fixed",
     media: {
       type: "image",
-      src: "/AR.png",
+      src: "/app-assets/feature-previews/collab.png",
       alt: "Multi-user collaboration preview",
     },
   },
@@ -179,7 +180,7 @@ const featureDefinitions: FeatureCardConfig[] = [
     iconClassName: "text-primary",
     media: {
       type: "image",
-      src: "/app-assets/demo_refine.webp",
+      src: "/app-assets/feature-previews/o2o-printing.png",
       alt: "O2O printing workflow preview",
     },
   },
