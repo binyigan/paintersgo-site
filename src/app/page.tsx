@@ -19,6 +19,7 @@ type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 type FeatureKey =
   | "aiTo3D"
+  | "overallPreview20260221"
   | "multiEngine"
   | "editor"
   | "sculpting"
@@ -133,6 +134,17 @@ const featureDefinitions: FeatureCardConfig[] = [
       src: "/app-assets/feature-previews/ai-to-3d.mp4",
       alt: "AI generation to 3D preview",
       poster: "/app-assets/video_to_3d1.webp",
+    },
+  },
+  {
+    key: "overallPreview20260221",
+    icon: "layers3",
+    iconClassName: "text-secondary",
+    media: {
+      type: "video",
+      src: "/app-assets/feature-previews/overall-preview-2026-02-21.mp4",
+      alt: "2026.2.21 overall preview",
+      poster: "/AR.png",
     },
   },
   {
@@ -275,6 +287,11 @@ const copyByLocale: Record<Locale, HomeCopy> = {
           title: "AI Generation-to-3D",
           description:
             "Describe your ideas in text or upload an image. PaintersGO converts either input into rich 3D models through powerful generation engines.",
+        },
+        overallPreview20260221: {
+          title: "2026.2.21整体预览",
+          description:
+            "A full product walkthrough snapshot for the February 21, 2026 version, covering key features and the end-to-end flow.",
         },
         multiEngine: {
           title: "Multi-Engine",
@@ -424,6 +441,11 @@ const copyByLocale: Record<Locale, HomeCopy> = {
           title: "AI \u751f\u6210 3D",
           description:
             "\u65e0\u8bba\u662f\u6587\u5b57\u63cf\u8ff0\u8fd8\u662f\u53c2\u8003\u56fe\uff0cPaintersGO \u90fd\u80fd\u901a\u8fc7\u5f3a\u5927\u751f\u6210\u5f15\u64ce\u5feb\u901f\u8f6c\u5316\u4e3a\u5b8c\u6574\u7684 3D \u6a21\u578b\u3002",
+        },
+        overallPreview20260221: {
+          title: "2026.2.21\u6574\u4f53\u9884\u89c8",
+          description:
+            "\u5bf9 2026 \u5e74 2 \u6708 21 \u65e5\u7248\u672c\u7684\u5b8c\u6574\u5c55\u793a\uff0c\u96c6\u4e2d\u5448\u73b0\u4e3b\u8981\u529f\u80fd\u4e0e\u6574\u4f53\u4f53\u9a8c\u6d41\u7a0b\u3002",
         },
         multiEngine: {
           title: "\u591a\u5f15\u64ce\u751f\u6210",
