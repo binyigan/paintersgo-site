@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import {
   Boxes,
   ImageUp,
@@ -9,6 +10,7 @@ import {
   Users,
   WandSparkles,
   Wrench,
+  X,
   type LucideIcon,
 } from "lucide-react";
 
@@ -29,6 +31,12 @@ export type FeatureCarouselItem = {
   iconClassName: string;
   title: string;
   description: string;
+  media: {
+    type: "image" | "video";
+    src: string;
+    alt: string;
+    poster?: string;
+  };
 };
 
 const iconByKey: Record<FeatureIconKey, LucideIcon> = {
@@ -46,9 +54,11 @@ const AUTO_ADVANCE_MS = 3200;
 export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const safeItems = useMemo(() => items.filter(Boolean), [items]);
+  const previewItem = previewIndex === null ? null : safeItems[previewIndex];
 
   useEffect(() => {
     if (safeItems.length === 0 || isPaused) {
@@ -75,80 +85,151 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
     });
   }, [activeIndex]);
 
+  useEffect(() => {
+    if (!previewItem) {
+      return;
+    }
+
+    const prevOverflow = document.body.style.overflow;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setPreviewIndex(null);
+      }
+    }
+
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [previewItem]);
+
   if (safeItems.length === 0) {
     return null;
   }
 
   return (
-    <div className="relative">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-background to-transparent"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-background to-transparent"
-      />
+    <>
+      <div className="relative">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-background to-transparent"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-background to-transparent"
+        />
 
-      <div
-        className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-1 pb-3 pt-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-        onMouseEnter={() => setIsPaused(true)}
-        onTouchStart={() => setIsPaused(true)}
-        onPointerDown={() => setIsPaused(true)}
-        onKeyDown={() => setIsPaused(true)}
-      >
-        {safeItems.map((item, index) => {
-          const Icon = iconByKey[item.icon];
-          const isActive = index === activeIndex;
+        <div
+          className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-1 pb-3 pt-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+          onMouseEnter={() => setIsPaused(true)}
+          onTouchStart={() => setIsPaused(true)}
+          onPointerDown={() => setIsPaused(true)}
+          onKeyDown={() => setIsPaused(true)}
+        >
+          {safeItems.map((item, index) => {
+            const Icon = iconByKey[item.icon];
+            const isActive = index === activeIndex;
 
-          return (
+            return (
+              <button
+                key={item.id}
+                ref={(el) => {
+                  cardRefs.current[index] = el;
+                }}
+                type="button"
+                className={cn(
+                  "group w-[82vw] shrink-0 snap-center rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-low p-6 text-left transition-all duration-300 sm:w-[27rem]",
+                  isActive
+                    ? "bg-surface-container ring-2 ring-primary/40"
+                    : "opacity-85 hover:opacity-100",
+                )}
+                onClick={() => {
+                  setIsPaused(true);
+                  setActiveIndex(index);
+                  setPreviewIndex(index);
+                }}
+                aria-pressed={isActive}
+                aria-label={`${item.title}: open media preview`}
+              >
+                <Icon className={cn("mb-5 h-8 w-8", item.iconClassName)} />
+                <h3 className="mb-3 font-headline text-2xl font-bold text-on-surface">{item.title}</h3>
+                <p className="text-base leading-relaxed text-on-surface-variant">{item.description}</p>
+                <p className="mt-4 text-xs uppercase tracking-[0.2em] text-secondary">Tap to preview</p>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-6 flex items-center justify-center gap-2">
+          {safeItems.map((item, index) => {
+            const isActive = index === activeIndex;
+
+            return (
+              <button
+                key={`${item.id}-dot`}
+                type="button"
+                aria-label={item.title}
+                className={cn(
+                  "h-2.5 w-2.5 rounded-full transition-all",
+                  isActive ? "w-8 bg-primary" : "bg-outline-variant",
+                )}
+                onClick={() => {
+                  setIsPaused(true);
+                  setActiveIndex(index);
+                }}
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      {previewItem ? (
+        <div
+          className="fixed inset-0 z-[120] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${previewItem.title} media preview`}
+          onClick={() => setPreviewIndex(null)}
+        >
+          <div
+            className="relative w-full max-w-5xl overflow-hidden rounded-2xl border border-outline-variant/30 bg-surface-container-high p-3 sm:p-4"
+            onClick={(event) => event.stopPropagation()}
+          >
             <button
-              key={item.id}
-              ref={(el) => {
-                cardRefs.current[index] = el;
-              }}
               type="button"
-              className={cn(
-                "group w-[82vw] shrink-0 snap-center rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-low p-6 text-left transition-all duration-300 sm:w-[27rem]",
-                isActive
-                  ? "bg-surface-container ring-2 ring-primary/40"
-                  : "opacity-85 hover:opacity-100",
-              )}
-              onClick={() => {
-                setIsPaused(true);
-                setActiveIndex(index);
-              }}
-              aria-pressed={isActive}
+              className="absolute right-3 top-3 z-10 rounded-full bg-black/50 p-2 text-white transition hover:bg-black/70"
+              aria-label="Close preview"
+              onClick={() => setPreviewIndex(null)}
             >
-              <Icon className={cn("mb-5 h-8 w-8", item.iconClassName)} />
-              <h3 className="mb-3 font-headline text-2xl font-bold text-on-surface">{item.title}</h3>
-              <p className="text-base leading-relaxed text-on-surface-variant">{item.description}</p>
+              <X className="h-5 w-5" />
             </button>
-          );
-        })}
-      </div>
 
-      <div className="mt-6 flex items-center justify-center gap-2">
-        {safeItems.map((item, index) => {
-          const isActive = index === activeIndex;
-
-          return (
-            <button
-              key={`${item.id}-dot`}
-              type="button"
-              aria-label={item.title}
-              className={cn(
-                "h-2.5 w-2.5 rounded-full transition-all",
-                isActive ? "w-8 bg-primary" : "bg-outline-variant",
-              )}
-              onClick={() => {
-                setIsPaused(true);
-                setActiveIndex(index);
-              }}
-            />
-          );
-        })}
-      </div>
-    </div>
+            {previewItem.media.type === "video" ? (
+              <video
+                src={previewItem.media.src}
+                poster={previewItem.media.poster}
+                className="max-h-[78vh] w-full rounded-xl bg-black object-contain"
+                controls
+                autoPlay
+              />
+            ) : (
+              <div className="relative h-[78vh] w-full overflow-hidden rounded-xl bg-black">
+                <Image
+                  src={previewItem.media.src}
+                  alt={previewItem.media.alt}
+                  fill
+                  className="object-contain"
+                  sizes="100vw"
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }

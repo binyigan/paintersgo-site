@@ -18,8 +18,7 @@ import { cn } from "@/lib/utils";
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
 type FeatureKey =
-  | "textTo3D"
-  | "imageTo3D"
+  | "aiTo3D"
   | "multiEngine"
   | "editor"
   | "repair"
@@ -39,6 +38,12 @@ type FeatureCardConfig = {
   key: FeatureKey;
   icon: FeatureIconKey;
   iconClassName: string;
+  media: {
+    type: "image" | "video";
+    src: string;
+    alt: string;
+    poster?: string;
+  };
 };
 
 type FeatureCopy = {
@@ -119,39 +124,64 @@ const engines = ["Meshy", "Rodin", "Tripo", "Hunyuan"] as const;
 
 const featureDefinitions: FeatureCardConfig[] = [
   {
-    key: "textTo3D",
+    key: "aiTo3D",
     icon: "wandSparkles",
     iconClassName: "text-primary",
-  },
-  {
-    key: "imageTo3D",
-    icon: "imageUp",
-    iconClassName: "text-secondary",
+    media: {
+      type: "image",
+      src: "/app-assets/video_to_3d1.webp",
+      alt: "AI generation to 3D preview",
+    },
   },
   {
     key: "multiEngine",
     icon: "layers3",
     iconClassName: "text-tertiary-dim",
+    media: {
+      type: "image",
+      src: "/AR.png",
+      alt: "Multi-engine generation preview",
+    },
   },
   {
     key: "editor",
     icon: "boxes",
     iconClassName: "text-primary-fixed",
+    media: {
+      type: "image",
+      src: "/AR.png",
+      alt: "Real-time 3D editor preview",
+    },
   },
   {
     key: "repair",
     icon: "wrench",
     iconClassName: "text-error",
+    media: {
+      type: "image",
+      src: "/app-assets/demo_refine.webp",
+      alt: "Cloud model repair preview",
+    },
   },
   {
     key: "collab",
     icon: "users",
     iconClassName: "text-secondary-fixed",
+    media: {
+      type: "image",
+      src: "/AR.png",
+      alt: "Multi-user collaboration preview",
+    },
   },
   {
     key: "printing",
     icon: "printer",
     iconClassName: "text-primary",
+    media: {
+      type: "image",
+      src: "/app-assets/demo_refine.webp",
+      alt: "O2O printing workflow preview",
+    },
   },
 ];
 
@@ -229,16 +259,10 @@ const copyByLocale: Record<Locale, HomeCopy> = {
       body:
         "High-fidelity 3D generation, repair, collaboration, and delivery in one mobile workflow.",
       cards: {
-        textTo3D: {
-          title: "AI Text-to-3D",
+        aiTo3D: {
+          title: "AI Generation-to-3D",
           description:
-            "Describe your vision in plain text. PaintersGO routes the request through powerful generation engines and turns prompts into rich 3D forms in seconds.",
-          imageAlt: "PaintersGO text-to-3D generation preview",
-        },
-        imageTo3D: {
-          title: "AI Image-to-3D",
-          description:
-            "Upload a single image to reconstruct volume, silhouette, and depth so ideas can move into 3D without complex desktop tooling.",
+            "Describe your ideas in text or upload an image. PaintersGO converts either input into rich 3D models through powerful generation engines.",
         },
         multiEngine: {
           title: "Multi-Engine",
@@ -379,16 +403,10 @@ const copyByLocale: Record<Locale, HomeCopy> = {
       body:
         "\u628a\u9ad8\u8d28\u91cf 3D \u751f\u6210\u3001\u4fee\u590d\u3001\u534f\u4f5c\u4e0e\u4ea4\u4ed8\u6574\u5408\u5230\u540c\u4e00\u5957\u79fb\u52a8\u7aef\u5de5\u4f5c\u6d41\u91cc\u3002",
       cards: {
-        textTo3D: {
-          title: "AI \u6587\u751f 3D",
+        aiTo3D: {
+          title: "AI \u751f\u6210 3D",
           description:
-            "\u76f4\u63a5\u8f93\u5165\u6587\u5b57\u63cf\u8ff0\u4f60\u7684\u60f3\u6cd5\u3002PaintersGO \u4f1a\u8c03\u7528\u5f3a\u5927\u7684\u751f\u6210\u5f15\u64ce\uff0c\u5728\u51e0\u79d2\u5185\u628a\u63d0\u793a\u8bcd\u8f6c\u6210\u5b8c\u6574\u7684 3D \u5f62\u4f53\u3002",
-          imageAlt: "PaintersGO \u6587\u751f 3D \u529f\u80fd\u9884\u89c8",
-        },
-        imageTo3D: {
-          title: "AI \u56fe\u751f 3D",
-          description:
-            "\u4e0a\u4f20\u5355\u5f20\u56fe\u7247\u5373\u53ef\u91cd\u5efa\u4f53\u79ef\u3001\u8f6e\u5ed3\u548c\u6df1\u5ea6\uff0c\u8ba9\u7075\u611f\u66f4\u5feb\u8fdb\u5165 3D\uff0c\u800c\u4e0d\u5fc5\u4f9d\u8d56\u590d\u6742\u684c\u9762\u8f6f\u4ef6\u3002",
+            "\u65e0\u8bba\u662f\u6587\u5b57\u63cf\u8ff0\u8fd8\u662f\u53c2\u8003\u56fe\uff0cPaintersGO \u90fd\u80fd\u901a\u8fc7\u5f3a\u5927\u751f\u6210\u5f15\u64ce\u5feb\u901f\u8f6c\u5316\u4e3a\u5b8c\u6574\u7684 3D \u6a21\u578b\u3002",
         },
         multiEngine: {
           title: "\u591a\u5f15\u64ce\u751f\u6210",
@@ -536,6 +554,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
     iconClassName: card.iconClassName,
     title: t.features.cards[card.key].title,
     description: t.features.cards[card.key].description,
+    media: card.media,
   }));
 
   return (
