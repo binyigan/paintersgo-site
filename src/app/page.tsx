@@ -21,6 +21,7 @@ type FeatureKey =
   | "aiTo3D"
   | "multiEngine"
   | "editor"
+  | "sculpting"
   | "repair"
   | "collab"
   | "printing";
@@ -155,6 +156,16 @@ const featureDefinitions: FeatureCardConfig[] = [
     },
   },
   {
+    key: "sculpting",
+    icon: "imageUp",
+    iconClassName: "text-secondary",
+    media: {
+      type: "image",
+      src: "/app-assets/feature-previews/sculpting.png",
+      alt: "Sculpting showcase preview",
+    },
+  },
+  {
     key: "repair",
     icon: "wrench",
     iconClassName: "text-error",
@@ -274,6 +285,11 @@ const copyByLocale: Record<Locale, HomeCopy> = {
           title: "Real-Time 3D Editor",
           description:
             "Inspect, orbit, refine, and preview directly from a mobile-first viewport designed to keep creation fast and tactile.",
+        },
+        sculpting: {
+          title: "Sculpting Showcase",
+          description:
+            "Highlight carved forms and fine surface details with a dedicated preview card for sculpture-style outputs.",
         },
         repair: {
           title: "Cloud Model Repair",
@@ -418,6 +434,11 @@ const copyByLocale: Record<Locale, HomeCopy> = {
           title: "\u5b9e\u65f6 3D \u7f16\u8f91",
           description:
             "\u5728\u79fb\u52a8\u7aef\u4f18\u5148\u7684\u89c6\u53e3\u91cc\u76f4\u63a5\u67e5\u770b\u3001\u65cb\u8f6c\u3001\u5fae\u8c03\u548c\u9884\u89c8\uff0c\u8ba9\u521b\u4f5c\u4fdd\u6301\u5feb\u901f\u3001\u76f4\u63a5\u548c\u987a\u624b\u3002",
+        },
+        sculpting: {
+          title: "\u96d5\u523b\u5c55\u793a",
+          description:
+            "\u65b0\u589e\u96d5\u523b\u98ce\u683c\u7ed3\u679c\u5c55\u793a\uff0c\u65b9\u4fbf\u67e5\u770b\u7ec6\u8282\u8d28\u611f\u4e0e\u8868\u9762\u5f62\u6001\u3002",
         },
         repair: {
           title: "\u4e91\u7aef\u6a21\u578b\u4fee\u590d",
