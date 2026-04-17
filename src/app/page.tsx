@@ -2,21 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import {
-  Boxes,
   Download,
   Globe2,
-  ImageUp,
-  Layers3,
-  Printer,
   Share2,
   ShieldCheck,
   Sparkles,
-  Users,
-  WandSparkles,
-  Wrench,
-  type LucideIcon,
 } from "lucide-react";
 
+import { FeatureCarousel, type FeatureIconKey } from "@/components/feature-carousel";
 import { InfoMenu } from "@/components/info-menu";
 import type { Locale } from "@/lib/locale";
 import { resolveLocale, withLocale } from "@/lib/locale";
@@ -44,11 +37,8 @@ type TechKey =
 
 type FeatureCardConfig = {
   key: FeatureKey;
-  icon: LucideIcon;
+  icon: FeatureIconKey;
   iconClassName: string;
-  className?: string;
-  image?: string;
-  variant?: "stacked" | "split";
 };
 
 type FeatureCopy = {
@@ -130,43 +120,37 @@ const engines = ["Meshy", "Rodin", "Tripo", "Hunyuan"] as const;
 const featureDefinitions: FeatureCardConfig[] = [
   {
     key: "textTo3D",
-    icon: WandSparkles,
+    icon: "wandSparkles",
     iconClassName: "text-primary",
-    className: "md:col-span-2 lg:col-span-2",
-    image: "/app-assets/video_to_3d1.webp",
-    variant: "stacked",
   },
   {
     key: "imageTo3D",
-    icon: ImageUp,
+    icon: "imageUp",
     iconClassName: "text-secondary",
   },
   {
     key: "multiEngine",
-    icon: Layers3,
+    icon: "layers3",
     iconClassName: "text-tertiary-dim",
   },
   {
     key: "editor",
-    icon: Boxes,
+    icon: "boxes",
     iconClassName: "text-primary-fixed",
   },
   {
     key: "repair",
-    icon: Wrench,
+    icon: "wrench",
     iconClassName: "text-error",
-    className: "md:col-span-2 lg:col-span-2",
-    image: "/app-assets/demo_refine.webp",
-    variant: "split",
   },
   {
     key: "collab",
-    icon: Users,
+    icon: "users",
     iconClassName: "text-secondary-fixed",
   },
   {
     key: "printing",
-    icon: Printer,
+    icon: "printer",
     iconClassName: "text-primary",
   },
 ];
@@ -520,78 +504,6 @@ const copyByLocale: Record<Locale, HomeCopy> = {
   },
 };
 
-function FeatureCard({
-  locale,
-  card,
-}: {
-  locale: Locale;
-  card: FeatureCardConfig;
-}) {
-  const Icon = card.icon;
-  const copy = copyByLocale[locale].features.cards[card.key];
-  const hasImage = Boolean(card.image && copy.imageAlt);
-
-  if (card.variant === "split" && card.image && copy.imageAlt) {
-    return (
-      <article
-        className={cn(
-          "group rounded-[1.5rem] border-t border-outline-variant/15 bg-surface-container-low p-8",
-          card.className,
-        )}
-      >
-        <div className="flex flex-col gap-8 md:flex-row">
-          <div className="md:max-w-sm">
-            <Icon className={cn("mb-6 h-10 w-10", card.iconClassName)} />
-            <h3 className="mb-3 font-headline text-xl font-bold text-on-surface">
-              {copy.title}
-            </h3>
-            <p className="text-sm leading-relaxed text-on-surface-variant">
-              {copy.description}
-            </p>
-          </div>
-
-          <div className="relative h-40 w-full overflow-hidden rounded-lg border border-outline-variant/10 bg-surface-container-lowest md:flex-1">
-            <Image
-              src={card.image}
-              alt={copy.imageAlt}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 40vw"
-            />
-          </div>
-        </div>
-      </article>
-    );
-  }
-
-  return (
-    <article
-      className={cn(
-        "group rounded-[1.5rem] border-t border-outline-variant/15 bg-surface-container-low p-8",
-        card.className,
-      )}
-    >
-      <Icon className={cn("mb-6 h-10 w-10", card.iconClassName)} />
-      <h3 className="mb-3 font-headline text-xl font-bold text-on-surface">
-        {copy.title}
-      </h3>
-      <p className="text-sm leading-relaxed text-on-surface-variant">{copy.description}</p>
-
-      {hasImage && card.image ? (
-        <div className="relative mt-6 h-48 overflow-hidden rounded-lg border border-outline-variant/10 bg-surface-container-lowest">
-          <Image
-            src={card.image}
-            alt={copy.imageAlt ?? copy.title}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-110"
-            sizes="(max-width: 768px) 100vw, 50vw"
-          />
-        </div>
-      ) : null}
-    </article>
-  );
-}
-
 export async function generateMetadata({
   searchParams,
 }: {
@@ -618,6 +530,13 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const projectHref = withLocale("/project", locale);
   const zhHref = withLocale("/", "zh");
   const enHref = withLocale("/", "en");
+  const featureItems = featureDefinitions.map((card) => ({
+    id: card.key,
+    icon: card.icon,
+    iconClassName: card.iconClassName,
+    title: t.features.cards[card.key].title,
+    description: t.features.cards[card.key].description,
+  }));
 
   return (
     <main id="top" className="overflow-x-hidden">
@@ -711,7 +630,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
                   alt={t.hero.imageAlt}
                   fill
                   priority
-                  className="scale-105 object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="object-contain"
                   sizes="(max-width: 1024px) 100vw, 42vw"
                 />
               </div>
@@ -743,11 +662,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <p className="text-on-surface-variant">{t.features.body}</p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-4">
-            {featureDefinitions.map((card) => (
-              <FeatureCard key={card.key} locale={locale} card={card} />
-            ))}
-          </div>
+          <FeatureCarousel items={featureItems} />
         </div>
       </section>
 
