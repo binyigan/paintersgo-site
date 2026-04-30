@@ -55,6 +55,7 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
+  const scrollerRef = useRef<HTMLDivElement | null>(null);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const safeItems = useMemo(() => items.filter(Boolean), [items]);
@@ -73,15 +74,18 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
   }, [isPaused, safeItems.length]);
 
   useEffect(() => {
+    const scroller = scrollerRef.current;
     const target = cardRefs.current[activeIndex];
-    if (!target) {
+
+    if (!scroller || !target) {
       return;
     }
 
-    target.scrollIntoView({
+    const left = target.offsetLeft - (scroller.clientWidth - target.clientWidth) / 2;
+
+    scroller.scrollTo({
+      left,
       behavior: "smooth",
-      inline: "center",
-      block: "nearest",
     });
   }, [activeIndex]);
 
@@ -124,8 +128,10 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
         />
 
         <div
+          ref={scrollerRef}
           className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-1 pb-3 pt-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
           onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
           onTouchStart={() => setIsPaused(true)}
           onPointerDown={() => setIsPaused(true)}
           onKeyDown={() => setIsPaused(true)}
@@ -142,10 +148,8 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
                 }}
                 type="button"
                 className={cn(
-                  "group w-[82vw] shrink-0 snap-center rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-low p-6 text-left transition-all duration-300 sm:w-[27rem]",
-                  isActive
-                    ? "bg-surface-container ring-2 ring-primary/40"
-                    : "opacity-85 hover:opacity-100",
+                  "group min-h-72 w-[82vw] shrink-0 snap-center rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-low p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:bg-surface-container focus-visible:ring-2 focus-visible:ring-primary/55 sm:w-[27rem]",
+                  isActive ? "bg-surface-container ring-2 ring-primary/40" : "opacity-85 hover:opacity-100",
                 )}
                 onClick={() => {
                   setIsPaused(true);

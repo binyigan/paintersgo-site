@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowLeft, Languages } from "lucide-react";
 
 import type { Locale } from "@/lib/locale";
@@ -10,6 +11,11 @@ type DetailSection = {
   title: string;
   body: string;
   accent: Accent;
+};
+
+type ArchiveImage = {
+  src: string;
+  alt: string;
 };
 
 type DetailPageShellProps = {
@@ -26,6 +32,9 @@ type DetailPageShellProps = {
   title: string;
   intro: string;
   sections: DetailSection[];
+  archiveTitle?: string;
+  archiveIntro?: string;
+  archiveImages?: ArchiveImage[];
 };
 
 function accentClassName(accent: Accent): string {
@@ -54,6 +63,9 @@ export function DetailPageShell({
   title,
   intro,
   sections,
+  archiveTitle,
+  archiveIntro,
+  archiveImages = [],
 }: DetailPageShellProps) {
   return (
     <main className="relative min-h-screen overflow-x-hidden px-6 pb-20 pt-10 md:px-8">
@@ -146,6 +158,42 @@ export function DetailPageShell({
             </article>
           ))}
         </section>
+
+        {archiveImages.length > 0 ? (
+          <section className="mt-12">
+            <div className="mb-8 max-w-3xl">
+              {archiveTitle ? (
+                <h2 className="font-headline text-3xl font-bold text-on-surface md:text-4xl">
+                  {archiveTitle}
+                </h2>
+              ) : null}
+              {archiveIntro ? (
+                <p className="mt-4 text-base leading-7 text-on-surface-variant">
+                  {archiveIntro}
+                </p>
+              ) : null}
+            </div>
+
+            <div className="grid gap-6">
+              {archiveImages.map((image, index) => (
+                <figure
+                  key={image.src}
+                  className="overflow-hidden rounded-[1.5rem] border border-outline-variant/15 bg-surface-container-low"
+                >
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    width={1440}
+                    height={2400}
+                    sizes="(max-width: 1024px) 100vw, 960px"
+                    className="h-auto w-full"
+                    priority={index === 0}
+                  />
+                </figure>
+              ))}
+            </div>
+          </section>
+        ) : null}
       </div>
     </main>
   );

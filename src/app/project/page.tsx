@@ -22,7 +22,18 @@ type ProjectPageCopy = {
     body: string;
     accent: "primary" | "secondary" | "tertiary";
   }>;
+  archiveTitle: string;
+  archiveIntro: string;
 };
+
+const projectArchiveImages = Array.from({ length: 11 }, (_, index) => {
+  const number = String(index + 1).padStart(2, "0");
+
+  return {
+    src: `/about/project/${number}.jpg`,
+    alt: `PaintersGO origin original post page ${index + 1}`,
+  };
+});
 
 const copyByLocale: Record<Locale, ProjectPageCopy> = {
   en: {
@@ -58,6 +69,9 @@ const copyByLocale: Record<Locale, ProjectPageCopy> = {
         accent: "tertiary",
       },
     ],
+    archiveTitle: "Original Project Story",
+    archiveIntro:
+      "The full exported image story is included below so the website keeps the complete source record, not only the condensed product summary.",
   },
   zh: {
     metadataTitle: "\u5173\u4e8e\u4f5c\u54c1 - PaintersGO",
@@ -92,6 +106,9 @@ const copyByLocale: Record<Locale, ProjectPageCopy> = {
         accent: "tertiary",
       },
     ],
+    archiveTitle: "\u5b8c\u6574\u4f5c\u54c1\u6545\u4e8b",
+    archiveIntro:
+      "\u4e0b\u65b9\u6309\u987a\u5e8f\u6536\u5f55\u4e86\u201cPaintersGO \u662f\u600e\u4e48\u6765\u7684\u201d\u5c0f\u7ea2\u4e66\u56fe\u7247\u7248\u539f\u6587\uff0c\u65e2\u4fdd\u7559\u5b8c\u6574\u8bb0\u5f55\uff0c\u4e5f\u4fbf\u4e8e\u540e\u7eed\u518d\u63d0\u70bc\u6210\u7f51\u7ad9\u7248\u957f\u6587\u3002",
   },
 };
 
@@ -132,6 +149,9 @@ export default async function ProjectPage({
       title={t.title}
       intro={t.intro}
       sections={t.sections}
+      archiveTitle={t.archiveTitle}
+      archiveIntro={t.archiveIntro}
+      archiveImages={projectArchiveImages}
     />
   );
 }

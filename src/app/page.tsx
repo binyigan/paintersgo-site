@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import {
   Download,
@@ -622,23 +621,34 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </nav>
       </header>
 
-      <section className="relative overflow-hidden px-6 pb-20 pt-32 md:px-8">
+      <section className="relative min-h-[88svh] overflow-hidden px-6 pb-20 pt-32 md:px-8">
+        <video
+          aria-hidden="true"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="absolute inset-0 h-full w-full object-cover"
+        >
+          <source src="/videos/intro_video.mp4" type="video/mp4" />
+        </video>
         <div
           aria-hidden="true"
-          className="absolute -left-20 top-16 h-72 w-72 rounded-full bg-primary/20 blur-[100px]"
+          className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,8,12,0.78)_0%,rgba(7,8,12,0.55)_42%,rgba(7,8,12,0.12)_100%),radial-gradient(circle_at_18%_18%,rgba(204,151,255,0.22),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(83,221,252,0.14),transparent_32%)]"
         />
         <div
           aria-hidden="true"
-          className="absolute right-0 top-24 h-72 w-72 rounded-full bg-secondary/12 blur-[100px]"
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,8,12,0.10)_0%,rgba(7,8,12,0.34)_100%)]"
         />
 
-        <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:items-center">
-          <div className="relative z-10 animate-[fade-in_0.7s_ease-out_both]">
-            <h1 className="mb-6 max-w-4xl font-headline text-5xl font-bold leading-tight tracking-tight md:text-7xl">
+        <div className="relative z-10 mx-auto flex min-h-[calc(88svh-13rem)] max-w-7xl items-center">
+          <div className="max-w-4xl animate-[fade-in_0.7s_ease-out_both]">
+            <h1 className="mb-6 max-w-5xl font-headline text-5xl font-bold leading-tight tracking-tight text-white md:text-7xl">
               {t.hero.titleLead} <span className="text-secondary">{t.hero.titleAccent}</span>{" "}
               {t.hero.titleTrail}
             </h1>
-            <p className="mb-10 max-w-xl text-lg leading-relaxed text-on-surface-variant md:text-xl">
+            <p className="mb-10 max-w-2xl text-lg leading-relaxed text-white/78 md:text-xl">
               {t.hero.body}
             </p>
 
@@ -650,31 +660,6 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
                 <Download className="h-5 w-5" />
                 {t.hero.ctaDownload}
               </a>
-            </div>
-          </div>
-
-          <div className="group relative">
-            <div
-              aria-hidden="true"
-              className="absolute -inset-4 rounded-full bg-primary/20 blur-[100px]"
-            />
-
-            <div className="glass-panel glow-shadow relative overflow-hidden rounded-[2rem] border border-outline-variant/15 p-6 shadow-2xl sm:p-8 lg:rounded-[999px]">
-              <div
-                aria-hidden="true"
-                className="absolute inset-0 bg-[radial-gradient(circle_at_50%_12%,rgba(255,255,255,0.10),transparent_42%),radial-gradient(circle_at_78%_82%,rgba(83,221,252,0.10),transparent_24%)]"
-              />
-
-              <div className="relative aspect-square overflow-hidden rounded-[1.5rem] lg:rounded-[999px]">
-                <Image
-                  src="/AR.png"
-                  alt={t.hero.imageAlt}
-                  fill
-                  priority
-                  className="object-contain"
-                  sizes="(max-width: 1024px) 100vw, 42vw"
-                />
-              </div>
             </div>
           </div>
         </div>

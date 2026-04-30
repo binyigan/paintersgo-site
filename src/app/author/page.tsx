@@ -22,7 +22,18 @@ type AuthorPageCopy = {
     body: string;
     accent: "primary" | "secondary" | "tertiary";
   }>;
+  archiveTitle: string;
+  archiveIntro: string;
 };
+
+const authorArchiveImages = Array.from({ length: 12 }, (_, index) => {
+  const number = String(index + 1).padStart(2, "0");
+
+  return {
+    src: `/about/author/${number}.jpg`,
+    alt: `AI programming experience original post page ${index + 1}`,
+  };
+});
 
 const copyByLocale: Record<Locale, AuthorPageCopy> = {
   en: {
@@ -58,6 +69,9 @@ const copyByLocale: Record<Locale, AuthorPageCopy> = {
         accent: "tertiary",
       },
     ],
+    archiveTitle: "Original Longform Notes",
+    archiveIntro:
+      "The complete Xiaohongshu image export is preserved below as the source material behind this author page.",
   },
   zh: {
     metadataTitle: "\u5173\u4e8e\u4f5c\u8005 - PaintersGO",
@@ -92,6 +106,9 @@ const copyByLocale: Record<Locale, AuthorPageCopy> = {
         accent: "tertiary",
       },
     ],
+    archiveTitle: "\u5b8c\u6574\u56fe\u6587\u539f\u6587",
+    archiveIntro:
+      "\u4e0b\u65b9\u6309\u987a\u5e8f\u4fdd\u7559\u4e86\u5c0f\u7ea2\u4e66\u56fe\u7247\u7248\u539f\u6587\uff0c\u7528\u4f5c\u201c\u5173\u4e8e\u4f5c\u8005\u201d\u9875\u9762\u7684\u5b8c\u6574\u8d44\u6599\u5e95\u7a3f\u3002",
   },
 };
 
@@ -132,6 +149,9 @@ export default async function AuthorPage({
       title={t.title}
       intro={t.intro}
       sections={t.sections}
+      archiveTitle={t.archiveTitle}
+      archiveIntro={t.archiveIntro}
+      archiveImages={authorArchiveImages}
     />
   );
 }
