@@ -38,15 +38,24 @@ export function VideoCoverPlayer({
 
   return (
     <div className={cn("relative overflow-hidden bg-black", className)}>
+      <MutedInlineVideo
+        src={src}
+        poster={poster}
+        preload="auto"
+        aria-hidden="true"
+        tabIndex={-1}
+        className={cn("pointer-events-none hidden h-full w-full object-cover md:block", mediaClassName)}
+      />
+
       {isPlaying ? (
         <MutedInlineVideo
           src={src}
           poster={poster}
           preload="auto"
-          className={cn("h-full w-full object-cover", mediaClassName)}
+          className={cn("h-full w-full object-cover md:hidden", mediaClassName)}
         />
       ) : (
-        <>
+        <div className="h-full w-full md:hidden">
           {fill ? (
             <Image
               src={poster}
@@ -74,7 +83,7 @@ export function VideoCoverPlayer({
           >
             <Play className="ml-1 h-7 w-7 fill-current" />
           </button>
-        </>
+        </div>
       )}
     </div>
   );

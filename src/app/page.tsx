@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Download,
@@ -10,7 +11,6 @@ import {
 
 import { FeatureCarousel, type FeatureIconKey } from "@/components/feature-carousel";
 import { InfoMenu } from "@/components/info-menu";
-import { MutedInlineVideo } from "@/components/muted-inline-video";
 import { VideoCoverPlayer } from "@/components/video-cover-player";
 import type { Locale } from "@/lib/locale";
 import { resolveLocale, withLocale } from "@/lib/locale";
@@ -109,6 +109,14 @@ type HomeCopy = {
     qualityBody: string;
     readinessTitle: string;
     readinessBody: string;
+  };
+  vision: {
+    eyebrow: string;
+    body: string;
+    points: Array<{
+      title: string;
+      description: string;
+    }>;
   };
   cta: {
     title: string;
@@ -374,6 +382,43 @@ const copyByLocale: Record<Locale, HomeCopy> = {
       readinessBody:
         "Repair, export, collaboration, and fulfillment are treated as first-class steps, making the pipeline more reliable for real-world output.",
     },
+    vision: {
+      eyebrow: "Vision & Perspective",
+      body:
+        "PaintersGO is imagined as a low-friction entrance to an AI-native 3D creation network: generate a model, refine it on the device, connect it to printing capacity, and bring the result home as a physical object.",
+      points: [
+        {
+          title: "A Platform-Level Entrance",
+          description:
+            "The app should connect generation, local coloring and sculpting, model repair, printing, and fulfillment into one path that non-technical users can understand.",
+        },
+        {
+          title: "Practical O2O Experiments",
+          description:
+            "The printing network should be tested carefully. A city-level honeycomb of high-quality partners may reduce communication and logistics costs, but models that do not survive real-world validation should be abandoned decisively.",
+        },
+        {
+          title: "Room for Individual Creators",
+          description:
+            "Independent operators can print for others, sell original works, or attract orders through their own craft and reputation. That personal creative identity is worth preserving.",
+        },
+        {
+          title: "AI as the Core Workflow",
+          description:
+            "As AI generation improves, many advanced features can naturally anchor around AI-generated models, while broader local-upload workflows can become paid or expanded services.",
+        },
+        {
+          title: "Copyright and Trust",
+          description:
+            "Downloadable and commercial assets need stricter checks. Unverified non-original works should not be allowed to enter public sale or commercial distribution.",
+        },
+        {
+          title: "Integration, Not Replacement",
+          description:
+            "The platform should not replace capable 3D professionals. It should organize demand, expose hidden 3D consumers, and create new roles for modelers, repair artists, and specialized service providers.",
+        },
+      ],
+    },
     cta: {
       title: "Start Your 3D Journey Today",
       body:
@@ -530,6 +575,43 @@ const copyByLocale: Record<Locale, HomeCopy> = {
       readinessBody:
         "\u628a\u4fee\u590d\u3001\u5bfc\u51fa\u3001\u534f\u4f5c\u548c\u4ea4\u4ed8\u90fd\u89c6\u4e3a\u4e00\u7b49\u80fd\u529b\uff0c\u8ba9\u6574\u4e2a\u94fe\u8def\u66f4\u63a5\u8fd1\u771f\u5b9e\u521b\u4f5c\u4e0e\u751f\u4ea7\u573a\u666f\u3002",
     },
+    vision: {
+      eyebrow: "愿景和看法",
+      body:
+        "PaintersGO 更像是一个面向 AI 原生 3D 创作的平台入口：让用户用低门槛方式生成模型，在本地完成上色、雕刻和修复，再连接打印产能与物流，把数字创作带到真实世界。",
+      points: [
+        {
+          title: "平台化入口",
+          description:
+            "它不只是一组功能，而是把 AI 生成、本地微调、模型修复、打印设备和履约交付串成一条普通用户也能理解的一站式路径。",
+        },
+        {
+          title: "谨慎验证 O2O",
+          description:
+            "打印网络可以先以城市蜂窝的方式试点，筛选少量高质量商家覆盖主要需求。但如果沟通、产能和成本无法形成闭环，就应果断舍弃不成立的模式。",
+        },
+        {
+          title: "保留个体创作者的位置",
+          description:
+            "个体户可以帮人打印，也可以出售原创作品，还可以通过自己的水平展示获取订单。这种个人能力带来的明星效应值得认真考虑。",
+        },
+        {
+          title: "AI 是核心工作流",
+          description:
+            "AI 生成模型会越来越强，贴图、修复、协作等能力可以围绕 AI 生成结果展开；当功能扩展到所有本地上传模型时，再考虑服务化或付费化。",
+        },
+        {
+          title: "版权与信任机制",
+          description:
+            "允许下载、售卖和商用的内容必须经过更严格的检查。没有得到认证的非原创系列，不应公开下载或进入商业流通。",
+        },
+        {
+          title: "整合而不是替代",
+          description:
+            "平台不会替代原本有能力的 3D 从业者，而是把被 AI 冲击的行业重新整合，创造建模师、修模师和专业服务者的新机会。",
+        },
+      ],
+    },
     cta: {
       title: "\u73b0\u5728\u5f00\u59cb\u4f60\u7684 3D \u521b\u4f5c\u4e4b\u65c5",
       body:
@@ -586,9 +668,19 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         <nav className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-4 font-headline tracking-tight md:px-8">
           <Link
             href={withLocale("/", locale)}
-            className="bg-gradient-to-br from-primary to-primary-dim bg-clip-text text-2xl font-bold text-transparent"
+            className="flex items-center gap-3"
           >
-            PaintersGO
+            <Image
+              src="/paintersgo-logo.png"
+              alt=""
+              width={46}
+              height={48}
+              priority
+              className="h-11 w-auto rounded-md bg-white object-contain"
+            />
+            <span className="bg-gradient-to-br from-primary to-primary-dim bg-clip-text text-2xl font-bold text-transparent">
+              PaintersGO
+            </span>
           </Link>
 
           <div className="hidden items-center gap-8 md:flex">
@@ -632,15 +724,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           fill
           priority
           sizes="100vw"
-          className="absolute inset-0 h-full w-full bg-black md:hidden"
-        />
-        <MutedInlineVideo
-          aria-hidden="true"
-          src="/videos/intro_video.mp4"
-          poster="/AR.png"
-          preload="auto"
-          tabIndex={-1}
-          className="pointer-events-none absolute inset-0 hidden h-full w-full bg-black object-cover object-center md:block"
+          className="absolute inset-0 h-full w-full bg-black"
         />
         <div
           aria-hidden="true"
@@ -792,6 +876,35 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
                 {t.tech.readinessBody}
               </p>
             </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="vision" className="bg-surface-container-low px-6 py-24 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 max-w-3xl">
+            <h2 className="mb-6 font-headline text-4xl font-bold text-on-surface md:text-5xl">
+              {t.vision.eyebrow}
+            </h2>
+            <p className="text-lg leading-relaxed text-on-surface-variant">
+              {t.vision.body}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {t.vision.points.map((point) => (
+              <article
+                key={point.title}
+                className="rounded-lg border border-outline-variant/20 bg-background p-6"
+              >
+                <h3 className="mb-3 font-headline text-xl font-bold text-on-surface">
+                  {point.title}
+                </h3>
+                <p className="text-sm leading-relaxed text-on-surface-variant">
+                  {point.description}
+                </p>
+              </article>
+            ))}
           </div>
         </div>
       </section>

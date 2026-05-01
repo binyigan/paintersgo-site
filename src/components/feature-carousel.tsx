@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { MutedInlineVideo } from "@/components/muted-inline-video";
 import { VideoCoverPlayer } from "@/components/video-cover-player";
 
 export type FeatureIconKey =
@@ -223,14 +222,8 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
                   buttonLabel={`Play ${previewItem.title} video`}
                   width={576}
                   height={1280}
-                  className="max-h-[78vh] w-full rounded-xl md:hidden"
+                  className="max-h-[78vh] w-full rounded-xl"
                   mediaClassName="rounded-xl object-contain"
-                />
-                <MutedInlineVideo
-                  src={previewItem.media.src}
-                  poster={previewItem.media.poster}
-                  className="pointer-events-none hidden max-h-[78vh] w-full rounded-xl bg-black object-contain md:block"
-                  preload="metadata"
                 />
               </>
             ) : (
