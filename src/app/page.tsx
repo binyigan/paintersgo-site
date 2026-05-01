@@ -632,7 +632,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
           fill
           priority
           sizes="100vw"
-          className="absolute inset-0 h-full w-full bg-black object-contain object-center md:hidden"
+          className="absolute inset-0 h-full w-full bg-black md:hidden"
         />
         <MutedInlineVideo
           aria-hidden="true"

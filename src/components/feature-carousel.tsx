@@ -224,7 +224,7 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
                   width={576}
                   height={1280}
                   className="max-h-[78vh] w-full rounded-xl md:hidden"
-                  mediaClassName="rounded-xl"
+                  mediaClassName="rounded-xl object-contain"
                 />
                 <MutedInlineVideo
                   src={previewItem.media.src}

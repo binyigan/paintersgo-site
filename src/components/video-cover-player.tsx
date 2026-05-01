@@ -43,7 +43,7 @@ export function VideoCoverPlayer({
           src={src}
           poster={poster}
           preload="auto"
-          className={cn("h-full w-full object-contain", mediaClassName)}
+          className={cn("h-full w-full object-cover", mediaClassName)}
         />
       ) : (
         <>
@@ -54,7 +54,7 @@ export function VideoCoverPlayer({
               fill
               priority={priority}
               sizes={sizes}
-              className={cn("object-contain object-center", mediaClassName)}
+              className={cn("object-cover object-center", mediaClassName)}
             />
           ) : (
             <Image
@@ -63,7 +63,7 @@ export function VideoCoverPlayer({
               width={width}
               height={height}
               sizes={sizes}
-              className={cn("h-full w-full object-contain object-center", mediaClassName)}
+              className={cn("h-full w-full object-cover object-center", mediaClassName)}
             />
           )}
           <button
