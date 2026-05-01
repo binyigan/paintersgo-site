@@ -2,6 +2,13 @@
 
 This repository now serves the PaintersGO website from the repository root using Next.js.
 
+## Naming
+
+- GitHub repository: `paintersgo-site`
+- Vercel project: `paintersgo-site`
+- npm package name: `paintersgo-site`
+- Local folder names such as `my-app-site` are only workspace names and do not define the production project.
+
 ## Choose the Right Workflow (Important)
 
 Use the workflow based on your goal:
