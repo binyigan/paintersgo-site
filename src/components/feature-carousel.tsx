@@ -37,6 +37,7 @@ export type FeatureCarouselItem = {
     src: string;
     alt: string;
     poster?: string;
+    mobileSrc?: string;
   };
 };
 
@@ -214,12 +215,27 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
             </button>
 
             {previewItem.media.type === "video" ? (
-              <MutedInlineVideo
-                src={previewItem.media.src}
-                poster={previewItem.media.poster}
-                className="pointer-events-none max-h-[78vh] w-full rounded-xl bg-black object-contain"
-                preload="metadata"
-              />
+              <>
+                {previewItem.media.mobileSrc ? (
+                  <Image
+                    src={previewItem.media.mobileSrc}
+                    alt={previewItem.media.alt}
+                    width={360}
+                    height={800}
+                    unoptimized
+                    className="max-h-[78vh] w-full rounded-xl bg-black object-contain md:hidden"
+                  />
+                ) : null}
+                <MutedInlineVideo
+                  src={previewItem.media.src}
+                  poster={previewItem.media.poster}
+                  className={cn(
+                    "pointer-events-none max-h-[78vh] w-full rounded-xl bg-black object-contain",
+                    previewItem.media.mobileSrc ? "hidden md:block" : "",
+                  )}
+                  preload="metadata"
+                />
+              </>
             ) : (
               <div className="relative h-[78vh] w-full overflow-hidden rounded-xl bg-black">
                 <Image

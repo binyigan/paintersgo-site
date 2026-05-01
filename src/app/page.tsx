@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import {
   Download,
@@ -44,6 +45,7 @@ type FeatureCardConfig = {
     src: string;
     alt: string;
     poster?: string;
+    mobileSrc?: string;
   };
 };
 
@@ -133,6 +135,7 @@ const featureDefinitions: FeatureCardConfig[] = [
       src: "/app-assets/feature-previews/ai-to-3d.mp4",
       alt: "AI generation to 3D preview",
       poster: "/app-assets/video_to_3d1.webp",
+      mobileSrc: "/app-assets/feature-previews/ai-to-3d-mobile.webp",
     },
   },
   {
@@ -623,13 +626,23 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       </header>
 
       <section className="relative min-h-[88svh] overflow-hidden px-6 pb-20 pt-32 md:px-8">
+        <Image
+          aria-hidden="true"
+          src="/videos/intro_video_mobile.webp"
+          alt=""
+          fill
+          priority
+          unoptimized
+          sizes="100vw"
+          className="absolute inset-0 h-full w-full bg-black object-contain object-center md:hidden"
+        />
         <MutedInlineVideo
           aria-hidden="true"
           src="/videos/intro_video.mp4"
           poster="/AR.png"
           preload="auto"
           tabIndex={-1}
-          className="pointer-events-none absolute inset-0 h-full w-full bg-black object-contain object-center md:object-cover"
+          className="pointer-events-none absolute inset-0 hidden h-full w-full bg-black object-cover object-center md:block"
         />
         <div
           aria-hidden="true"
