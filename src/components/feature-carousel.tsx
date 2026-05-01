@@ -217,8 +217,11 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
                 src={previewItem.media.src}
                 poster={previewItem.media.poster}
                 className="max-h-[78vh] w-full rounded-xl bg-black object-contain"
-                controls
                 autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
               />
             ) : (
               <div className="relative h-[78vh] w-full overflow-hidden rounded-xl bg-black">
