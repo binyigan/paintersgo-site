@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import {
   Download,
@@ -12,6 +11,7 @@ import {
 import { FeatureCarousel, type FeatureIconKey } from "@/components/feature-carousel";
 import { InfoMenu } from "@/components/info-menu";
 import { MutedInlineVideo } from "@/components/muted-inline-video";
+import { VideoCoverPlayer } from "@/components/video-cover-player";
 import type { Locale } from "@/lib/locale";
 import { resolveLocale, withLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
@@ -45,7 +45,6 @@ type FeatureCardConfig = {
     src: string;
     alt: string;
     poster?: string;
-    mobileSrc?: string;
   };
 };
 
@@ -135,7 +134,6 @@ const featureDefinitions: FeatureCardConfig[] = [
       src: "/app-assets/feature-previews/ai-to-3d.mp4",
       alt: "AI generation to 3D preview",
       poster: "/app-assets/video_to_3d1.webp",
-      mobileSrc: "/app-assets/feature-previews/ai-to-3d-mobile.webp",
     },
   },
   {
@@ -626,13 +624,13 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       </header>
 
       <section className="relative min-h-[88svh] overflow-hidden px-6 pb-20 pt-32 md:px-8">
-        <Image
-          aria-hidden="true"
-          src="/videos/intro_video_mobile.webp"
-          alt=""
+        <VideoCoverPlayer
+          src="/videos/intro_video.mp4"
+          poster="/AR.png"
+          alt={t.hero.imageAlt}
+          buttonLabel="Play intro video"
           fill
           priority
-          unoptimized
           sizes="100vw"
           className="absolute inset-0 h-full w-full bg-black object-contain object-center md:hidden"
         />
@@ -646,14 +644,14 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,8,12,0.78)_0%,rgba(7,8,12,0.55)_42%,rgba(7,8,12,0.12)_100%),radial-gradient(circle_at_18%_18%,rgba(204,151,255,0.22),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(83,221,252,0.14),transparent_32%)]"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(7,8,12,0.78)_0%,rgba(7,8,12,0.55)_42%,rgba(7,8,12,0.12)_100%),radial-gradient(circle_at_18%_18%,rgba(204,151,255,0.22),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(83,221,252,0.14),transparent_32%)]"
         />
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,8,12,0.10)_0%,rgba(7,8,12,0.34)_100%)]"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,8,12,0.10)_0%,rgba(7,8,12,0.34)_100%)]"
         />
 
-        <div className="relative z-10 mx-auto flex min-h-[calc(88svh-13rem)] max-w-7xl items-center">
+        <div className="pointer-events-none relative z-10 mx-auto flex min-h-[calc(88svh-13rem)] max-w-7xl items-center">
           <div className="max-w-4xl animate-[fade-in_0.7s_ease-out_both]">
             <h1 className="mb-6 max-w-5xl font-headline text-5xl font-bold leading-tight tracking-tight text-white md:text-7xl">
               {t.hero.titleLead} <span className="text-secondary">{t.hero.titleAccent}</span>{" "}
@@ -666,7 +664,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <div className="flex flex-wrap gap-4">
               <a
                 href="/PaintersGO.apk"
-                className="bg-primary-gradient inline-flex min-h-14 items-center gap-3 rounded-lg px-8 py-4 text-lg font-bold text-primary-foreground transition-transform duration-300 hover:scale-95 active:scale-90"
+                className="bg-primary-gradient pointer-events-auto inline-flex min-h-14 items-center gap-3 rounded-lg px-8 py-4 text-lg font-bold text-primary-foreground transition-transform duration-300 hover:scale-95 active:scale-90"
               >
                 <Download className="h-5 w-5" />
                 {t.hero.ctaDownload}

@@ -16,6 +16,7 @@ import {
 
 import { cn } from "@/lib/utils";
 import { MutedInlineVideo } from "@/components/muted-inline-video";
+import { VideoCoverPlayer } from "@/components/video-cover-player";
 
 export type FeatureIconKey =
   | "wandSparkles"
@@ -37,7 +38,6 @@ export type FeatureCarouselItem = {
     src: string;
     alt: string;
     poster?: string;
-    mobileSrc?: string;
   };
 };
 
@@ -216,23 +216,20 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
 
             {previewItem.media.type === "video" ? (
               <>
-                {previewItem.media.mobileSrc ? (
-                  <Image
-                    src={previewItem.media.mobileSrc}
-                    alt={previewItem.media.alt}
-                    width={360}
-                    height={800}
-                    unoptimized
-                    className="max-h-[78vh] w-full rounded-xl bg-black object-contain md:hidden"
-                  />
-                ) : null}
+                <VideoCoverPlayer
+                  src={previewItem.media.src}
+                  poster={previewItem.media.poster ?? previewItem.media.src}
+                  alt={previewItem.media.alt}
+                  buttonLabel={`Play ${previewItem.title} video`}
+                  width={576}
+                  height={1280}
+                  className="max-h-[78vh] w-full rounded-xl md:hidden"
+                  mediaClassName="rounded-xl"
+                />
                 <MutedInlineVideo
                   src={previewItem.media.src}
                   poster={previewItem.media.poster}
-                  className={cn(
-                    "pointer-events-none max-h-[78vh] w-full rounded-xl bg-black object-contain",
-                    previewItem.media.mobileSrc ? "hidden md:block" : "",
-                  )}
+                  className="pointer-events-none hidden max-h-[78vh] w-full rounded-xl bg-black object-contain md:block"
                   preload="metadata"
                 />
               </>
