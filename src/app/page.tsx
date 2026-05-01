@@ -10,6 +10,7 @@ import {
 
 import { FeatureCarousel, type FeatureIconKey } from "@/components/feature-carousel";
 import { InfoMenu } from "@/components/info-menu";
+import { MutedInlineVideo } from "@/components/muted-inline-video";
 import type { Locale } from "@/lib/locale";
 import { resolveLocale, withLocale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
@@ -622,18 +623,14 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       </header>
 
       <section className="relative min-h-[88svh] overflow-hidden px-6 pb-20 pt-32 md:px-8">
-        <video
+        <MutedInlineVideo
           aria-hidden="true"
-          autoPlay
-          loop
-          muted
-          playsInline
+          src="/videos/intro_video.mp4"
           poster="/AR.png"
           preload="auto"
-          className="absolute inset-0 h-full w-full bg-black object-contain object-center md:object-cover"
-        >
-          <source src="/videos/intro_video.mp4" type="video/mp4" />
-        </video>
+          tabIndex={-1}
+          className="pointer-events-none absolute inset-0 h-full w-full bg-black object-contain object-center md:object-cover"
+        />
         <div
           aria-hidden="true"
           className="absolute inset-0 bg-[linear-gradient(90deg,rgba(7,8,12,0.78)_0%,rgba(7,8,12,0.55)_42%,rgba(7,8,12,0.12)_100%),radial-gradient(circle_at_18%_18%,rgba(204,151,255,0.22),transparent_34%),radial-gradient(circle_at_82%_18%,rgba(83,221,252,0.14),transparent_32%)]"

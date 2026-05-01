@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { MutedInlineVideo } from "@/components/muted-inline-video";
 
 export type FeatureIconKey =
   | "wandSparkles"
@@ -213,14 +214,10 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
             </button>
 
             {previewItem.media.type === "video" ? (
-              <video
+              <MutedInlineVideo
                 src={previewItem.media.src}
                 poster={previewItem.media.poster}
-                className="max-h-[78vh] w-full rounded-xl bg-black object-contain"
-                autoPlay
-                loop
-                muted
-                playsInline
+                className="pointer-events-none max-h-[78vh] w-full rounded-xl bg-black object-contain"
                 preload="metadata"
               />
             ) : (
