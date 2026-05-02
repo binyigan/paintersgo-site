@@ -6,7 +6,10 @@ import {
   Boxes,
   ImageUp,
   Layers3,
+  ListTree,
+  MousePointer2,
   Printer,
+  ScanSearch,
   Users,
   WandSparkles,
   Wrench,
@@ -15,6 +18,7 @@ import {
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { MutedInlineVideo } from "@/components/muted-inline-video";
 import { VideoCoverPlayer } from "@/components/video-cover-player";
 
 export type FeatureIconKey =
@@ -22,6 +26,9 @@ export type FeatureIconKey =
   | "imageUp"
   | "layers3"
   | "boxes"
+  | "listTree"
+  | "scanSearch"
+  | "mousePointer2"
   | "wrench"
   | "users"
   | "printer";
@@ -45,6 +52,9 @@ const iconByKey: Record<FeatureIconKey, LucideIcon> = {
   imageUp: ImageUp,
   layers3: Layers3,
   boxes: Boxes,
+  listTree: ListTree,
+  scanSearch: ScanSearch,
+  mousePointer2: MousePointer2,
   wrench: Wrench,
   users: Users,
   printer: Printer,
@@ -149,7 +159,7 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
                 }}
                 type="button"
                 className={cn(
-                  "group min-h-72 w-[82vw] shrink-0 snap-center rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-low p-6 text-left transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:bg-surface-container focus-visible:ring-2 focus-visible:ring-primary/55 sm:w-[27rem]",
+                  "group relative flex min-h-[34rem] w-[82vw] shrink-0 snap-center overflow-hidden rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-low text-left transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:bg-surface-container focus-visible:ring-2 focus-visible:ring-primary/55 sm:w-[27rem]",
                   isActive ? "bg-surface-container ring-2 ring-primary/40" : "opacity-85 hover:opacity-100",
                 )}
                 onClick={() => {
@@ -160,10 +170,35 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
                 aria-pressed={isActive}
                 aria-label={`${item.title}: open media preview`}
               >
-                <Icon className={cn("mb-5 h-8 w-8", item.iconClassName)} />
-                <h3 className="mb-3 font-headline text-2xl font-bold text-on-surface">{item.title}</h3>
-                <p className="text-base leading-relaxed text-on-surface-variant">{item.description}</p>
-                <p className="mt-4 text-xs uppercase tracking-[0.2em] text-secondary">Tap to preview</p>
+                {item.media.type === "video" ? (
+                  <MutedInlineVideo
+                    src={item.media.src}
+                    poster={item.media.poster}
+                    preload="metadata"
+                    aria-label={item.media.alt}
+                    className="pointer-events-none absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                  />
+                ) : (
+                  <Image
+                    src={item.media.src}
+                    alt={item.media.alt}
+                    fill
+                    className="object-cover transition duration-300 group-hover:scale-[1.03]"
+                    sizes="(min-width: 640px) 27rem, 82vw"
+                  />
+                )}
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.22)_36%,rgba(0,0,0,0.84)_100%)]"
+                />
+                <div className="relative z-10 mt-auto p-6">
+                  <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/45 backdrop-blur-md">
+                    <Icon className={cn("h-5 w-5", item.iconClassName)} />
+                  </div>
+                  <h3 className="mb-3 font-headline text-2xl font-bold text-white">{item.title}</h3>
+                  <p className="text-base leading-relaxed text-white/78">{item.description}</p>
+                  <p className="mt-4 text-xs uppercase tracking-[0.2em] text-secondary">Tap to preview</p>
+                </div>
               </button>
             );
           })}

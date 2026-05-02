@@ -2,6 +2,7 @@ node_modules
 dist
 *.tsbuildinfo
 .next
+.next-dev-*.log
 clone-studio
 paintersgo-source
 
