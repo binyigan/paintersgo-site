@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import {
   Boxes,
@@ -61,6 +61,7 @@ const iconByKey: Record<FeatureIconKey, LucideIcon> = {
 };
 
 const AUTO_ADVANCE_MS = 3200;
+const RESUME_AFTER_INTERACTION_MS = 4200;
 
 export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -68,12 +69,46 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const resumeTimerRef = useRef<number | null>(null);
+  const scrollFrameRef = useRef<number | null>(null);
 
   const safeItems = useMemo(() => items.filter(Boolean), [items]);
   const previewItem = previewIndex === null ? null : safeItems[previewIndex];
 
+  const clearResumeTimer = useCallback(() => {
+    if (resumeTimerRef.current !== null) {
+      window.clearTimeout(resumeTimerRef.current);
+      resumeTimerRef.current = null;
+    }
+  }, []);
+
+  const pauseTemporarily = useCallback(() => {
+    setIsPaused(true);
+    clearResumeTimer();
+
+    resumeTimerRef.current = window.setTimeout(() => {
+      setIsPaused(false);
+      resumeTimerRef.current = null;
+    }, RESUME_AFTER_INTERACTION_MS);
+  }, [clearResumeTimer]);
+
+  const pauseUntilLeave = useCallback(() => {
+    clearResumeTimer();
+    setIsPaused(true);
+  }, [clearResumeTimer]);
+
+  const resumeAutoAdvance = useCallback(() => {
+    clearResumeTimer();
+    setIsPaused(false);
+  }, [clearResumeTimer]);
+
+  const closePreview = useCallback(() => {
+    setPreviewIndex(null);
+    resumeAutoAdvance();
+  }, [resumeAutoAdvance]);
+
   useEffect(() => {
-    if (safeItems.length === 0 || isPaused) {
+    if (safeItems.length === 0 || isPaused || previewItem) {
       return;
     }
 
@@ -82,7 +117,17 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
     }, AUTO_ADVANCE_MS);
 
     return () => window.clearInterval(timer);
-  }, [isPaused, safeItems.length]);
+  }, [isPaused, previewItem, safeItems.length]);
+
+  useEffect(() => {
+    return () => {
+      clearResumeTimer();
+
+      if (scrollFrameRef.current !== null) {
+        window.cancelAnimationFrame(scrollFrameRef.current);
+      }
+    };
+  }, [clearResumeTimer]);
 
   useEffect(() => {
     const scroller = scrollerRef.current;
@@ -101,15 +146,69 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
   }, [activeIndex]);
 
   useEffect(() => {
+    const scroller = scrollerRef.current;
+
+    if (!scroller) {
+      return;
+    }
+
+    const currentScroller = scroller;
+
+    function syncActiveIndex() {
+      scrollFrameRef.current = null;
+
+      const center = currentScroller.scrollLeft + currentScroller.clientWidth / 2;
+      let closestIndex = 0;
+      let closestDistance = Number.POSITIVE_INFINITY;
+
+      cardRefs.current.forEach((card, index) => {
+        if (!card) {
+          return;
+        }
+
+        const cardCenter = card.offsetLeft + card.clientWidth / 2;
+        const distance = Math.abs(cardCenter - center);
+
+        if (distance < closestDistance) {
+          closestDistance = distance;
+          closestIndex = index;
+        }
+      });
+
+      setActiveIndex((current) => (current === closestIndex ? current : closestIndex));
+    }
+
+    function handleScroll() {
+      if (scrollFrameRef.current !== null) {
+        return;
+      }
+
+      scrollFrameRef.current = window.requestAnimationFrame(syncActiveIndex);
+    }
+
+    currentScroller.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      currentScroller.removeEventListener("scroll", handleScroll);
+
+      if (scrollFrameRef.current !== null) {
+        window.cancelAnimationFrame(scrollFrameRef.current);
+        scrollFrameRef.current = null;
+      }
+    };
+  }, [safeItems.length]);
+
+  useEffect(() => {
     if (!previewItem) {
       return;
     }
 
     const prevOverflow = document.body.style.overflow;
+    clearResumeTimer();
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        setPreviewIndex(null);
+        closePreview();
       }
     }
 
@@ -120,7 +219,7 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [previewItem]);
+  }, [clearResumeTimer, closePreview, previewItem]);
 
   if (safeItems.length === 0) {
     return null;
@@ -140,12 +239,12 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
 
         <div
           ref={scrollerRef}
-          className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-1 pb-3 pt-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-          onTouchStart={() => setIsPaused(true)}
-          onPointerDown={() => setIsPaused(true)}
-          onKeyDown={() => setIsPaused(true)}
+          className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-3 pt-1 [scrollbar-width:none] [-ms-overflow-style:none] md:gap-5 [&::-webkit-scrollbar]:hidden"
+          onMouseEnter={pauseUntilLeave}
+          onMouseLeave={resumeAutoAdvance}
+          onTouchStart={pauseTemporarily}
+          onPointerDown={pauseTemporarily}
+          onKeyDown={pauseTemporarily}
         >
           {safeItems.map((item, index) => {
             const Icon = iconByKey[item.icon];
@@ -159,11 +258,11 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
                 }}
                 type="button"
                 className={cn(
-                  "group relative flex min-h-[34rem] w-[82vw] shrink-0 snap-center overflow-hidden rounded-[1.5rem] border border-outline-variant/20 bg-surface-container-low text-left transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:bg-surface-container focus-visible:ring-2 focus-visible:ring-primary/55 sm:w-[27rem]",
+                  "group relative flex min-h-[28rem] w-[84vw] shrink-0 snap-center overflow-hidden rounded-[1.25rem] border border-outline-variant/20 bg-surface-container-low text-left transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:bg-surface-container focus-visible:ring-2 focus-visible:ring-primary/55 sm:w-[27rem] md:min-h-[34rem] md:rounded-[1.5rem]",
                   isActive ? "bg-surface-container ring-2 ring-primary/40" : "opacity-85 hover:opacity-100",
                 )}
                 onClick={() => {
-                  setIsPaused(true);
+                  pauseTemporarily();
                   setActiveIndex(index);
                   setPreviewIndex(index);
                 }}
@@ -191,12 +290,16 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
                   aria-hidden="true"
                   className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.08)_0%,rgba(0,0,0,0.22)_36%,rgba(0,0,0,0.84)_100%)]"
                 />
-                <div className="relative z-10 mt-auto p-6">
-                  <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/45 backdrop-blur-md">
+                <div className="relative z-10 mt-auto p-5 md:p-6">
+                  <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/45 backdrop-blur-md md:mb-5">
                     <Icon className={cn("h-5 w-5", item.iconClassName)} />
                   </div>
-                  <h3 className="mb-3 font-headline text-2xl font-bold text-white">{item.title}</h3>
-                  <p className="text-base leading-relaxed text-white/78">{item.description}</p>
+                  <h3 className="mb-3 font-headline text-xl font-bold text-white md:text-2xl">
+                    {item.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-white/78 md:text-base">
+                    {item.description}
+                  </p>
                   <p className="mt-4 text-xs uppercase tracking-[0.2em] text-secondary">Tap to preview</p>
                 </div>
               </button>
@@ -204,7 +307,7 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
           })}
         </div>
 
-        <div className="mt-6 flex items-center justify-center gap-2">
+        <div className="mt-4 flex items-center justify-center gap-1.5 md:mt-6 md:gap-2">
           {safeItems.map((item, index) => {
             const isActive = index === activeIndex;
 
@@ -213,15 +316,20 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
                 key={`${item.id}-dot`}
                 type="button"
                 aria-label={item.title}
-                className={cn(
-                  "h-2.5 w-2.5 rounded-full transition-all",
-                  isActive ? "w-8 bg-primary" : "bg-outline-variant",
-                )}
+                aria-current={isActive ? "true" : undefined}
+                className="flex h-9 min-w-9 items-center justify-center rounded-full transition focus-visible:ring-2 focus-visible:ring-primary/55"
                 onClick={() => {
-                  setIsPaused(true);
+                  pauseTemporarily();
                   setActiveIndex(index);
                 }}
-              />
+              >
+                <span
+                  className={cn(
+                    "block h-2.5 rounded-full transition-all duration-300",
+                    isActive ? "w-9 bg-primary" : "w-2.5 bg-outline-variant",
+                  )}
+                />
+              </button>
             );
           })}
         </div>
@@ -233,7 +341,7 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
           role="dialog"
           aria-modal="true"
           aria-label={`${previewItem.title} media preview`}
-          onClick={() => setPreviewIndex(null)}
+          onClick={closePreview}
         >
           <div
             className="relative w-full max-w-5xl overflow-hidden rounded-2xl border border-outline-variant/30 bg-surface-container-high p-3 sm:p-4"
@@ -243,7 +351,7 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
               type="button"
               className="absolute right-3 top-3 z-10 rounded-full bg-black/50 p-2 text-white transition hover:bg-black/70"
               aria-label="Close preview"
-              onClick={() => setPreviewIndex(null)}
+              onClick={closePreview}
             >
               <X className="h-5 w-5" />
             </button>

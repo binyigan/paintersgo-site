@@ -52,6 +52,8 @@ type TechKey =
   | "architecture"
   | "security";
 
+type GithubOverviewImageKey = "projectOverview1" | "projectOverview2";
+
 type FeatureCardConfig = {
   key: FeatureKey;
   icon: FeatureIconKey;
@@ -83,6 +85,12 @@ type StepCopy = {
 type TechCopy = {
   title: string;
   description: string;
+};
+
+type GithubOverviewImageCopy = {
+  title: string;
+  description: string;
+  alt: string;
 };
 
 type SectionCardCopy = {
@@ -149,6 +157,11 @@ type HomeCopy = {
     qualityBody: string;
     readinessTitle: string;
     readinessBody: string;
+  };
+  githubOverview: {
+    eyebrow: string;
+    body: string;
+    images: Record<GithubOverviewImageKey, GithubOverviewImageCopy>;
   };
   vision: {
     eyebrow: string;
@@ -386,6 +399,26 @@ const techDefinitions = [
   textClassName: string;
 }>;
 
+const githubOverviewImages = [
+  {
+    key: "projectOverview1",
+    src: "/app-assets/project-overview/project-overview-1.png",
+    width: 1298,
+    height: 1394,
+  },
+  {
+    key: "projectOverview2",
+    src: "/app-assets/project-overview/project-overview-2.png",
+    width: 1536,
+    height: 1024,
+  },
+] as const satisfies ReadonlyArray<{
+  key: GithubOverviewImageKey;
+  src: string;
+  width: number;
+  height: number;
+}>;
+
 const copyByLocale: Record<Locale, HomeCopy> = {
   en: {
     metadataTitle: "PaintersGO - AI-Driven 3D Modeling on Android",
@@ -602,6 +635,25 @@ const copyByLocale: Record<Locale, HomeCopy> = {
       readinessTitle: "Production Readiness",
       readinessBody:
         "Repair, export, collaboration, and fulfillment are treated as first-class steps, making the pipeline more reliable for real-world output.",
+    },
+    githubOverview: {
+      eyebrow: "GitHub Project Overview",
+      body:
+        "A repository-level snapshot of the PaintersGO implementation, release structure, and source organization behind the public website.",
+      images: {
+        projectOverview1: {
+          title: "Repository Map",
+          description:
+            "A compact view of the codebase structure, feature areas, and implementation artifacts.",
+          alt: "GitHub project overview screenshot showing the PaintersGO repository structure",
+        },
+        projectOverview2: {
+          title: "Release Context",
+          description:
+            "A wider project snapshot that connects the repository state with release-ready app assets.",
+          alt: "GitHub project overview screenshot showing project release details",
+        },
+      },
     },
     vision: {
       eyebrow: "Vision & Perspective",
@@ -876,6 +928,25 @@ const copyByLocale: Record<Locale, HomeCopy> = {
       readinessTitle: "\u751f\u4ea7\u5c31\u7eea\u80fd\u529b",
       readinessBody:
         "\u628a\u4fee\u590d\u3001\u5bfc\u51fa\u3001\u534f\u4f5c\u548c\u4ea4\u4ed8\u90fd\u89c6\u4e3a\u4e00\u7b49\u80fd\u529b\uff0c\u8ba9\u6574\u4e2a\u94fe\u8def\u66f4\u63a5\u8fd1\u771f\u5b9e\u521b\u4f5c\u4e0e\u751f\u4ea7\u573a\u666f\u3002",
+    },
+    githubOverview: {
+      eyebrow: "GitHub整体项目总览",
+      body:
+        "从仓库结构、版本交付到源码组织，集中呈现 PaintersGO 项目的整体实现状态和发布上下文。",
+      images: {
+        projectOverview1: {
+          title: "项目结构总览",
+          description:
+            "展示代码仓库、功能模块和关键实现文件的整体组织方式。",
+          alt: "PaintersGO GitHub 项目结构总览截图",
+        },
+        projectOverview2: {
+          title: "发布上下文总览",
+          description:
+            "展示项目交付状态、发布资源和源码资产之间的关联。",
+          alt: "PaintersGO GitHub 发布上下文总览截图",
+        },
+      },
     },
     vision: {
       eyebrow: "愿景和看法",
@@ -1284,6 +1355,64 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
                 {t.tech.readinessBody}
               </p>
             </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="github-overview" className="bg-surface-container-high px-6 py-24 md:px-8">
+        <div className="mx-auto max-w-7xl">
+          <div className="mb-12 grid gap-6 lg:grid-cols-[0.78fr_1fr] lg:items-end">
+            <div>
+              <h2 className="mb-5 font-headline text-4xl font-bold text-on-surface md:text-5xl">
+                {t.githubOverview.eyebrow}
+              </h2>
+              <p className="max-w-3xl text-lg leading-relaxed text-on-surface-variant">
+                {t.githubOverview.body}
+              </p>
+            </div>
+            <div className="rounded-lg border border-outline-variant/20 bg-background/70 p-5">
+              <p className="font-mono text-xs uppercase tracking-[0.24em] text-tertiary">
+                github.com/binyigan/paintersgo-site
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {githubOverviewImages.map((overviewImage) => {
+              const imageCopy = t.githubOverview.images[overviewImage.key];
+
+              return (
+                <article
+                  key={overviewImage.key}
+                  className="overflow-hidden rounded-lg border border-outline-variant/20 bg-background"
+                >
+                  <a
+                    href={overviewImage.src}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block bg-surface-container-low focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary"
+                    aria-label={imageCopy.alt}
+                  >
+                    <Image
+                      src={overviewImage.src}
+                      width={overviewImage.width}
+                      height={overviewImage.height}
+                      alt={imageCopy.alt}
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      className="h-auto w-full"
+                    />
+                  </a>
+                  <div className="p-6">
+                    <h3 className="mb-2 font-headline text-xl font-bold text-on-surface">
+                      {imageCopy.title}
+                    </h3>
+                    <p className="text-sm leading-relaxed text-on-surface-variant">
+                      {imageCopy.description}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
