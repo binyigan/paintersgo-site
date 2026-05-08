@@ -123,6 +123,11 @@ type HomeCopy = {
     ctaDownload: string;
     imageAlt: string;
   };
+  downloadMeta: {
+    items: string[];
+    note: string;
+    privacyLink: string;
+  };
   engineCloud: string;
   features: {
     eyebrow: string;
@@ -180,6 +185,7 @@ type HomeCopy = {
     copyright: string;
     websiteLabel: string;
     shareLabel: string;
+    privacyLabel: string;
   };
 };
 
@@ -447,6 +453,12 @@ const copyByLocale: Record<Locale, HomeCopy> = {
       ctaDownload: "Download APK for Android",
       imageAlt: "PaintersGO Android augmented reality preview",
     },
+    downloadMeta: {
+      items: ["APK v1.0", "9.1 MB", "Android 8.0+", "Updated May 2, 2026"],
+      note:
+        "Direct APK install. Android may ask you to allow installs from this browser.",
+      privacyLink: "Privacy and safety note",
+    },
     engineCloud: "Powered by Industry Leading Engines",
     features: {
       eyebrow: "Core Creative Engine",
@@ -702,6 +714,7 @@ const copyByLocale: Record<Locale, HomeCopy> = {
       copyright: "(c) 2025 PaintersGO. Sculpting the future of 3D.",
       websiteLabel: "PaintersGO website",
       shareLabel: "Share repository",
+      privacyLabel: "Privacy and Safety",
     },
   },
   zh: {
@@ -732,6 +745,12 @@ const copyByLocale: Record<Locale, HomeCopy> = {
         "\u4e00\u4f53\u5316 AI 3D \u521b\u4f5c\u5de5\u4f5c\u5ba4\u3002\u628a\u6587\u5b57\u6216\u56fe\u50cf\u8f6c\u6210\u7cbe\u7ec6 3D \u6a21\u578b\uff0c\u5e76\u76f4\u63a5\u5728\u624b\u673a\u4e0a\u5b8c\u6210\u9884\u89c8\u3001\u534f\u4f5c\u4e0e\u6253\u5370\u843d\u5730\u3002",
       ctaDownload: "\u4e0b\u8f7d Android APK",
       imageAlt: "PaintersGO Android \u589e\u5f3a\u73b0\u5b9e\u9884\u89c8",
+    },
+    downloadMeta: {
+      items: ["APK v1.0", "9.1 MB", "Android 8.0+", "2026-05-02 \u66f4\u65b0"],
+      note:
+        "\u76f4\u63a5\u5b89\u88c5 APK\u3002Android \u53ef\u80fd\u4f1a\u63d0\u793a\u5141\u8bb8\u6b64\u6d4f\u89c8\u5668\u5b89\u88c5\u5e94\u7528\u3002",
+      privacyLink: "\u9690\u79c1\u4e0e\u5b89\u5168\u8bf4\u660e",
     },
     engineCloud: "\u7531\u9886\u5148\u7684 3D \u751f\u6210\u5f15\u64ce\u9a71\u52a8",
     features: {
@@ -996,6 +1015,7 @@ const copyByLocale: Record<Locale, HomeCopy> = {
         "(c) 2025 PaintersGO\u3002\u96d5\u523b 3D \u521b\u4f5c\u7684\u672a\u6765\u3002",
       websiteLabel: "PaintersGO \u5b98\u7f51",
       shareLabel: "\u9879\u76ee\u4ed3\u5e93",
+      privacyLabel: "\u9690\u79c1\u4e0e\u5b89\u5168",
     },
   },
 };
@@ -1024,6 +1044,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
   const downloadHref = withLocale("/#download", locale);
   const authorHref = withLocale("/author", locale);
   const projectHref = withLocale("/project", locale);
+  const privacyHref = withLocale("/privacy", locale);
   const zhHref = withLocale("/", "zh");
   const enHref = withLocale("/", "en");
   const featureItemsByKey = new Map(featureDefinitions.map((card) => [card.key, card]));
@@ -1139,6 +1160,25 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
                 {t.hero.ctaDownload}
               </a>
             </div>
+            <div className="pointer-events-auto mt-5 flex max-w-2xl flex-wrap gap-2 text-xs text-white/72">
+              {t.downloadMeta.items.map((item) => (
+                <span
+                  key={item}
+                  className="rounded-md border border-white/15 bg-black/35 px-3 py-2 backdrop-blur-sm"
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+            <p className="pointer-events-auto mt-3 max-w-xl text-sm leading-relaxed text-white/62">
+              {t.downloadMeta.note}
+            </p>
+            <Link
+              href={privacyHref}
+              className="pointer-events-auto mt-3 inline-flex text-sm font-semibold text-secondary transition-colors hover:text-secondary-fixed"
+            >
+              {t.downloadMeta.privacyLink}
+            </Link>
           </div>
         </div>
       </section>
@@ -1157,7 +1197,10 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </div>
       </section>
 
-      <section id="how-it-works" className="bg-surface-container-low px-6 py-24 md:px-8">
+      <section
+        id="how-it-works"
+        className="scroll-mt-24 bg-surface-container-low px-6 py-24 md:scroll-mt-28 md:px-8"
+      >
         <div className="mx-auto max-w-7xl">
           <div className="mb-20 text-center">
             <h2 className="mb-4 font-headline text-4xl font-bold text-on-surface">
@@ -1193,7 +1236,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </div>
       </section>
 
-      <section id="features" className="px-6 py-24 md:px-8">
+      <section id="features" className="scroll-mt-24 px-6 py-24 md:scroll-mt-28 md:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-16 max-w-2xl">
             <h2 className="mb-4 font-headline text-4xl font-bold text-on-surface">
@@ -1230,7 +1273,10 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </div>
       </section>
 
-      <section id="workbench" className="bg-surface-container-low px-6 py-24 md:px-8">
+      <section
+        id="workbench"
+        className="scroll-mt-24 bg-surface-container-low px-6 py-24 md:scroll-mt-28 md:px-8"
+      >
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 max-w-3xl">
             <h2 className="mb-4 font-headline text-4xl font-bold text-on-surface">
@@ -1265,7 +1311,10 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </div>
       </section>
 
-      <section id="roadmap" className="bg-surface-container-low px-6 py-24 md:px-8">
+      <section
+        id="roadmap"
+        className="scroll-mt-24 bg-surface-container-low px-6 py-24 md:scroll-mt-28 md:px-8"
+      >
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 max-w-3xl">
             <h2 className="mb-4 font-headline text-4xl font-bold text-on-surface">
@@ -1300,7 +1349,10 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </div>
       </section>
 
-      <section id="tech-stack" className="bg-background px-6 py-24 md:px-8">
+      <section
+        id="tech-stack"
+        className="scroll-mt-24 bg-background px-6 py-24 md:scroll-mt-28 md:px-8"
+      >
         <div className="mx-auto max-w-7xl">
           <div className="mb-16 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
@@ -1359,7 +1411,10 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </div>
       </section>
 
-      <section id="github-overview" className="bg-surface-container-high px-6 py-24 md:px-8">
+      <section
+        id="github-overview"
+        className="scroll-mt-24 bg-surface-container-high px-6 py-24 md:scroll-mt-28 md:px-8"
+      >
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 grid gap-6 lg:grid-cols-[0.78fr_1fr] lg:items-end">
             <div>
@@ -1417,7 +1472,10 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </div>
       </section>
 
-      <section id="vision" className="bg-surface-container-low px-6 py-24 md:px-8">
+      <section
+        id="vision"
+        className="scroll-mt-24 bg-surface-container-low px-6 py-24 md:scroll-mt-28 md:px-8"
+      >
         <div className="mx-auto max-w-7xl">
           <div className="mb-12 max-w-3xl">
             <h2 className="mb-6 font-headline text-4xl font-bold text-on-surface md:text-5xl">
@@ -1446,8 +1504,11 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
         </div>
       </section>
 
-      <section id="download" className="overflow-hidden px-6 py-24 md:px-8">
-        <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[1.75rem] border border-outline-variant/15 bg-surface-container-high p-12 text-center">
+      <section
+        id="download"
+        className="scroll-mt-24 overflow-hidden px-6 py-24 md:scroll-mt-28 md:px-8"
+      >
+        <div className="relative mx-auto max-w-5xl overflow-hidden rounded-[1.75rem] border border-outline-variant/15 bg-surface-container-high p-8 text-center md:p-12">
           <div
             aria-hidden="true"
             className="absolute -left-24 -top-24 h-64 w-64 rounded-full bg-primary/20 blur-[80px]"
@@ -1472,6 +1533,25 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
               <Download className="h-5 w-5" />
               {t.cta.button}
             </a>
+            <div className="mx-auto mt-8 grid max-w-3xl grid-cols-2 gap-3 text-left sm:grid-cols-4">
+              {t.downloadMeta.items.map((item) => (
+                <div
+                  key={`${item}-download`}
+                  className="rounded-lg border border-outline-variant/20 bg-background/55 px-4 py-3"
+                >
+                  <p className="font-label text-xs font-semibold text-on-surface">{item}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-on-surface-variant">
+              {t.downloadMeta.note}
+            </p>
+            <Link
+              href={privacyHref}
+              className="mt-4 inline-flex text-sm font-semibold text-secondary transition-colors hover:text-secondary-fixed"
+            >
+              {t.downloadMeta.privacyLink}
+            </Link>
           </div>
         </div>
       </section>
@@ -1507,6 +1587,12 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
               className="text-on-surface/50 transition-colors hover:text-secondary"
             >
               {t.nav.techStack}
+            </Link>
+            <Link
+              href={privacyHref}
+              className="text-on-surface/50 transition-colors hover:text-secondary"
+            >
+              {t.footer.privacyLabel}
             </Link>
           </div>
 

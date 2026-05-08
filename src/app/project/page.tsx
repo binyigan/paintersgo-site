@@ -6,6 +6,16 @@ import { resolveLocale, withLocale } from "@/lib/locale";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
+type StoryKey = "origin" | "ai-notes";
+
+type StoryCopy = {
+  title: string;
+  intro: string;
+  fullTitle: string;
+  fullIntro: string;
+  fullLabel: string;
+};
+
 type ProjectPageCopy = {
   metadataTitle: string;
   metadataDescription: string;
@@ -24,9 +34,11 @@ type ProjectPageCopy = {
   }>;
   archiveTitle: string;
   archiveIntro: string;
+  archiveBackLabel: string;
+  stories: Record<StoryKey, StoryCopy>;
 };
 
-const projectArchiveImages = Array.from({ length: 11 }, (_, index) => {
+const originImages = Array.from({ length: 11 }, (_, index) => {
   const number = String(index + 1).padStart(2, "0");
 
   return {
@@ -34,6 +46,30 @@ const projectArchiveImages = Array.from({ length: 11 }, (_, index) => {
     alt: `PaintersGO origin original post page ${index + 1}`,
   };
 });
+
+const aiNotesImages = Array.from({ length: 12 }, (_, index) => {
+  const number = String(index + 1).padStart(2, "0");
+
+  return {
+    src: `/about/author/${number}.jpg`,
+    alt: `PaintersGO AI programming notes original post page ${index + 1}`,
+  };
+});
+
+const storyImages: Record<StoryKey, typeof originImages> = {
+  origin: originImages,
+  "ai-notes": aiNotesImages,
+};
+
+function resolveStory(value: string | string[] | undefined): StoryKey | null {
+  const raw = Array.isArray(value) ? value[0] : value;
+
+  if (raw === "origin" || raw === "ai-notes") {
+    return raw;
+  }
+
+  return null;
+}
 
 const copyByLocale: Record<Locale, ProjectPageCopy> = {
   en: {
@@ -71,7 +107,28 @@ const copyByLocale: Record<Locale, ProjectPageCopy> = {
     ],
     archiveTitle: "Original Project Story",
     archiveIntro:
-      "The full exported image story is included below so the website keeps the complete source record, not only the condensed product summary.",
+      "The source image posts are now grouped as two project-side readings. Each tab previews a few pages first, then opens the full longform material.",
+    archiveBackLabel: "Back to both readings",
+    stories: {
+      origin: {
+        title: "Origin Story",
+        intro:
+          "The first note explains where PaintersGO came from and how the product idea is framed around mobile AI 3D creation.",
+        fullTitle: "Original Project Story",
+        fullIntro:
+          "The complete exported image story is preserved here as the source record behind the condensed project page.",
+        fullLabel: "Read full origin story",
+      },
+      "ai-notes": {
+        title: "AI Programming Notes",
+        intro:
+          "The second note continues the project story through implementation, AI-assisted coding, iteration, and product polishing.",
+        fullTitle: "AI Programming Notes",
+        fullIntro:
+          "This complete image export was previously placed under the author page. It belongs with the project story, so it now lives here as the second longform reading.",
+        fullLabel: "Read full programming notes",
+      },
+    },
   },
   zh: {
     metadataTitle: "\u5173\u4e8e\u4f5c\u54c1 - PaintersGO",
@@ -108,7 +165,28 @@ const copyByLocale: Record<Locale, ProjectPageCopy> = {
     ],
     archiveTitle: "\u5b8c\u6574\u4f5c\u54c1\u6545\u4e8b",
     archiveIntro:
-      "\u4e0b\u65b9\u6309\u987a\u5e8f\u6536\u5f55\u4e86\u201cPaintersGO \u662f\u600e\u4e48\u6765\u7684\u201d\u5c0f\u7ea2\u4e66\u56fe\u7247\u7248\u539f\u6587\uff0c\u65e2\u4fdd\u7559\u5b8c\u6574\u8bb0\u5f55\uff0c\u4e5f\u4fbf\u4e8e\u540e\u7eed\u518d\u63d0\u70bc\u6210\u7f51\u7ad9\u7248\u957f\u6587\u3002",
+      "这里把两组图文原稿统一收回到作品页：先展示少量图片信息，用户再点开阅读完整内容，作者页则回到简历与创作者信息本身。",
+    archiveBackLabel: "返回两个阅读入口",
+    stories: {
+      origin: {
+        title: "作品起源",
+        intro:
+          "第一组图文说明 PaintersGO 是怎么来的，以及它如何被定义成面向移动端的 AI 3D 创作流程。",
+        fullTitle: "完整作品起源",
+        fullIntro:
+          "这里按顺序保留“PaintersGO 是怎么来的”图片版原文，作为作品叙事的完整资料底稿。",
+        fullLabel: "阅读完整起源",
+      },
+      "ai-notes": {
+        title: "AI 编程记录",
+        intro:
+          "第二组图文延续作品内容，记录用 AI 辅助完成开发、迭代、调试与产品打磨的过程。",
+        fullTitle: "完整 AI 编程记录",
+        fullIntro:
+          "这组图片此前放在关于作者中，信息归属其实是作品实践本身；现在移到作品页作为第二个完整阅读内容。",
+        fullLabel: "阅读完整记录",
+      },
+    },
   },
 };
 
@@ -131,8 +209,11 @@ export default async function ProjectPage({
 }: {
   searchParams: SearchParams;
 }) {
-  const locale = resolveLocale((await searchParams).lang);
+  const params = await searchParams;
+  const locale = resolveLocale(params.lang);
+  const story = resolveStory(params.story);
   const t = copyByLocale[locale];
+  const activeStory = story ? t.stories[story] : null;
 
   return (
     <DetailPageShell
@@ -149,9 +230,23 @@ export default async function ProjectPage({
       title={t.title}
       intro={t.intro}
       sections={t.sections}
-      archiveTitle={t.archiveTitle}
-      archiveIntro={t.archiveIntro}
-      archiveImages={projectArchiveImages}
+      archiveTitle={activeStory ? activeStory.fullTitle : t.archiveTitle}
+      archiveIntro={activeStory ? activeStory.fullIntro : t.archiveIntro}
+      archiveGroups={
+        activeStory
+          ? undefined
+          : (Object.keys(t.stories) as StoryKey[]).map((key) => ({
+              id: key,
+              title: t.stories[key].title,
+              intro: t.stories[key].intro,
+              images: storyImages[key].slice(0, 4),
+              fullHref: withLocale(`/project?story=${key}`, locale),
+              fullLabel: t.stories[key].fullLabel,
+            }))
+      }
+      archiveBackHref={activeStory ? withLocale("/project", locale) : undefined}
+      archiveBackLabel={activeStory ? t.archiveBackLabel : undefined}
+      archiveImages={story ? storyImages[story] : undefined}
     />
   );
 }

@@ -1,6 +1,13 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 import Image from "next/image";
 import {
   Boxes,
@@ -60,90 +67,87 @@ const iconByKey: Record<FeatureIconKey, LucideIcon> = {
   printer: Printer,
 };
 
-const AUTO_ADVANCE_MS = 3200;
-const RESUME_AFTER_INTERACTION_MS = 4200;
+const DRAG_CANCEL_PX = 10;
+const DRAG_RESET_MS = 80;
+const SCROLL_SETTLE_MS = 120;
 
 export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [previewIndex, setPreviewIndex] = useState<number | null>(null);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const cardRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const resumeTimerRef = useRef<number | null>(null);
-  const scrollFrameRef = useRef<number | null>(null);
+  const scrollSettleTimerRef = useRef<number | null>(null);
+  const pointerResetTimerRef = useRef<number | null>(null);
+  const pointerStateRef = useRef({
+    dragging: false,
+    moved: false,
+    x: 0,
+    y: 0,
+  });
 
   const safeItems = useMemo(() => items.filter(Boolean), [items]);
   const previewItem = previewIndex === null ? null : safeItems[previewIndex];
 
-  const clearResumeTimer = useCallback(() => {
-    if (resumeTimerRef.current !== null) {
-      window.clearTimeout(resumeTimerRef.current);
-      resumeTimerRef.current = null;
+  const getClosestIndex = useCallback(() => {
+    const scroller = scrollerRef.current;
+
+    if (!scroller) {
+      return activeIndex;
     }
-  }, []);
 
-  const pauseTemporarily = useCallback(() => {
-    setIsPaused(true);
-    clearResumeTimer();
+    const center = scroller.scrollLeft + scroller.clientWidth / 2;
+    let closestIndex = 0;
+    let closestDistance = Number.POSITIVE_INFINITY;
 
-    resumeTimerRef.current = window.setTimeout(() => {
-      setIsPaused(false);
-      resumeTimerRef.current = null;
-    }, RESUME_AFTER_INTERACTION_MS);
-  }, [clearResumeTimer]);
+    cardRefs.current.forEach((card, index) => {
+      if (!card) {
+        return;
+      }
 
-  const pauseUntilLeave = useCallback(() => {
-    clearResumeTimer();
-    setIsPaused(true);
-  }, [clearResumeTimer]);
+      const cardCenter = card.offsetLeft + card.clientWidth / 2;
+      const distance = Math.abs(cardCenter - center);
 
-  const resumeAutoAdvance = useCallback(() => {
-    clearResumeTimer();
-    setIsPaused(false);
-  }, [clearResumeTimer]);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestIndex = index;
+      }
+    });
+
+    return closestIndex;
+  }, [activeIndex]);
 
   const closePreview = useCallback(() => {
     setPreviewIndex(null);
-    resumeAutoAdvance();
-  }, [resumeAutoAdvance]);
-
-  useEffect(() => {
-    if (safeItems.length === 0 || isPaused || previewItem) {
-      return;
-    }
-
-    const timer = window.setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % safeItems.length);
-    }, AUTO_ADVANCE_MS);
-
-    return () => window.clearInterval(timer);
-  }, [isPaused, previewItem, safeItems.length]);
+  }, []);
 
   useEffect(() => {
     return () => {
-      clearResumeTimer();
+      if (scrollSettleTimerRef.current !== null) {
+        window.clearTimeout(scrollSettleTimerRef.current);
+      }
 
-      if (scrollFrameRef.current !== null) {
-        window.cancelAnimationFrame(scrollFrameRef.current);
+      if (pointerResetTimerRef.current !== null) {
+        window.clearTimeout(pointerResetTimerRef.current);
       }
     };
-  }, [clearResumeTimer]);
+  }, []);
 
-  useEffect(() => {
+  const scrollToCard = useCallback((index: number) => {
     const scroller = scrollerRef.current;
-    const target = cardRefs.current[activeIndex];
+    const target = cardRefs.current[index];
 
     if (!scroller || !target) {
       return;
     }
 
     const left = target.offsetLeft - (scroller.clientWidth - target.clientWidth) / 2;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     scroller.scrollTo({
       left,
-      behavior: "smooth",
+      behavior: prefersReducedMotion ? "auto" : "smooth",
     });
-  }, [activeIndex]);
+  }, []);
 
   useEffect(() => {
     const scroller = scrollerRef.current;
@@ -154,36 +158,19 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
 
     const currentScroller = scroller;
 
-    function syncActiveIndex() {
-      scrollFrameRef.current = null;
-
-      const center = currentScroller.scrollLeft + currentScroller.clientWidth / 2;
-      let closestIndex = 0;
-      let closestDistance = Number.POSITIVE_INFINITY;
-
-      cardRefs.current.forEach((card, index) => {
-        if (!card) {
-          return;
-        }
-
-        const cardCenter = card.offsetLeft + card.clientWidth / 2;
-        const distance = Math.abs(cardCenter - center);
-
-        if (distance < closestDistance) {
-          closestDistance = distance;
-          closestIndex = index;
-        }
-      });
-
-      setActiveIndex((current) => (current === closestIndex ? current : closestIndex));
-    }
-
     function handleScroll() {
-      if (scrollFrameRef.current !== null) {
-        return;
+      if (scrollSettleTimerRef.current !== null) {
+        window.clearTimeout(scrollSettleTimerRef.current);
       }
 
-      scrollFrameRef.current = window.requestAnimationFrame(syncActiveIndex);
+      scrollSettleTimerRef.current = window.setTimeout(() => {
+        scrollSettleTimerRef.current = null;
+        setActiveIndex((current) => {
+          const closestIndex = getClosestIndex();
+
+          return current === closestIndex ? current : closestIndex;
+        });
+      }, SCROLL_SETTLE_MS);
     }
 
     currentScroller.addEventListener("scroll", handleScroll, { passive: true });
@@ -191,12 +178,12 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
     return () => {
       currentScroller.removeEventListener("scroll", handleScroll);
 
-      if (scrollFrameRef.current !== null) {
-        window.cancelAnimationFrame(scrollFrameRef.current);
-        scrollFrameRef.current = null;
+      if (scrollSettleTimerRef.current !== null) {
+        window.clearTimeout(scrollSettleTimerRef.current);
+        scrollSettleTimerRef.current = null;
       }
     };
-  }, [safeItems.length]);
+  }, [getClosestIndex, safeItems.length]);
 
   useEffect(() => {
     if (!previewItem) {
@@ -204,7 +191,6 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
     }
 
     const prevOverflow = document.body.style.overflow;
-    clearResumeTimer();
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
@@ -219,7 +205,49 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
       document.body.style.overflow = prevOverflow;
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [clearResumeTimer, closePreview, previewItem]);
+  }, [closePreview, previewItem]);
+
+  const handlePointerDown = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (pointerResetTimerRef.current !== null) {
+      window.clearTimeout(pointerResetTimerRef.current);
+      pointerResetTimerRef.current = null;
+    }
+
+    pointerStateRef.current = {
+      dragging: true,
+      moved: false,
+      x: event.clientX,
+      y: event.clientY,
+    };
+  }, []);
+
+  const handlePointerMove = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    const pointerState = pointerStateRef.current;
+
+    if (!pointerState.dragging) {
+      return;
+    }
+
+    const deltaX = Math.abs(event.clientX - pointerState.x);
+    const deltaY = Math.abs(event.clientY - pointerState.y);
+
+    if (deltaX > DRAG_CANCEL_PX || deltaY > DRAG_CANCEL_PX) {
+      pointerState.moved = true;
+    }
+  }, []);
+
+  const handlePointerUp = useCallback(() => {
+    pointerStateRef.current.dragging = false;
+    pointerResetTimerRef.current = window.setTimeout(() => {
+      pointerStateRef.current.moved = false;
+      pointerResetTimerRef.current = null;
+    }, DRAG_RESET_MS);
+  }, []);
+
+  const openPreview = useCallback((index: number) => {
+    setActiveIndex(index);
+    setPreviewIndex(index);
+  }, []);
 
   if (safeItems.length === 0) {
     return null;
@@ -239,12 +267,11 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
 
         <div
           ref={scrollerRef}
-          className="flex snap-x snap-mandatory gap-4 overflow-x-auto px-1 pb-3 pt-1 [scrollbar-width:none] [-ms-overflow-style:none] md:gap-5 [&::-webkit-scrollbar]:hidden"
-          onMouseEnter={pauseUntilLeave}
-          onMouseLeave={resumeAutoAdvance}
-          onTouchStart={pauseTemporarily}
-          onPointerDown={pauseTemporarily}
-          onKeyDown={pauseTemporarily}
+          className="flex snap-x snap-proximity gap-4 overflow-x-auto overscroll-x-contain px-1 pb-3 pt-1 [scrollbar-width:none] [-ms-overflow-style:none] md:gap-5 [&::-webkit-scrollbar]:hidden"
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerCancel={handlePointerUp}
+          onPointerUp={handlePointerUp}
         >
           {safeItems.map((item, index) => {
             const Icon = iconByKey[item.icon];
@@ -258,13 +285,16 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
                 }}
                 type="button"
                 className={cn(
-                  "group relative flex min-h-[28rem] w-[84vw] shrink-0 snap-center overflow-hidden rounded-[1.25rem] border border-outline-variant/20 bg-surface-container-low text-left transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:bg-surface-container focus-visible:ring-2 focus-visible:ring-primary/55 sm:w-[27rem] md:min-h-[34rem] md:rounded-[1.5rem]",
+                  "group relative flex min-h-[28rem] w-[84vw] shrink-0 snap-center overflow-hidden rounded-[1.25rem] border border-outline-variant/20 bg-surface-container-low text-left transition-colors duration-200 hover:border-primary/35 hover:bg-surface-container focus-visible:ring-2 focus-visible:ring-primary/55 sm:w-[27rem] md:min-h-[34rem] md:rounded-[1.5rem]",
                   isActive ? "bg-surface-container ring-2 ring-primary/40" : "opacity-85 hover:opacity-100",
                 )}
-                onClick={() => {
-                  pauseTemporarily();
-                  setActiveIndex(index);
-                  setPreviewIndex(index);
+                onClick={(event) => {
+                  if (pointerStateRef.current.moved) {
+                    event.preventDefault();
+                    return;
+                  }
+
+                  openPreview(index);
                 }}
                 aria-pressed={isActive}
                 aria-label={`${item.title}: open media preview`}
@@ -275,14 +305,14 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
                     poster={item.media.poster}
                     preload="metadata"
                     aria-label={item.media.alt}
-                    className="pointer-events-none absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                    className="pointer-events-none absolute inset-0 h-full w-full object-cover"
                   />
                 ) : (
                   <Image
                     src={item.media.src}
                     alt={item.media.alt}
                     fill
-                    className="object-cover transition duration-300 group-hover:scale-[1.03]"
+                    className="object-cover"
                     sizes="(min-width: 640px) 27rem, 82vw"
                   />
                 )}
@@ -319,8 +349,8 @@ export function FeatureCarousel({ items }: { items: FeatureCarouselItem[] }) {
                 aria-current={isActive ? "true" : undefined}
                 className="flex h-9 min-w-9 items-center justify-center rounded-full transition focus-visible:ring-2 focus-visible:ring-primary/55"
                 onClick={() => {
-                  pauseTemporarily();
                   setActiveIndex(index);
+                  scrollToCard(index);
                 }}
               >
                 <span

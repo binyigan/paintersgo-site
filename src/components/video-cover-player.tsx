@@ -55,7 +55,7 @@ export function VideoCoverPlayer({
           className={cn("h-full w-full object-cover md:hidden", mediaClassName)}
         />
       ) : (
-        <div className="h-full w-full md:hidden">
+        <div className="relative h-full w-full md:hidden">
           {fill ? (
             <Image
               src={poster}

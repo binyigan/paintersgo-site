@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, Languages } from "lucide-react";
+import { ArrowLeft, ArrowRight, Languages } from "lucide-react";
 
 import type { Locale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,15 @@ type DetailSection = {
 type ArchiveImage = {
   src: string;
   alt: string;
+};
+
+type ArchivePreviewGroup = {
+  id: string;
+  title: string;
+  intro: string;
+  images: ArchiveImage[];
+  fullHref: string;
+  fullLabel: string;
 };
 
 type DetailPageShellProps = {
@@ -34,6 +43,9 @@ type DetailPageShellProps = {
   sections: DetailSection[];
   archiveTitle?: string;
   archiveIntro?: string;
+  archiveGroups?: ArchivePreviewGroup[];
+  archiveBackHref?: string;
+  archiveBackLabel?: string;
   archiveImages?: ArchiveImage[];
 };
 
@@ -65,10 +77,15 @@ export function DetailPageShell({
   sections,
   archiveTitle,
   archiveIntro,
+  archiveGroups = [],
+  archiveBackHref,
+  archiveBackLabel,
   archiveImages = [],
 }: DetailPageShellProps) {
+  const hasArchive = archiveGroups.length > 0 || archiveImages.length > 0;
+
   return (
-    <main className="relative min-h-screen overflow-x-hidden px-6 pb-20 pt-10 md:px-8">
+    <main className="relative min-h-screen overflow-x-hidden px-4 pb-20 pt-10 sm:px-6 md:px-8">
       <div
         aria-hidden="true"
         className="absolute left-0 top-0 h-80 w-80 rounded-full bg-primary/16 blur-[120px]"
@@ -78,7 +95,7 @@ export function DetailPageShell({
         className="absolute right-0 top-20 h-80 w-80 rounded-full bg-secondary/10 blur-[120px]"
       />
 
-      <div className="relative mx-auto max-w-5xl">
+      <div className="relative mx-auto w-full max-w-5xl">
         <header className="mb-16 flex flex-col gap-4 rounded-[1.5rem] border border-outline-variant/15 bg-surface-container/80 p-4 backdrop-blur-xl sm:flex-row sm:items-center sm:justify-between">
           <div className="flex flex-wrap items-center gap-4">
             <Link
@@ -128,14 +145,14 @@ export function DetailPageShell({
           </div>
         </header>
 
-        <section className="mb-12 rounded-[2rem] border border-outline-variant/15 bg-surface-container-high/80 p-8 backdrop-blur-xl md:p-10">
+        <section className="mb-12 rounded-[2rem] border border-outline-variant/15 bg-surface-container-high/80 p-6 backdrop-blur-xl md:p-10">
           <p className="mb-4 text-xs uppercase tracking-[0.32em] text-tertiary-dim">
             {eyebrow}
           </p>
-          <h1 className="max-w-3xl font-headline text-4xl font-bold leading-tight text-on-surface md:text-6xl">
+          <h1 className="text-wrap-anywhere max-w-3xl font-headline text-3xl font-bold leading-tight text-on-surface sm:text-4xl md:text-6xl">
             {title}
           </h1>
-          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-on-surface-variant">
+          <p className="text-wrap-anywhere mt-6 max-w-2xl text-base leading-relaxed text-on-surface-variant md:text-lg">
             {intro}
           </p>
         </section>
@@ -154,12 +171,12 @@ export function DetailPageShell({
               >
                 {section.title}
               </span>
-              <p className="mt-4 text-sm leading-7 text-on-surface-variant">{section.body}</p>
+              <p className="text-wrap-anywhere mt-4 text-sm leading-7 text-on-surface-variant">{section.body}</p>
             </article>
           ))}
         </section>
 
-        {archiveImages.length > 0 ? (
+        {hasArchive ? (
           <section className="mt-12">
             <div className="mb-8 max-w-3xl">
               {archiveTitle ? (
@@ -168,30 +185,103 @@ export function DetailPageShell({
                 </h2>
               ) : null}
               {archiveIntro ? (
-                <p className="mt-4 text-base leading-7 text-on-surface-variant">
+                <p className="text-wrap-anywhere mt-4 text-base leading-7 text-on-surface-variant">
                   {archiveIntro}
                 </p>
               ) : null}
             </div>
 
-            <div className="grid gap-6">
-              {archiveImages.map((image, index) => (
-                <figure
-                  key={image.src}
-                  className="overflow-hidden rounded-[1.5rem] border border-outline-variant/15 bg-surface-container-low"
+            {archiveGroups.length > 0 ? (
+              <>
+                <nav
+                  aria-label={archiveTitle}
+                  className="mb-6 flex flex-wrap gap-3"
                 >
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    width={1440}
-                    height={2400}
-                    sizes="(max-width: 1024px) 100vw, 960px"
-                    className="h-auto w-full"
-                    priority={index === 0}
-                  />
-                </figure>
-              ))}
-            </div>
+                  {archiveGroups.map((group) => (
+                    <Link
+                      key={group.id}
+                      href={`#${group.id}`}
+                      className="rounded-full border border-outline-variant/15 bg-surface-container-high px-4 py-2 text-sm font-semibold text-on-surface-variant transition-colors hover:border-primary/35 hover:text-on-surface"
+                    >
+                      {group.title}
+                    </Link>
+                  ))}
+                </nav>
+
+                <div className="grid gap-6 md:grid-cols-2">
+                  {archiveGroups.map((group) => (
+                    <article
+                      key={group.id}
+                      id={group.id}
+                      className="scroll-mt-8 rounded-[1.5rem] border border-outline-variant/15 bg-surface-container-low p-5"
+                    >
+                      <h3 className="font-headline text-2xl font-bold text-on-surface">
+                        {group.title}
+                      </h3>
+                      <p className="text-wrap-anywhere mt-3 text-sm leading-7 text-on-surface-variant">
+                        {group.intro}
+                      </p>
+                      <div className="mt-5 grid grid-cols-2 gap-3">
+                        {group.images.map((image, index) => (
+                          <figure
+                            key={image.src}
+                            className="overflow-hidden rounded-xl border border-outline-variant/15 bg-surface-container"
+                          >
+                            <Image
+                              src={image.src}
+                              alt={image.alt}
+                              width={720}
+                              height={960}
+                              sizes="(max-width: 768px) 45vw, 220px"
+                              className="aspect-[3/4] w-full object-cover object-top"
+                              priority={index === 0}
+                            />
+                          </figure>
+                        ))}
+                      </div>
+                      <Link
+                        href={group.fullHref}
+                        className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-xl border border-primary/25 bg-primary/[0.08] px-4 py-2 text-sm font-semibold text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
+                      >
+                        {group.fullLabel}
+                        <ArrowRight className="h-4 w-4" />
+                      </Link>
+                    </article>
+                  ))}
+                </div>
+              </>
+            ) : null}
+
+            {archiveBackHref && archiveBackLabel ? (
+              <Link
+                href={archiveBackHref}
+                className="mb-6 inline-flex min-h-11 items-center gap-2 rounded-xl border border-outline-variant/15 px-4 py-2 text-sm font-semibold text-on-surface-variant transition-colors hover:text-on-surface"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                {archiveBackLabel}
+              </Link>
+            ) : null}
+
+            {archiveImages.length > 0 ? (
+              <div className="grid gap-6">
+                {archiveImages.map((image, index) => (
+                  <figure
+                    key={image.src}
+                    className="overflow-hidden rounded-[1.5rem] border border-outline-variant/15 bg-surface-container-low"
+                  >
+                    <Image
+                      src={image.src}
+                      alt={image.alt}
+                      width={1440}
+                      height={2400}
+                      sizes="(max-width: 1024px) 100vw, 960px"
+                      className="h-auto w-full"
+                      priority={index === 0}
+                    />
+                  </figure>
+                ))}
+              </div>
+            ) : null}
           </section>
         ) : null}
       </div>

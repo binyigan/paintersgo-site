@@ -117,6 +117,11 @@
   box-shadow: 0 0 40px -10px rgba(71, 0, 124, 0.3);
 }
 
+.text-wrap-anywhere {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 @keyframes fade-in {
   from {
     opacity: 0;

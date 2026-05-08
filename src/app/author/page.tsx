@@ -22,93 +22,112 @@ type AuthorPageCopy = {
     body: string;
     accent: "primary" | "secondary" | "tertiary";
   }>;
-  archiveTitle: string;
-  archiveIntro: string;
 };
-
-const authorArchiveImages = Array.from({ length: 12 }, (_, index) => {
-  const number = String(index + 1).padStart(2, "0");
-
-  return {
-    src: `/about/author/${number}.jpg`,
-    alt: `AI programming experience original post page ${index + 1}`,
-  };
-});
 
 const copyByLocale: Record<Locale, AuthorPageCopy> = {
   en: {
     metadataTitle: "About the Author - PaintersGO",
     metadataDescription:
-      "Learn about the creator perspective behind the PaintersGO website and product framing.",
+      "Learn about Gan Binyi, the creator behind PaintersGO, and the CV context behind the project.",
     logoLabel: "PaintersGO",
     backLabel: "Back to Home",
     switchLabel: "Language",
     englishLabel: "EN",
     chineseLabel: "\u4e2d\u6587",
     eyebrow: "Creator",
-    title: "A product-minded builder shaping the PaintersGO story",
+    title: "Gan Binyi, a mobile AI 3D product builder",
     intro:
-      "This site is treated as an interface exercise: connect AI generation, mobile creation, and physical output into one believable product narrative.",
+      "focuses on Android-native product development, interaction design, and AI-assisted 3D creation workflows.",
     sections: [
       {
-        title: "Product Lens",
+        title: "Education",
         body:
-          "The work focuses on how someone moves from inspiration to a usable 3D result with as little friction as possible.",
+          " The CV frames PaintersGO as the main project practice.",
         accent: "primary",
       },
       {
-        title: "Design Preference",
+        title: "Direction",
         body:
-          "The direction favors bold structure, tactile interactions, and copy that feels like a real product instead of a generic demo.",
+          "The author works across mobile interfaces, AI product prototyping, and 3D creation flows that can move from idea to preview and output.",
         accent: "secondary",
       },
       {
-        title: "Current Focus",
+        title: "PaintersGO",
         body:
-          "Right now the emphasis is on cleaner information architecture, stronger bilingual presentation, and a more polished landing experience.",
+          "PaintersGO is listed as an AI-assisted text/image-to-3D creation app, developed as a product, design, and Android engineering practice.",
+        accent: "tertiary",
+      },
+      {
+        title: "Stack",
+        body:
+          "The CV mentions Android, Kotlin, Jetpack Compose, WebView, GLB/STL workflows, Firebase Remote Config, Git/GitHub, and cloud deployment.",
+        accent: "primary",
+      },
+      {
+        title: "AI Tools",
+        body:
+          "The development process uses AI coding and research tools including ChatGPT, Claude, Gemini, Cursor, and Android Studio.",
+        accent: "secondary",
+      },
+      {
+        title: "Links",
+        body:
+          "Project site: https://paintersgo.top. GitHub: https://github.com/binyigan. Email: binyigan@gmail.com.",
         accent: "tertiary",
       },
     ],
-    archiveTitle: "Original Longform Notes",
-    archiveIntro:
-      "The complete Xiaohongshu image export is preserved below as the source material behind this author page.",
   },
   zh: {
     metadataTitle: "\u5173\u4e8e\u4f5c\u8005 - PaintersGO",
     metadataDescription:
-      "\u4e86\u89e3 PaintersGO \u7f51\u7ad9\u80cc\u540e\u7684\u4f5c\u8005\u89c6\u89d2\u548c\u4ea7\u54c1\u8868\u8fbe\u65b9\u5f0f\u3002",
+      "了解 PaintersGO 作者甘彬毅的简历背景、项目方向与联系方式。",
     logoLabel: "PaintersGO",
     backLabel: "\u8fd4\u56de\u9996\u9875",
     switchLabel: "\u8bed\u8a00",
     englishLabel: "EN",
     chineseLabel: "\u4e2d\u6587",
     eyebrow: "\u4f5c\u8005",
-    title: "\u4e00\u4e2a\u4ee5\u4ea7\u54c1\u89c6\u89d2\u5728\u5851\u9020 PaintersGO \u7684\u8868\u8fbe\u65b9\u5f0f",
+    title: "甘彬毅：面向移动端 AI 3D 创作的产品与工程实践者",
     intro:
-      "\u8fd9\u4e2a\u7f51\u7ad9\u88ab\u5f53\u4f5c\u4e00\u6b21\u754c\u9762\u7ec3\u4e60\uff1a\u628a AI \u751f\u6210\u3001\u79fb\u52a8\u521b\u4f5c\u548c\u5b9e\u4f53\u8f93\u51fa\u4e32\u6210\u4e00\u4e2a\u66f4\u50cf\u771f\u5b9e\u4ea7\u54c1\u7684\u53d9\u4e8b\u3002",
+      "关注 Android 原生开发、界面与交互体验，以及 AI 辅助 3D 创作流程的产品化落地。",
     sections: [
       {
-        title: "\u4ea7\u54c1\u89c6\u89d2",
+        title: "教育背景",
         body:
-          "\u6838\u5fc3\u5728\u4e8e\u8ba9\u7528\u6237\u4ece\u7075\u611f\u51fa\u53d1\uff0c\u5c3d\u53ef\u80fd\u987a\u6ed1\u5730\u8d70\u5230\u53ef\u7528\u7684 3D \u7ed3\u679c\u3002",
+          "简历中将 PaintersGO 作为主要项目实践展开。",
         accent: "primary",
       },
       {
-        title: "\u8bbe\u8ba1\u504f\u597d",
+        title: "实践方向",
         body:
-          "\u66f4\u504f\u5411\u9c9c\u660e\u7684\u7ed3\u6784\u3001\u6709\u89e6\u611f\u7684\u4ea4\u4e92\uff0c\u4ee5\u53ca\u771f\u6b63\u50cf\u4ea7\u54c1\u7684\u6587\u6848\u8bed\u6c14\uff0c\u800c\u4e0d\u662f\u793a\u4f8b\u9875\u822c\u7684\u7ec4\u88c5\u611f\u3002",
+          "围绕移动端界面、AI 产品原型和 3D 创作链路展开，从灵感输入、模型预览到最终输出都纳入产品体验。",
         accent: "secondary",
       },
       {
-        title: "\u5f53\u524d\u91cd\u70b9",
+        title: "项目经历",
         body:
-          "\u73b0\u5728\u66f4\u5173\u6ce8\u4fe1\u606f\u7ed3\u6784\u7684\u6e05\u6670\u5ea6\u3001\u4e2d\u82f1\u53cc\u8bed\u7684\u8868\u8fbe\u8d28\u611f\uff0c\u4ee5\u53ca\u9996\u5c4f\u6574\u4f53\u7684\u6253\u78e8\u7a0b\u5ea6\u3002",
+          "PaintersGO 被整理为 AI 辅助型文生图/图生 3D 创作应用，是产品设计、Android 3D 应用开发与完整叙事表达的综合实践。",
+        accent: "tertiary",
+      },
+      {
+        title: "技术栈",
+        body:
+          "简历中涉及 Android、Kotlin、Jetpack Compose、WebView、GLB/STL 流程、Firebase Remote Config、Git/GitHub 与云端部署。",
+        accent: "primary",
+      },
+      {
+        title: "AI 工具",
+        body:
+          "开发过程结合 ChatGPT、Claude、Gemini、Cursor 与 Android Studio，用 AI 辅助资料整理、代码实现、问题定位和迭代优化。",
+        accent: "secondary",
+      },
+      {
+        title: "联系方式",
+        body:
+          "项目站点：https://paintersgo.top；GitHub：https://github.com/binyigan；邮箱：binyigan@gmail.com。",
         accent: "tertiary",
       },
     ],
-    archiveTitle: "\u5b8c\u6574\u56fe\u6587\u539f\u6587",
-    archiveIntro:
-      "\u4e0b\u65b9\u6309\u987a\u5e8f\u4fdd\u7559\u4e86\u5c0f\u7ea2\u4e66\u56fe\u7247\u7248\u539f\u6587\uff0c\u7528\u4f5c\u201c\u5173\u4e8e\u4f5c\u8005\u201d\u9875\u9762\u7684\u5b8c\u6574\u8d44\u6599\u5e95\u7a3f\u3002",
   },
 };
 
@@ -149,9 +168,6 @@ export default async function AuthorPage({
       title={t.title}
       intro={t.intro}
       sections={t.sections}
-      archiveTitle={t.archiveTitle}
-      archiveIntro={t.archiveIntro}
-      archiveImages={authorArchiveImages}
     />
   );
 }
