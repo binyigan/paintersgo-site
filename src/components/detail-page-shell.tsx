@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, ArrowRight, Languages } from "lucide-react";
+import type { ReactNode } from "react";
 
 import type { Locale } from "@/lib/locale";
 import { cn } from "@/lib/utils";
@@ -9,8 +10,9 @@ type Accent = "primary" | "secondary" | "tertiary";
 
 type DetailSection = {
   title: string;
-  body: string;
+  body: ReactNode;
   accent: Accent;
+  featured?: boolean;
 };
 
 type ArchiveImage = {
@@ -158,22 +160,31 @@ export function DetailPageShell({
         </section>
 
         <section className="grid gap-6 md:grid-cols-3">
-          {sections.map((section) => (
-            <article
-              key={section.title}
-              className="rounded-[1.5rem] border border-outline-variant/15 bg-surface-container-low p-6"
-            >
-              <span
+          {sections.map((section) => {
+            const isWideSection = section.featured || sections.length === 1;
+
+            return (
+              <article
+                key={section.title}
                 className={cn(
-                  "inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em]",
-                  accentClassName(section.accent),
+                  "rounded-[1.5rem] border border-outline-variant/15 bg-surface-container-low p-6",
+                  isWideSection && "md:col-span-3 md:p-8",
                 )}
               >
-                {section.title}
-              </span>
-              <p className="text-wrap-anywhere mt-4 text-sm leading-7 text-on-surface-variant">{section.body}</p>
-            </article>
-          ))}
+                <span
+                  className={cn(
+                    "inline-flex rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em]",
+                    accentClassName(section.accent),
+                  )}
+                >
+                  {section.title}
+                </span>
+                <div className="text-wrap-anywhere mt-4 text-sm leading-7 text-on-surface-variant">
+                  {section.body}
+                </div>
+              </article>
+            );
+          })}
         </section>
 
         {hasArchive ? (

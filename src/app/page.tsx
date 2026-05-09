@@ -126,6 +126,10 @@ type HomeCopy = {
   downloadMeta: {
     items: string[];
     note: string;
+    checksumLabel: string;
+    checksum: string;
+    safetyTitle: string;
+    safetyItems: string[];
     privacyLink: string;
   };
   engineCloud: string;
@@ -455,25 +459,34 @@ const copyByLocale: Record<Locale, HomeCopy> = {
     },
     downloadMeta: {
       items: ["APK v1.0", "9.1 MB", "Android 8.0+", "Updated May 2, 2026"],
-      note:
-        "Direct APK install. Android may ask you to allow installs from this browser.",
+      note: "Official preview build for Android devices.",
+      checksumLabel: "SHA-256",
+      checksum:
+        "51A35D5599BD3EED71E324424F1AB9023DF5CD4C411EDDEFFA42C33EEDAA23A2",
+      safetyTitle: "Build Trust",
+      safetyItems: [
+        "Published from the official PaintersGO site.",
+        "Version, file size, and SHA-256 are shown for verification.",
+        "Designed for Android 8.0 and above.",
+        "Start with non-sensitive creative assets when trying AI generation.",
+      ],
       privacyLink: "Privacy and safety note",
     },
     engineCloud: "Powered by Industry Leading Engines",
     features: {
       eyebrow: "Core Creative Engine",
       body:
-        "The creative engine is organized by readiness: mature capabilities first, then production workflows that are still being refined.",
+        "PaintersGO brings the essential mobile 3D creation steps into one place, from AI generation to editing, repair, collaboration, and print-ready output.",
       groups: {
         completed: {
-          title: "High-Completion Capabilities",
+          title: "Core Creation Loop",
           body:
-            "The core creation loop is already in strong shape, covering AI generation, engine selection, mobile editing, sculpting, and a clear model repository.",
+            "Start with a prompt or reference image, choose a generation engine, preview the result, edit it on mobile, and keep finished assets organized.",
         },
         inProgress: {
-          title: "In Active Refinement",
+          title: "Advanced Workflows",
           body:
-            "Cloud repair, automatic part recognition, selected local editing, O2O printing, and collaboration mode are being improved as production-facing workflows.",
+            "Repair, part recognition, selected local editing, O2O printing, and collaboration extend the app from simple generation toward real creative production.",
         },
       },
       cards: {
@@ -560,7 +573,7 @@ const copyByLocale: Record<Locale, HomeCopy> = {
     roadmap: {
       eyebrow: "Next Experiments",
       body:
-        "These ideas are better presented as future-facing experiments rather than finished promises, matching the app's current preview and pre-registration surfaces.",
+        "PaintersGO is also a place to test where mobile AI 3D creation can go next: richer accounts, immersive review, video capture, and model breakdown.",
       cards: {
         accountSync: {
           title: "Universal & Official Accounts",
@@ -651,12 +664,12 @@ const copyByLocale: Record<Locale, HomeCopy> = {
     githubOverview: {
       eyebrow: "GitHub Project Overview",
       body:
-        "A repository-level snapshot of the PaintersGO implementation, release structure, and source organization behind the public website.",
+        "A closer look at the project behind the site, including how the app, release assets, and source materials are organized.",
       images: {
         projectOverview1: {
           title: "Repository Map",
           description:
-            "A compact view of the codebase structure, feature areas, and implementation artifacts.",
+            "A compact view of the codebase structure and major feature areas.",
           alt: "GitHub project overview screenshot showing the PaintersGO repository structure",
         },
         projectOverview2: {
@@ -690,7 +703,7 @@ const copyByLocale: Record<Locale, HomeCopy> = {
         {
           title: "AI as the Core Workflow",
           description:
-            "As AI generation improves, many advanced features can naturally anchor around AI-generated models, while broader local-upload workflows can become paid or expanded services.",
+            "AI generation can be the first creative spark, while editing, repair, collaboration, and printing help turn that spark into something usable.",
         },
         {
           title: "Copyright and Trust",
@@ -748,25 +761,34 @@ const copyByLocale: Record<Locale, HomeCopy> = {
     },
     downloadMeta: {
       items: ["APK v1.0", "9.1 MB", "Android 8.0+", "2026-05-02 \u66f4\u65b0"],
-      note:
-        "\u76f4\u63a5\u5b89\u88c5 APK\u3002Android \u53ef\u80fd\u4f1a\u63d0\u793a\u5141\u8bb8\u6b64\u6d4f\u89c8\u5668\u5b89\u88c5\u5e94\u7528\u3002",
+      note: "面向 Android 设备的官方预览版本。",
+      checksumLabel: "SHA-256 \u6821\u9a8c",
+      checksum:
+        "51A35D5599BD3EED71E324424F1AB9023DF5CD4C411EDDEFFA42C33EEDAA23A2",
+      safetyTitle: "版本可信信息",
+      safetyItems: [
+        "安装包由 PaintersGO 官方站点提供。",
+        "页面展示版本、文件大小和 SHA-256，便于核对。",
+        "适用于 Android 8.0 及以上设备。",
+        "体验 AI 生成功能时，建议先使用非敏感创作素材。",
+      ],
       privacyLink: "\u9690\u79c1\u4e0e\u5b89\u5168\u8bf4\u660e",
     },
     engineCloud: "\u7531\u9886\u5148\u7684 3D \u751f\u6210\u5f15\u64ce\u9a71\u52a8",
     features: {
       eyebrow: "\u6838\u5fc3\u521b\u4f5c\u5f15\u64ce",
       body:
-        "\u6309\u529f\u80fd\u5b8c\u6210\u5ea6\u91cd\u65b0\u7ec4\u7ec7\uff1a\u5148\u5448\u73b0\u5b8c\u6210\u5ea6\u9ad8\u7684\u6838\u5fc3\u80fd\u529b\uff0c\u518d\u5355\u72ec\u5c55\u793a\u6b63\u5728\u6301\u7eed\u5b8c\u5584\u7684\u751f\u4ea7\u578b\u6d41\u7a0b\u3002",
+        "PaintersGO 把移动端 3D 创作的关键步骤放进同一个入口：AI 生成、编辑、修复、协作，以及面向打印的输出。",
       groups: {
         completed: {
-          title: "\u5b8c\u6210\u5ea6\u9ad8\u7684\u80fd\u529b",
+          title: "核心创作链路",
           body:
-            "AI \u751f\u6210\u3001\u591a\u5f15\u64ce\u9009\u62e9\u3001\u79fb\u52a8\u7aef 3D \u7f16\u8f91\u3001\u96d5\u523b\u5c55\u793a\u548c\u6e05\u6670\u7684\u4ed3\u5e93\u5217\u8868\u5df2\u7ecf\u6784\u6210\u76f8\u5bf9\u6210\u719f\u7684\u521b\u4f5c\u4e3b\u94fe\u8def\u3002",
+            "从提示词或参考图开始，选择生成引擎，预览结果，在移动端继续编辑，并把完成的模型整理进仓库。",
         },
         inProgress: {
-          title: "\u6b63\u5728\u5b8c\u5584\u4e2d",
+          title: "进阶生产流程",
           body:
-            "\u4e91\u7aef\u4fee\u590d\u3001\u81ea\u52a8\u8bc6\u522b\u6a21\u578b\u7ec4\u6210\u90e8\u4f4d\u3001\u81ea\u9009\u5c40\u90e8\u7ed3\u6784\u7f16\u8f91\u3001O2O \u6253\u5370\u548c\u534f\u4f5c\u6a21\u5f0f\u4f5c\u4e3a\u9762\u5411\u751f\u4ea7\u548c\u4ea4\u4ed8\u7684\u80fd\u529b\uff0c\u6b63\u5728\u6301\u7eed\u6253\u78e8\u3002",
+            "修复、部件识别、局部编辑、O2O 打印和协作，让 PaintersGO 从简单生成进一步走向真实创作与交付。",
         },
       },
       cards: {
@@ -853,7 +875,7 @@ const copyByLocale: Record<Locale, HomeCopy> = {
     roadmap: {
       eyebrow: "\u4e0b\u4e00\u9636\u6bb5\u5b9e\u9a8c",
       body:
-        "\u8fd9\u4e9b\u5185\u5bb9\u66f4\u9002\u5408\u4ee5\u9762\u5411\u672a\u6765\u7684\u5b9e\u9a8c\u6765\u5448\u73b0\uff0c\u548c App \u5185\u76ee\u524d\u7684\u9884\u89c8\u4e0e\u9884\u7ea6\u754c\u9762\u4fdd\u6301\u4e00\u81f4\u3002",
+        "PaintersGO 也在探索移动端 AI 3D 创作的下一步：账号同步、沉浸式查看、视频捕捉和模型拆分。",
       cards: {
         accountSync: {
           title: "\u901a\u7528\u8d26\u53f7\u4e0e\u5b98\u65b9\u8d26\u53f7",
@@ -951,12 +973,12 @@ const copyByLocale: Record<Locale, HomeCopy> = {
     githubOverview: {
       eyebrow: "GitHub整体项目总览",
       body:
-        "从仓库结构、版本交付到源码组织，集中呈现 PaintersGO 项目的整体实现状态和发布上下文。",
+        "进一步查看 PaintersGO 背后的项目组织方式，包括应用代码、发布资源和作品素材。",
       images: {
         projectOverview1: {
           title: "项目结构总览",
           description:
-            "展示代码仓库、功能模块和关键实现文件的整体组织方式。",
+            "展示代码仓库和主要功能模块的组织方式。",
           alt: "PaintersGO GitHub 项目结构总览截图",
         },
         projectOverview2: {
@@ -990,7 +1012,7 @@ const copyByLocale: Record<Locale, HomeCopy> = {
         {
           title: "AI 是核心工作流",
           description:
-            "AI 生成模型会越来越强，贴图、修复、协作等能力可以围绕 AI 生成结果展开；当功能扩展到所有本地上传模型时，再考虑服务化或付费化。",
+            "AI 生成可以成为创作的第一步，编辑、修复、协作和打印则把这个结果继续推向可用资产。",
         },
         {
           title: "版权与信任机制",
@@ -1032,6 +1054,34 @@ export async function generateMetadata({
     title: t.metadataTitle,
     description: t.metadataDescription,
   };
+}
+
+function DownloadSafetyPanel({
+  title,
+  items,
+}: {
+  title: string;
+  items: string[];
+}) {
+  return (
+    <section className="mx-auto mt-8 max-w-3xl border-y border-outline-variant/15 py-5 text-left">
+      <h3 className="mb-4 flex items-center gap-2 font-headline text-sm font-bold uppercase tracking-[0.22em] text-secondary">
+        <ShieldCheck className="h-4 w-4" />
+        {title}
+      </h3>
+      <ul className="grid gap-3 text-sm leading-relaxed text-on-surface-variant sm:grid-cols-2">
+        {items.map((item) => (
+          <li key={item} className="flex gap-3">
+            <span
+              aria-hidden="true"
+              className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-secondary"
+            />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
 }
 
 export default async function Home({ searchParams }: { searchParams: SearchParams }) {
@@ -1124,7 +1174,7 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
       <section className="relative min-h-[88svh] overflow-hidden px-6 pb-20 pt-32 md:px-8">
         <VideoCoverPlayer
           src="/videos/intro_video.mp4"
-          poster="/AR.png"
+          poster="/ar-hero.webp"
           alt={t.hero.imageAlt}
           buttonLabel="Play intro video"
           fill
@@ -1172,6 +1222,9 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             </div>
             <p className="pointer-events-auto mt-3 max-w-xl text-sm leading-relaxed text-white/62">
               {t.downloadMeta.note}
+            </p>
+            <p className="pointer-events-auto mt-3 max-w-2xl break-all font-mono text-[0.68rem] leading-relaxed text-white/48">
+              {t.downloadMeta.checksumLabel}: {t.downloadMeta.checksum}
             </p>
             <Link
               href={privacyHref}
@@ -1546,6 +1599,13 @@ export default async function Home({ searchParams }: { searchParams: SearchParam
             <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-on-surface-variant">
               {t.downloadMeta.note}
             </p>
+            <p className="mx-auto mt-3 max-w-3xl break-all font-mono text-[0.68rem] leading-relaxed text-on-surface-variant/70">
+              {t.downloadMeta.checksumLabel}: {t.downloadMeta.checksum}
+            </p>
+            <DownloadSafetyPanel
+              title={t.downloadMeta.safetyTitle}
+              items={t.downloadMeta.safetyItems}
+            />
             <Link
               href={privacyHref}
               className="mt-4 inline-flex text-sm font-semibold text-secondary transition-colors hover:text-secondary-fixed"

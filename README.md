@@ -53,8 +53,10 @@ The live site now includes:
 
 - `src/app/page.tsx`: homepage structure
 - `src/app/layout.tsx`: global metadata and font setup
+- `src/app/robots.ts`: crawler rules and sitemap reference
+- `src/app/sitemap.ts`: generated sitemap for public routes
 - `src/app/globals.css`: theme tokens and shared landing page styles
-- `public/AR.png`: hero visual
+- `public/ar-hero.webp`: optimized hero poster and social sharing image
 - `public/app-assets/video_to_3d1.webp`: feature visual
 - `public/app-assets/demo_refine.webp`: repair feature visual
 
